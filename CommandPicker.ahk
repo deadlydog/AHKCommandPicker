@@ -3,9 +3,10 @@ IDEAS:
 - Have listbox filter the results and get smaller as user types.
 - Save config to .properties or .config file:
 	- _cpShowSelectedCommandAfterWindowCloses - Duration
-- Be able to pass in parameters, such as "winamp kings of leon" -> might need a parameters input box (that only shows up when a command that takes parameters is selected).
-- Have the GUI optional. Instead can just press CapsLock to bring up tooltip that says "Enter Command", and then user types in the tooltip instead of popping the large GUI.
-- Maybe just hide the GUI instead of actually closing it every time.
+- Be able to pass in parameters, such as "winamp kings of leon" -> might need a parameters input box (that only shows up when a command that takes parameters is selected) --> Naw, just use a comma to specify/separate parameters.
+
+- Have the GUI optional. Instead can just press CapsLock to bring up tooltip that says "Enter Command", and then user types in the tooltip instead of popping the large GUI. Could still autocomplete the command and show it in the tooltip though.
+- Maybe just hide the GUI instead of actually closing it every time; this would be good for tooltip mode too, since the tooltip could show the currently selected command from the window.
 - Allow user to create new simple commands easily from the GUI and save them in their own file (open file/program, path, website).
 
 */
@@ -23,12 +24,14 @@ IDEAS:
 _cpWindowName := "Choose a command to run"
 _cpCommandList := ""					; Will hold the list of all available commands.
 _cpCommandDelimiter := "|"				; The character used to separate each command in the _cpCommandList. This MUST be the pipe character in order to work with a ListBox/ComboBox/DropDownList/Tab.
+_cpParameterDelimiter := ","			; The character used to separate the parameter list from the command.
 _cpCommandDescriptionSeparator := "=>"	; The character or string used to separate the function name from the description of what the function does.
 _cpCommandSelected := ""				; Will hold the command selected by the user.
 _cpSearchedString := ""					; Will hold the actual string that the user entered.
 _cpActiveWindowID := ""					; Will hold the ID of the Window that was Active when this picker was launched.
+_cpCommandArray := Object()				; Will hold the array of all Command objects.
 
-; Load the Command Picker Settings from the settings file.
+; Specify the default Command Picker Settings, then load any existing settings from the settings file.
 _cpSettingsFileName := "CommandPicker.settings"
 _cpWindowWidthInPixels := 700
 _cpFontSize := 10
@@ -105,20 +108,26 @@ CPSaveSettings()
 ;	}
 ;==========================================================
 #Include CommandScriptsToInclude.txt
-CPSortCommands() ; Now that all of the Commands are loaded, sort them in the picker.
+
+;==========================================================
+; Add a Dummy command to use for debugging.
+;==========================================================
+AddCommand("DummyCommand", "A command that doesn't do anything, but can be useful for debugging")
+DummyCommand()
+{}
 
 ;==========================================================
 ; Hotkey to launch the Command Picker window.
 ;==========================================================
 CapsLock::
 	SetCapslockState, Off				; Turn CapsLock off after it was pressed
-	LaunchCommandPicker()	
+	CPLaunchCommandPicker()	
 return
 
 ;==========================================================
 ; Launch the Command Picker window.
 ;==========================================================
-LaunchCommandPicker()
+CPLaunchCommandPicker()
 {
 	; Let this function know about the necessary global variables.
 	global _cpWindowName, _cpActiveWindowID
@@ -128,7 +137,7 @@ LaunchCommandPicker()
 	{
 		_cpActiveWindowID := WinExist("A")	; Save the ID of the Window that was active when the picker was launched.
 	}
-	PutCommandPickerWindowInFocus(_cpWindowName)
+	PutCommandPickerWindowInFocus()
 }
 
 ;==========================================================
@@ -246,17 +255,17 @@ return
 ;==========================================================
 ; Create the Command Picker window if necessary and put it in focus.
 ;==========================================================
-PutCommandPickerWindowInFocus(windowName)
+PutCommandPickerWindowInFocus()
 {
 	; Let this function know that all variables except the passed in parameters are global variables.
-	global
+	global _cpWindowName, _cpSearchedString
 	
 	; If the window is already open
-	if WinExist(windowName)
+	if WinExist(_cpWindowName)
 	{		
 		; Put the window in focus, and give focus to the text box.
-		WinActivate, %windowName%
-		ControlFocus, _cpSearchedString, %windowName%
+		WinActivate, %_cpWindowName%
+		ControlFocus, _cpSearchedString, %_cpWindowName%
 		
 		if ErrorLevel   ; i.e. it's not blank or zero.
 			MsgBox, Error putting the textbox in focus
@@ -265,19 +274,16 @@ PutCommandPickerWindowInFocus(windowName)
 	else
 	{
 		; Create the window	
-		if (windowName = _cpWindowName)
-		{
-			CreateCommandPickerWindow()
-		}
+		CreateCommandPickerWindow()
 
 		; Make sure this window is in focus before sending commands
-		WinWaitActive, %windowName%
+		WinWaitActive, %_cpWindowName%
 		
 		; If the window wasn't opened for some reason
-		if Not WinExist(windowName)
+		if Not WinExist(_cpWindowName)
 		{
 			; Display an error message that the window couldn't be opened
-			MsgBox, There was a problem opening "%windowName%"
+			MsgBox, There was a problem opening "%_cpWindowName%"
 		
 			; Exit, returning failure
 			return false
@@ -291,7 +297,7 @@ PutCommandPickerWindowInFocus(windowName)
 CreateCommandPickerWindow()
 {
 	; Let this function know about the necessary global variables.
-	global _cpWindowName, _cpCommandList, _cpCommandDelimiter, _cpCommandSelected, _cpSearchedString, _cpNumberOfCommandsToShow, _cpWindowWidthInPixels, _cpFontSize, _cpShowAHKScriptInSystemTray, _cpShowSelectedCommandAfterWindowCloses
+	global _cpWindowName, _cpCommandList, _cpCommandDelimiter, _cpCommandSelected, _cpSearchedString, _cpNumberOfCommandsToShow, _cpWindowWidthInPixels, _cpFontSize, _cpShowAHKScriptInSystemTray, _cpShowSelectedCommandAfterWindowCloses, _cpParameterDelimiter
 	
 	; Define any static variables needed for the GUI.
 	static commandListBoxContents := ""	; Will hold the commands currently being shown in the command list.
@@ -418,7 +424,20 @@ return
 		; Else if the user submitted a command (and it was valid).
 		else if (commandWasSubmitted = true)
 		{
-			RunCommand(_cpCommandSelected)
+			; Strip the Description off the command to get just the Command Name.
+			commandName := GetCommandName(_cpCommandSelected)			
+			
+			; Grab any parameters that were supplied (CSV) and store them in an array.
+			parameters := [] ; creates initialy empty object (simple array).
+			Loop, parse, _cpSearchedString, `,, %A_Space%
+			{   
+				; Skip the first element as it is the command name (or part of the command name).
+				if (A_index > 1)
+					parameters.Insert(A_LoopField)
+			}
+			
+			; Run the command with the given parameters.
+			RunCommand(commandName, parameters)
 		}	
 	return
 
@@ -440,41 +459,58 @@ return
 ;==========================================================
 ; Run the given command.
 ;==========================================================
-RunCommand(command)
+RunCommand(commandName, parameters)
 {
-	global _cpShowSelectedCommandAfterWindowCloses
-	
-	; Strip the user friendly message off the command to get the function name.
-	commandFunction := GetCommandFunction(command)
+	global _cpShowSelectedCommandAfterWindowCloses, _cpCommandArray
 
-	; If the function exists, call it, otherwise report an error.
-	if IsFunc(commandFunction)
-	{	
-		; Call the command function.
-		displayCommandText := %commandFunction%()
-		
-		if (_cpShowSelectedCommandAfterWindowCloses && displayCommandText != false)
-		{
-			; Append any text returned from the command to the command displayed on screen (display returned text on a new line)
-			if (displayCommandText)
-				command := command . "`r`n" . displayCommandText
-			
-			DisplayTextOnScreen(command , 2000)
-		}
+	; If the Command to run doesn't exist, display error and exit.
+	if (!_cpCommandArray[commandName])
+	{
+		MsgBox, Command "%commandName%" does not exist.
+		return
 	}
-	else
+
+	; Get the Command's Function to call.
+	commandFunction := _cpCommandArray[commandName].FunctionName
+
+	; If the Function to call doesn't exist, display an error and exit.
+	if (!IsFunc(commandFunction))
+	{	
 		MsgBox Function "%commandFunction%" does not exist.
+		return
+	}
+	
+	; Call the Command's function, passing in any supplied parameters.
+	displayCommandText := %commandFunction%(parameters)
+	
+	;~ ; Example of how to loop through the parameters
+	;~ For index, value in parameters
+		;~ MsgBox % "Item " index " is '" value "'"
+	
+	; If the setting to show which command was ran is enabled, and the command did not explicitly return telling us to not show the text, display the command text.
+	if (_cpShowSelectedCommandAfterWindowCloses && displayCommandText != false)
+	{
+		; Get the command's text to show.
+		command := _cpCommandArray[commandName].ToString()
+		
+		; Append any text returned from the command to the command displayed on screen (display returned text on a new line).
+		if (displayCommandText)
+			command := command . "`r`n" . displayCommandText
+		
+		; Display the Command's text on the screen
+		DisplayTextOnScreen(command , 2000)
+	}
 }
 
 ;==========================================================
-; Parse the given command to pull the Function Name from it.
+; Parse the given command to pull the Command Name from it.
 ;==========================================================
-GetCommandFunction(command)
+GetCommandName(command)
 {
 	; Let this function know about the necessary global variables.
 	global _cpCommandDescriptionSeparator
-
-	; Replace each separator with an accent.
+	
+	; Replace each Command-Description separator string with an accent symbol so that it is easy to split against (since we can only split against characters, not strings).
 	StringReplace, command, command, %_cpCommandDescriptionSeparator%, ``, All
 	
 	; Split the string at the accent symbol, and strip spaces and tabs off each element.
@@ -531,7 +567,7 @@ ShowSettingsWindow()
 	2GuiEscape:				; The Escape key was pressed.
 		CPLoadSettings()	; If user pressed Cancel the old settings will be loaded. If they pressed Save the saved settings will be loaded.
 		Gui, 2:Destroy		; Close the GUI, but leave the script running.
-		LaunchCommandPicker()	; Re-launch the Command Picker.
+		CPLaunchCommandPicker()	; Re-launch the Command Picker.
 	return	
 }
 
@@ -570,34 +606,50 @@ DisplayTextOnScreen(text, durationInMilliseconds)
 ;==========================================================
 ; Adds the given command to our global list of commands.
 ;==========================================================
-AddCommand(functionName, descriptionOfWhatFunctionDoes = "")
+AddCommand(functionName, descriptionOfWhatFunctionDoes = "", parameterList = "")
 {
-	AddCommandWithName(functionName, functionName, descriptionOfWhatFunctionDoes)
+	AddNamedCommand(functionName, functionName, descriptionOfWhatFunctionDoes, parameterList)
 }
 
-AddCommandWithParameter(functionName, descriptionOfWhatFunctionDoes = "", parameterList = "")
+AddNamedCommand(commandName, functionName, descriptionOfWhatFunctionDoes = "", parameterList = "")
 {
-	AddCommandWithNameAndParameter(functionName, functionName, descriptionOfWhatFunctionDoes, parameterList)
-}
-
-AddCommandWithNameAndParameter(commandName, functionName, descriptionOfWhatFunctionDoes = "", parameterList = "")
-{
-	AddCommandWithName(commandName, functionName, descriptionOfWhatFunctionDoes, true, parameterList)
-}
-
-AddCommandWithName(commandName, functionName, descriptionOfWhatFunctionDoes = "", takesParameter = false, parameterList = "")
-{
-	global _cpCommandList, _cpCommandDelimiter, _cpCommandDescriptionSeparator
+	global _cpCommandList, _cpCommandDelimiter, _cpCommandDescriptionSeparator, _cpCommandArray
+	;~ _cpCommandList := _cpCommandList . _cpCommandDelimiter . functionName . " " . _cpCommandDescriptionSeparator . " " . descriptionOfWhatFunctionDoes
+	
+	; The Command Names should be unique, so make sure it is not already in the list
+	if (_cpCommandArray[commandName])
+	{
+		MsgBox, The command '%commandName%' has already been added to the list of commands. Command names should be unique.
+		return
+	}
+	
+	; Create the command object and fill its properties.
+	command := {}
+	command.CommandName := commandName
+	command.FunctionName := functionName
+	command.Description := descriptionOfWhatFunctionDoes
+	command.Parameters := parameterList
+	command.ToString := Func("CPCommand_ToString")
+	
+	; Add the command into the Command Array
+	_cpCommandArray[commandName] := command
+	
 	_cpCommandList := _cpCommandList . _cpCommandDelimiter . functionName . " " . _cpCommandDescriptionSeparator . " " . descriptionOfWhatFunctionDoes
 }
 
-;==========================================================
-; Sort and number all of the commands in our global list, so they display nicely in the picker.
-;==========================================================
-CPSortCommands()
-{
-	
+; Defines the ToString() function for our Command objects.
+CPCommand_ToString(this)
+{	global _cpCommandDescriptionSeparator
+	return this.FunctionName . " " . _cpCommandDescriptionSeparator . " " . this.Description
 }
+
+;~ AddNamedCommand("FF", "FireFox", "Opens Firefox", true, "xnaparticles.com, dpsf.com, digg.com")
+;~ FireFox(website = "")
+;~ {
+	
+;~ }
+
+;~ FF, dpsf.com
 
 ;==========================================================
 ; Shows or Hides the Tray Icon for this AHK Script.
