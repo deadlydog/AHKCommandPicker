@@ -1,0 +1,5 @@
+; Include our utility functions used by some of the Commands first.
+#Include Commands\Utilities.ahk
+
+; Include the files with the Commands we want to include in the picker.
+#Include Commands\General.ahk
