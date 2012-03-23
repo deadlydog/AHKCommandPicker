@@ -1,14 +1,16 @@
+;==========================================================
+; Global Variables
+;==========================================================
+_OutlookExecutablePath = C:\Program Files\Microsoft Office\Office14\OUTLOOK.EXE
 
+
+;==========================================================
+; Commands
+;==========================================================
 AddCommand("ReloadAHKScript", "Reloads this AutoHotKey script")
 ReloadAHKScript()
 {
 	Run, %A_ScriptFullPath%	
-}
-
-AddCommand("HomeAddressWithURL", "Pastes my home address with a URL to the Google Map")
-HomeAddressWithURL()
-{
-	SendInput, 227 Hamilton St. N. (http://maps.google.com/maps?q=227+Hamilton+st+n&hl=en&ll=50.479425,-104.60922&spn=0.005708,0.016512&sll=50.49506,-104.599759&sspn=0.011412,0.033023&hnear=227+Hamilton+St+N,+Regina,+Saskatchewan+S4R+0J6,+Canada&t=m&z=17)
 }
 
 AddCommand("eMyComputer", "Explore My Computer")
@@ -23,27 +25,38 @@ eRecycleBin()
 	Run ::{645ff040-5081-101b-9f08-00aa002f954e}  ; Opens the Recycle Bin.
 }
 
-AddCommand("eC", "Explorer C:\")
+AddCommand("eC", "Explore C:\")
 eC()
 {
 	Run, explore C:\
 }
 
-AddCommand("eClipboard", "Explore whatever path is in the Clipboard")
-eClipboard()
+AddCommand("OpenClipboard", "Opens whatever file/folder/url path is in the Clipboard, if it is valid")
+OpenClipboard()
 {
-	; If the path exists, open it, otherwise just exit.
-	; Always display what path we try to open.
-	IfExist, %clipboard%
+	; Trim any whitespace off of the clipboard text before processing it.
+	clipboardText := Trim(clipboard)
+	
+	; If the file/folder path exists, open it.
+	IfExist, %clipboardText%
 	{
-		Run, explore %clipboard%
-		msg = Opening location: %clipboard%
-		return %msg%
+		Run, %clipboardText%
 	}
 	else
 	{
-		msg = PATH DOES NOT EXIST: %clipboard%
-		return %msg%
+		; Determine if the clipboard contains a URL.
+		urlRegex := "((https?|ftp|gopher|telnet|file|notes|ms-help):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+-=\\\.&]*)"
+		foundPosition := RegExMatch(clipboardText, urlRegex)
+		
+		; If the start of the clipboard is a URL, open it.
+		if (foundPosition = 1)
+			Run, %clipboardText%
+		; Else this is not a file/folder path or a URL, so return error.
+		else
+		{
+			msg = PATH DOES NOT EXIST:`r`n %clipboardText%
+			return %msg%
+		}
 	}
 }
 
@@ -71,44 +84,55 @@ NewEmail()
 	Run, mailto:
 }
 
-AddCommand("CloseWindow", "Closes the currently active window")
-CloseWindow()
+AddCommand("WindowClose", "Closes the currently active window")
+WindowClose()
 {	global _cpActiveWindowID
 	WinClose, ahk_id %_cpActiveWindowID%
 }
 
-AddCommand("MinimizeWindow", "Minimizes the currently active window")
-MinimizeWindow()
+AddCommand("WindowMinimize", "Minimizes the currently active window")
+WindowMinimize()
 {	global _cpActiveWindowID
 	WinMinimize, ahk_id %_cpActiveWindowID%
 }
 
-AddCommand("MaximizeWindow", "Maximizes the currently active window")
-MaximizeWindow()
+AddCommand("WindowMaximize", "Maximizes the currently active window")
+WindowMaximize()
 {	global _cpActiveWindowID
 	WinMaximize, ahk_id %_cpActiveWindowID%
 }
 
-AddCommand("AlwaysOnTopOn", "Sets the window to always be on top of others")
-AlwaysOnTopOn()
+AddCommand("WindowAlwaysOnTop", "Sets the window to always be on top of others")
+WindowAlwaysOnTop()
 {	global _cpActiveWindowID
 	WinSet, AlwaysOnTop, On, ahk_id %_cpActiveWindowID%
 }
 
-AddCommand("AlwaysOnTopOff", "Sets the window to no longer always be on top of others")
-AlwaysOnTopOff()
+AddCommand("WindowNotAlwaysOnTop", "Sets the window to no longer always be on top of others")
+WindowNotAlwaysOnTop()
 {	global _cpActiveWindowID
 	WinSet, AlwaysOnTop, Off, ahk_id %_cpActiveWindowID%
 }
 
 AddCommand("Outlook", "Opens Outlook making sure it is maximized")
 Outlook()
-{
-	windowID := PutWindowInFocus("Microsoft Outlook", "C:\Program Files\Microsoft Office\Office14\OUTLOOK.EXE")
-	if (windowID)
+{	global _OutlookExecutablePath
+	windowID := PutWindowInFocus("Microsoft Outlook", _OutlookExecutablePath . " /recycle", 2)
+	if (windowID > 0)
 	{
-		WinMaximize, ahk_id %windowID%
+		; Maximize the window if it is not already maximized.
+		WinGet, maximized, MinMax, ahk_id %windowID%
+		if (maximized != 1)
+		{
+			WinMaximize, ahk_id %windowID%
+		}
 	}
+}
+
+AddCommand("OutlookAppointment", "Creates a new Appointment in Outlook")
+OutlookAppointment()
+{	global _OutlookExecutablePath
+	Run, "%_OutlookExecutablePath%" /recycle /c ipm.appointment
 }
 
 AddCommand("ContextMenu", "Simulates a right-click by using Shift+F10")
@@ -117,37 +141,94 @@ ContextMenu()
 	SendInput, +{F10}	; Shift + F10 to simulate right mouse click
 }
 
-AddCommand("FireFox", "Launches Firefox, or if already open just puts it in focus")
-FireFox()
+AddCommand("WebBrowser", "Opens the default internet browser and searches for any comma-separated queries")
+WebBrowser(queries = "")
 {
-	PutWindowInFocus("Mozilla Firefox", "C:\Program Files (x86)\Mozilla Firefox\firefox.exe")
+	; Assume the user did not supply a query.
+	querySupplied := false
+	
+	; Loop through each of the terms to search for.
+	for index, query in queries
+	{
+		; Record that the user supplied a query.
+		querySupplied := true
+		
+		firstChar := SubStr(query, 1, 1)
+		imFeelingLucky := false
+		if (firstChar = 1)
+		{
+			StringTrimLeft, query, query, 1
+			imFeelingLucky = true
+		}
+		
+		; Construct the address and then go to.
+		address = www.google.ca/search?q=%query%
+		
+		; If we should use the I'm Feeling Lucky, enable it.
+		if (imFeelingLucky)
+			address .= "&btnI=745"	; Adding &btnI=745 to the end of the URL uses Google's I'm Feeling Lucky.
+		
+		; Open up the address in a new tab.
+		Run, %address%
+	}
+	
+	; If the user didn't supply a query, open the browser up to Google.
+	if (querySupplied = false)
+	{
+		Run, www.google.com
+	}
 }
 
 AddCommand("FireFoxNewWindow", "Launches a new instance of Firefox")
-FireFoxNewWindow()
+FireFoxNewWindow(queries)
 {
-	Run, "C:\Program Files (x86)\Mozilla Firefox\firefox.exe"
+	; Create a new FireFox window
+	PutWindowInFocus("Mozilla Firefox", "C:\Program Files (x86)\Mozilla Firefox\firefox.exe", "New")
+	
+	; If any queries were provided, search for them.
+	WebBrowser(queries)
 }
 
-
-
-AddCommand("SplashText", "Display a Splash Text Window")
-SplashText()
+AddCommand("MonitorOff", "Turns the monitor off")
+MonitorOff()
 {
-	SplashTextOn, , , Displays only a title bar.
-	Sleep, 2000
-	SplashTextOn, 400, 300, Clipboard, The clipboard contains:`n%clipboard%
-	WinMove, Clipboard, , 0, 0  ; Move the splash window to the top left corner.
-	Msgbox, Press OK to dismiss the SplashText
-	SplashTextOff	
+	Sleep 500 ; if you use this with a hotkey, not sleeping will make it so your keyboard input wakes up the monitor immediately.
+	SendMessage 0x112, 0xF170, 2,,Program Manager ; send the monitor into standby (off) mode.
 }
 
+AddCommand("MuteSpeakersToggle", "Mutes/Un-mutes the volume on your computer")
+MuteSpeakersToggle()
+{
+	;SoundSet, +1, , mute	; Toggle volumne mute on and off.
+	SendInput, {Volume_Mute}
+}
 
+AddCommand("MediaNext", "Moves to the next track")
+MediaNext()
+{
+	SendInput, {Media_Next}
+}
 
+AddCommand("MediaPrevious", "Moves to the previous track")
+MediaPrevious()
+{
+	SendInput, {Media_Prev}
+}
 
+AddCommand("MediaPlayPause", "Plays/Pauses the current track")
+MediaPlayPause()
+{
+	SendInput, {Media_Play_Pause}
+}
 
-AddCommand("ShortenURL", "Replaces the long URL in the clipboard with a shortened one")
-ShortenURL()
+AddCommand("MediaStop", "Stops the current track from playing")
+MediaStop()
+{
+	SendInput, {Media_Stop}
+}
+
+AddCommand("URLShortenAndPaste", "Replaces the long URL in the clipboard with a shortened one and pastes it")
+URLShortenAndPaste()
 {
 	; Get the URL from the clipboard
 	longURL = %clipboard%	
@@ -189,7 +270,6 @@ ShortenURL()
 		msg = Shortened %longURL% `r`n to %shortURL%
 	return %msg%
 }
-
 UrlDownloadToVar(URL, ByRef Result, UserAgent = "", Proxy = "", ProxyBypass = "") {
     ; Requires Windows Vista, Windows XP, Windows 2000 Professional, Windows NT Workstation 4.0,
     ; Windows Me, Windows 98, or Windows 95.
@@ -259,3 +339,4 @@ UrlDownloadToVar(URL, ByRef Result, UserAgent = "", Proxy = "", ProxyBypass = ""
     DllCall("wininet\InternetCloseHandle",  "UInt", io)
     DllCall("FreeLibrary", "UInt", hModule)
 }
+
