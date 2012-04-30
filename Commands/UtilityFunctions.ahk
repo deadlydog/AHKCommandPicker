@@ -35,7 +35,7 @@ PutWindowInFocus(windowName, applicationPath = "", titleMatchMode = "")
 			SetTitleMatchMode, 2	; Next try to match any part of the window's title.
 			gosub, PWIFTryActivateWindow
 		}
-		
+
 		if (!windowActivated)
 		{
 			DetectHiddenWindows, On		; Lastly try searching hidden windows as well.
@@ -44,30 +44,30 @@ PutWindowInFocus(windowName, applicationPath = "", titleMatchMode = "")
 	}
 	else
 	{
-		; If we do want to try and match against an existing window
+		; If we do want to try and match against an existing window.
 		if (titleMatchMode != "New")
 		{
 			SetTitleMatchMode, %titleMatchMode%		; Try to activate the window using the specified match mode.
 			gosub, PWIFTryActivateWindow
 		}
 	}
-	
-	; If the window is not already open
+
+	; If the window is not already open.
 	if (!windowActivated)
 	{	
 		; If we were given a program to launch as a backup in case the wanted window wasn't found, then try and launch it.
 		if (applicationPath != "")
 		{
-			; Create the window	
+			; Create the window.
 			Run %applicationPath%
 
-			; Make sure this window is in focus before sending commands
-			WinWaitActive, %windowName%
-			
-			; If the window wasn't opened for some reason
-			IfWinNotExist
+			; Make sure this window is in focus before sending commands.
+			WinWaitActive, %windowName%,, 30
+
+			; If the window wasn't opened for some reason.
+			IfWinNotExist, %windowName%
 			{
-				; Display an error message that the window couldn't be opened
+				; Display an error message that the window couldn't be opened.
 				MsgBox, There was a problem opening "%windowName%"
 			}
 			; Else the program was launched and the window opened.
@@ -83,7 +83,7 @@ PutWindowInFocus(windowName, applicationPath = "", titleMatchMode = "")
 	SetTitleMatchMode, %previousTitleMatchMode%
 	DetectHiddenWindows, %previousDetectHiddenWindowsMode%
 	
-	; Return the handle of the window that was activated
+	; Return the handle of the window that was activated.
 	if (windowActivated)
 	{
 		return WinExist("A")
@@ -94,14 +94,14 @@ PutWindowInFocus(windowName, applicationPath = "", titleMatchMode = "")
 	
 	; Tries to activate the window and exits the function if successful.
 	PWIFTryActivateWindow:
-		; If the window is already open
+		; If the window is already open.
 		IfWinExist, %windowName%
 		{			
 			; Put the window in focus.
 			WinActivate
 			WinShow
 			
-			; Record success
+			; Record success.
 			windowActivated := true
 		}
 	return

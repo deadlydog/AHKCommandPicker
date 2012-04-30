@@ -179,16 +179,6 @@ WebBrowser(queries = "")
 	}
 }
 
-AddCommand("FireFoxNewWindow", "Launches a new instance of Firefox")
-FireFoxNewWindow(queries)
-{
-	; Create a new FireFox window
-	PutWindowInFocus("Mozilla Firefox", "C:\Program Files (x86)\Mozilla Firefox\firefox.exe", "New")
-	
-	; If any queries were provided, search for them.
-	WebBrowser(queries)
-}
-
 AddCommand("MonitorOff", "Turns the monitor off")
 MonitorOff()
 {

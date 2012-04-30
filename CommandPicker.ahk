@@ -558,22 +558,19 @@ CPRunCommand(commandName, parameters)
 
 	; Call the Command's function, passing in any supplied parameters.
 	displayCommandText := %commandFunction%(parameters)
-	
+
 	;~ ; Example of how to loop through the parameters
 	;~ For index, value in parameters
 		;~ MsgBox % "Item " index " is '" value "'"
-	
+
 	; If the setting to show which command was ran is enabled, and the command did not explicitly return telling us to not show the text, display the command text.
 	if (_cpShowSelectedCommandAfterWindowCloses && displayCommandText != false)
 	{
+
 		; Get the command's text to show.
 		command := _cpCommandArray[commandName].ToString()
 		
-		; Append any text returned from the command to the command displayed on screen (display returned text on a new line).
-		;~ if (displayCommandText)
-			;~ command := command . "`r`n" . displayCommandText
-		
-		; Display the Command's text on the screen
+		; Display the Command's text on the screen, as well as any text returned from the command (i.e. the displayCommandText).
 		CPDisplayTextOnScreen(command, displayCommandText)
 	}
 }
