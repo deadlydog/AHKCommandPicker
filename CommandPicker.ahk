@@ -287,9 +287,9 @@ CPCreateCommandPickerWindow()
 		{
 			searchedCommand := SubStr(_cpSearchedString, 1, firstCommaPosition)
 		}
-	
+
 		; Do the search using whatever search method is specified in the settings.
-		if (_cpCommandMatchMethod = Incremental)
+		if (_cpCommandMatchMethod = "Incremental")
 			gosub, IncrementalSearch
 		else
 			gosub, CamelCaseSearch
@@ -519,9 +519,6 @@ CPLetterMatchesPartOfCurrentWordOrBeginningOfNextWord(searchString, searchCharac
 		; Else neither path found a match so return zero.
 		else
 			return 0
-		
-		;~ return (CPLetterMatchesPartOfCurrentWordOrBeginningOfNextWord(searchString, searchCharacterIndex + 1, searchStringLength, wordArray, wordIndex, numberOfWordsInArray, wordCharacterIndex + 1) 
-			 ;~ || CPLetterMatchesPartOfCurrentWordOrBeginningOfNextWord(searchString, searchCharacterIndex + 1, searchStringLength, wordArray, wordIndex + 1, numberOfWordsInArray, 1))
 	}
 	; Otherwise the character doesn't match the current word.
 	else
@@ -627,10 +624,10 @@ CPShowSettingsWindow()
 	
 	Gui, Add, Text, xm, Command search method:
 	Gui, Add, DropDownList, x+5 v_cpCommandMatchMethod gCommandMatchMethodChanged Sort, Type Ahead|Incremental
-	Gui, Add, Text, xm vcommandMatchMethodDescription w400,
+	Gui, Add, Text, xm vcommandMatchMethodDescription w450 h45,
 	
 	Gui, Add, Button, gSettingsCancelButton xm, Cancel
-	Gui, Add, Button, gSettingsSaveButton x+350, Save
+	Gui, Add, Button, gSettingsSaveButton x+400, Save
 	
 	GuiControl, Choose, _cpCommandMatchMethod, %_cpCommandMatchMethod%
 	gosub, CommandMatchMethodChanged	; Display the description of the currently selected Command Match Method.
@@ -644,9 +641,9 @@ CPShowSettingsWindow()
 		Gui 2:Submit, NoHide	; Get the values from the GUI controls without closing the GUI.
 
 		if (_cpCommandMatchMethod = "Type Ahead")	
-			GuiControl, , static5, Type ahead will match against Camel/Pascal Casing of the command name.
+			GuiControl, , static5, Type ahead mode will match against Camel/Pascal Casing of any part of the command name, and filter the list as you type.`nE.g. 'WebBro', 'WB', 'B', and 'Brow' would all match against a 'WebBrowser' command.
 		else
-			GuiControl, , static5, Incremental will only match against the exact command name.
+			GuiControl, , static5, Incremental mode will only match against the start of the command name, and will not filter the list as you type.`nE.g. only 'WebBro' would match against a 'WebBrowser' command.
 	return
 		
 	SettingsSaveButton:		; Settings Save button was clicked.
