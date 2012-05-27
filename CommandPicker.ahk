@@ -98,12 +98,14 @@ CPSaveSettings()
 ;==========================================================
 ; Add a Dummy command to use for debugging.
 ;==========================================================
-AddCommand("DummyCommand", "A command that doesn't do anything, but can be useful for debugging")
+AddCommand("DummyCommand", "A command that doesn't do anything, but can be useful for testing and debugging")
 DummyCommand(parameters)
 {
 	; Example of how to loop through the parameters
 	For index, value in parameters
 		MsgBox % "Item " index " is '" value "'"
+	
+	return, "This is some text returned by the dummy command."
 }
 
 ;==========================================================
@@ -535,6 +537,7 @@ CPLetterMatchesPartOfCurrentWordOrBeginningOfNextWord(searchString, searchCharac
 CPRunCommand(commandName, parameters)
 {
 	global _cpShowSelectedCommandAfterWindowCloses, _cpCommandArray
+	static _cpListOfFunctionsCurrentlyRunning, _cpListOfFunctionsCurrentlyRunningDelimiter := "|"
 
 	; If the Command to run doesn't exist, display error and exit.
 	if (!_cpCommandArray[commandName])
@@ -553,8 +556,26 @@ CPRunCommand(commandName, parameters)
 		return
 	}
 
+	; If we are already running the given function then exit with an error message, as running the same function concurrently may crash the AHK script.
+	Loop Parse, _cpListOfFunctionsCurrentlyRunning, %_cpListOfFunctionsCurrentlyRunningDelimiter%
+	{
+		; Skip empty entries (somehow an empty one gets added after backspacing out the entire search string).
+		if (A_LoopField = commandFunction)
+		{
+			CPDisplayTextOnScreen("COMMAND NOT CALLED!", "'" . commandName . "' is currently running so it will not be called again.")
+			return
+		}
+	}
+
+	; Record that we are running this function.
+	_cpListOfFunctionsCurrentlyRunning .= commandFunction . _cpListOfFunctionsCurrentlyRunningDelimiter
+
 	; Call the Command's function, passing in any supplied parameters.
 	displayCommandText := %commandFunction%(parameters)
+
+	; Now that we are done running the function, remove it from our list of functions currently running.
+	functionNameAndDelimeter := commandFunction . _cpListOfFunctionsCurrentlyRunningDelimiter
+	StringReplace, _cpListOfFunctionsCurrentlyRunning, _cpListOfFunctionsCurrentlyRunning, %functionNameAndDelimeter%
 
 	;~ ; Example of how to loop through the parameters
 	;~ For index, value in parameters
@@ -563,7 +584,6 @@ CPRunCommand(commandName, parameters)
 	; If the setting to show which command was ran is enabled, and the command did not explicitly return telling us to not show the text, display the command text.
 	if (_cpShowSelectedCommandAfterWindowCloses && displayCommandText != false)
 	{
-
 		; Get the command's text to show.
 		command := _cpCommandArray[commandName].ToString()
 		
@@ -662,24 +682,32 @@ CPShowSettingsWindow()
 ;==========================================================
 ; Displays the given text on the screen for a given duration.
 ;==========================================================
-CPDisplayTextOnScreen(text, text2)
+CPDisplayTextOnScreen(title, text = "")
 {
+	titleFontSize := 24
+	textFontSize := 16
+	
+	; Shrink the margin so that the text goes up close to the edge of the window border.
+	windowMargin := titleFontSize * 0.1
+	
 	Gui 3:Default	; Specify that these controls are for window #3.
 	
 	; Create the transparent window to display the text
-	CustomColor = 999999  ; Can be any RGB color (it will be made transparent below).
-	Gui +LastFound +AlwaysOnTop -Caption +ToolWindow  ; +ToolWindow avoids a taskbar button and an alt-tab menu item.
-	Gui, Color, %CustomColor%
-	Gui, Font, s32 bold ; Set a large font size (32-point).
-	Gui, Add, Text, cGreen, %text%
-	Gui, Add, Text, cRed, %text2%
-	; Make all pixels of this color transparent and make the text itself translucent (150):
-	WinSet, TransColor, %CustomColor% 150
+	backgroundColor = DDDDDD  ; Can be any RGB color (it will be made transparent below).
+	Gui +LastFound +AlwaysOnTop -Caption +ToolWindow +Border  ; +ToolWindow avoids a taskbar button and an alt-tab menu item.
+	Gui, Margin, %windowMargin%, %windowMargin%
+	Gui, Color, %backgroundColor%
+	Gui, Font, s%titleFontSize% bold
+	Gui, Add, Text,, %title%
+	Gui, Font, s%textFontSize% norm
+	if (text != "")
+		Gui, Add, Text,, %text%
+	WinSet, TransColor, FFFFFF 180	; Make all pixels of this color transparent (shouldn't be any with color FFFFFF) and make all other pixels semi-transparent.
 	Gui, Show, AutoSize Center NoActivate  ; NoActivate avoids deactivating the currently active window.
 	
 	; Set the window to close after the given duration.
 	SetTimer, CloseWindow, 2000
-	;~ SetTimer, FadeOutText, 200	; Update every 200ms.
+	;SetTimer, FadeOutText, 200	; Update every 200ms.
 	return
 
 	FadeOutText:
@@ -691,6 +719,99 @@ CPDisplayTextOnScreen(text, text2)
 		Gui, 3:Destroy					; Close the GUI, but leave the script running.
 	return
 }
+
+
+;~ CPDisplayTextOnScreen(title, text = "")
+;~ {	
+	;~ global _cpFontSize
+	
+	;~ ; Calculate the width and height that each character should take up.
+	;~ charWidth := _cpFontSize
+	;~ charHeight := _cpFontSize * 2.5
+	;~ titleCharWidth := 7		; Not sure how to get the window title's font size, so take our best guess.
+
+	;~ ; Loop through each line in the text to display and find the longest one.
+	;~ numberOfCharactersInLongestLine := 0
+	;~ StringSplit, lines, text, `n
+	;~ Loop, %lines0%
+	;~ {
+		;~ StringLen, numberOfCharactersInLine, lines%A_Index%
+		;~ if (numberOfCharactersInLine > numberOfCharactersInLongestLine)
+			;~ numberOfCharactersInLongestLine := numberOfCharactersInLine
+	;~ }
+
+	;~ ; Calculate the width and height of the window to accomodate the text to display.
+	;~ windowHeight := charHeight * lines0
+	;~ windowWidth := charWidth * numberOfCharactersInLongestLine
+	
+	;~ ; The window title uses smaller font, so calculate how much width it will need and use it if necessary.
+	;~ StringLen, numberOfCharactersInTitle, title
+	;~ titleWidth := titleCharWidth * numberOfCharactersInTitle
+	;~ if (titleWidth > windowWidth)
+		;~ windowWidth := titleWidth
+
+	;~ ; Make sure the window doens't expand wider than the monitor.
+	;~ if (windowWidth > (A_ScreenWidth - 100))
+		;~ windowWidth = (A_ScreenWidth - 100)
+	
+	
+	;~ ; Display the text. We use a Progress window instead of the Splash Text Window so that we have more control over the appearance (font size, color, etc.).
+	;~ Progress, zh0 fm%_cpFontSize% h%windowHeight% w%windowWidth% c00,, %text%, %title%
+	;~ WinSet, Transparent, 200, %title%		; Make the window slightly transparent.
+
+	;~ ; Set the window to close after the given duration.
+	;~ SetTimer, CPDTOSCloseWindow2, 2000
+	;~ return
+
+	;~ CPDTOSCloseWindow2:
+		;~ SetTimer, CPDTOSCloseWindow2, Off		; Make sure the timer doesn't fire again.
+		;~ Progress, Off
+	;~ return
+;~ }
+
+
+;~ CPDisplayTextOnScreen(title, text = "")
+;~ {	
+	;~ global _cpFontSize
+	
+	;~ ; Calculate the width and height that each character should take up.
+	;~ charWidth := _cpFontSize
+	;~ charHeight := _cpFontSize * 2.5
+
+	;~ ; Loop through each line in the text to display and find the longest one.
+	;~ StringLen, numberOfCharactersInLongestLine, title
+	;~ StringSplit, lines, text, `n
+	;~ Loop, %lines0%
+	;~ {
+		;~ StringLen, numberOfCharactersInLine, lines%A_Index%
+		;~ if (numberOfCharactersInLine > numberOfCharactersInLongestLine)
+			;~ numberOfCharactersInLongestLine := numberOfCharactersInLine
+	;~ }
+
+	;~ ; Calculate the width and height of the window to accomodate the text to display.
+	;~ windowHeight := charHeight * (lines0 + 2)
+	;~ windowWidth := charWidth * numberOfCharactersInLongestLine
+	
+	;~ ; Make sure the window doens't expand wider than the monitor.
+	;~ if (windowWidth > (A_ScreenWidth - 100))
+		;~ windowWidth = (A_ScreenWidth - 100)
+	
+	
+	;~ ; Display the text. We use a Progress window instead of the Splash Text Window so that we have more control over the appearance (font size, color, etc.).
+	;~ Progress, zh0 fm%_cpFontSize% h%windowHeight% w%windowWidth% c00 b1,, %title%`n`n%text%, %title%
+	;~ WinSet, Transparent, 200, %title%		; Make the window slightly transparent.
+
+	;~ ; Set the window to close after the given duration.
+	;~ SetTimer, CPDTOSCloseWindow, 2000
+	;~ return
+
+	;~ CPDTOSCloseWindow:
+		;~ SetTimer, CPDTOSCloseWindow, Off		; Make sure the timer doesn't fire again.
+		;~ Progress, Off
+	;~ return
+;~ }
+
+
 
 ;==========================================================
 ; Adds the given command to our global list of commands.

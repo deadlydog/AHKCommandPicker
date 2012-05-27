@@ -13,6 +13,18 @@ ReloadAHKScript()
 	Run, %A_ScriptFullPath%	
 }
 
+AddCommand("ExitAHKScript", "Stops and closes this AutoHotKey script")
+ExitAHKScript()
+{
+	ExitApp
+}
+
+AddCommand("PauseAHKScript", "Pauses this AutoHotKey script")
+PauseAHKScript()
+{
+	Pause
+}
+
 AddCommand("eMyComputer", "Explore My Computer")
 eMyComputer()
 { 
@@ -144,6 +156,19 @@ ContextMenu()
 AddCommand("WebBrowser", "Opens the default internet browser and searches for any comma-separated queries")
 WebBrowser(queries = "")
 {
+	; Run any supplied queries.
+	querySupplied := DoWebSearch(queries)
+	
+	; If the user didn't supply a query, open the browser up to Google.
+	if (querySupplied = false)
+	{
+		Run, www.google.com
+	}
+}
+
+; Sends each of the supplied queries to the default web browser and returns if any queries were supplied or not (true/false).
+DoWebSearch(queries = "")
+{
 	; Assume the user did not supply a query.
 	querySupplied := false
 	
@@ -172,11 +197,8 @@ WebBrowser(queries = "")
 		Run, %address%
 	}
 	
-	; If the user didn't supply a query, open the browser up to Google.
-	if (querySupplied = false)
-	{
-		Run, www.google.com
-	}
+	; Return if any queries were actually supplied or not.
+	return querySupplied
 }
 
 AddCommand("MonitorOff", "Turns the monitor off")
