@@ -156,28 +156,23 @@ ContextMenu()
 AddCommand("WebBrowser", "Opens the default internet browser and searches for any comma-separated queries")
 WebBrowser(queries = "")
 {
-	; Run any supplied queries.
-	querySupplied := DoWebSearch(queries)
-	
-	; If the user didn't supply a query, open the browser up to Google.
-	if (querySupplied = false)
-	{
+	; If queries were supplied, run them.
+	if (queries != "")
+		querySupplied := DoWebSearch(queries)
+	; Otherwise the user didn't supply a query, so just open the browser up to Google.
+	else
 		Run, www.google.com
-	}
 }
 
 ; Sends each of the supplied queries to the default web browser and returns if any queries were supplied or not (true/false).
 DoWebSearch(queries = "")
 {
-	; Assume the user did not supply a query.
-	querySupplied := false
-	
 	; Loop through each of the terms to search for.
-	for index, query in queries
+	Loop, Parse, queries, CSV
 	{
-		; Record that the user supplied a query.
-		querySupplied := true
+		query := A_LoopField
 		
+		; If the query starts with a "1", then do an "I'm feeling lucky" search.
 		firstChar := SubStr(query, 1, 1)
 		imFeelingLucky := false
 		if (firstChar = 1)
@@ -196,9 +191,6 @@ DoWebSearch(queries = "")
 		; Open up the address in a new tab.
 		Run, %address%
 	}
-	
-	; Return if any queries were actually supplied or not.
-	return querySupplied
 }
 
 AddCommand("MonitorOff", "Turns the monitor off")

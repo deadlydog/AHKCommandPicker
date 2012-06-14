@@ -128,3 +128,80 @@ PutWindowInFocus(windowName, applicationPath = "", titleMatchMode = "")
 		}
 	return
 }
+
+;==========================================================
+; Returns true if the given targetItem is found in the itemList, false if not.
+;
+; itemList = a string containing a list of items, each separated by the itemDelimiter. This is passed ByRef in order to allow us to modify the string list.
+;	NOTE: It is not possible to pass Clipboard, built-in variables, or environment variables to a function's ByRef parameter
+; targetItem = the string that we are checking is in the list.
+; itemDelimiter = the string or character separating each item in the itemList. If none is provided the _cpParameterDelimiter will be used (a comma by default).
+; removeTargetItem = if true and the targetItem is found, it will be removed from the itemList (which is passed in by reference).
+;==========================================================
+StringListContains(ByRef itemList, targetItem, itemDelimiter = "", removeTargetItem = false)
+{
+	global _cpParameterDelimiter
+	
+	; If no delimiter was supplied, use the default parameter delimiter.
+	if (itemDelimiter = "")
+		itemDelimiter := _cpParameterDelimiter
+	
+	; Trim whitespace off of the target item
+	targetItem := Trim(targetItem)
+	
+	; Loop through each item in the list and return true if the target is found in it.
+	Loop, Parse, itemList, %itemDelimiter%
+	{
+		if (Trim(A_LoopField) = targetItem)
+		{
+			; Remove the item from the list if specified to do so.
+			if (removeTargetItem)
+			{
+				; We don't know if this item is first, last, or the only item in the list, so try and remove the itemDelimiter with the item.
+				; ErrorLevel will be set to 1 if the string to replace is not found.
+				StringReplace, itemList, itemList, %A_LoopField% . %itemDelimiter%
+				if (ErrorLevel = 1)
+					StringReplace, itemList, itemList, %itemDelimiter% . %A_LoopField%
+				if (ErrorLevel = 1)
+					StringReplace, itemList, itemList, %A_LoopField%
+			}
+			return true
+		}
+	}
+
+	; The item was not found in the list, so return false.
+	return false
+}
+
+StringListContainsAndRemove(ByRef itemList, targetItem, itemDelimiter = "")
+{
+	return StringListContains(itemList, targetItem, itemDelimiter, true)
+}
+
+;==========================================================
+; Returns true if the given targetItem is found in the itemList, false if not.
+;
+; itemList = an array containing a list of items.
+; targetItem = the item that we are checking is in the list.
+;==========================================================
+ArrayContains(itemList, targetItem)
+{
+	global _cpParameterDelimiter
+	
+	; If no delimiter was supplied, use the default parameter delimiter.
+	if (itemDelimiter = "")
+		itemDelimiter := _cpParameterDelimiter
+	
+	; Trim whitespace off of the target item
+	targetItem := Trim(targetItem)
+	
+	; Loop through each item in the list and return true if the target is found in it.
+	For index, value in parameters
+	{
+		if (Trim(value) = targetItem)
+			return true
+	}
+
+	; The item was not found in the list, so return false.
+	return false
+}
