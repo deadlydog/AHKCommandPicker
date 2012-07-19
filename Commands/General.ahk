@@ -172,21 +172,30 @@ DoWebSearch(queries = "")
 	{
 		query := A_LoopField
 		
-		; If the query starts with a "1", then do an "I'm feeling lucky" search.
-		firstChar := SubStr(query, 1, 1)
-		imFeelingLucky := false
-		if (firstChar = 1)
+		; If this query is actually a URL, just go to the URL directly.
+		if (RegExMatch(query, "^(https?://|www\.)|([a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(/\S*)?)$"))
 		{
-			StringTrimLeft, query, query, 1
-			imFeelingLucky = true
+			address := query
 		}
-		
-		; Construct the address and then go to.
-		address = www.google.ca/search?q=%query%
-		
-		; If we should use the I'm Feeling Lucky, enable it.
-		if (imFeelingLucky)
-			address .= "&btnI=745"	; Adding &btnI=745 to the end of the URL uses Google's I'm Feeling Lucky.
+		; Else the query is not a URL, so Google it.
+		else
+		{		
+			; If the query starts with a "1", then do an "I'm feeling lucky" search.
+			firstChar := SubStr(query, 1, 1)
+			imFeelingLucky := false
+			if (firstChar = 1)
+			{
+				StringTrimLeft, query, query, 1
+				imFeelingLucky = true
+			}
+			
+			; Construct the address and then go to.
+			address = www.google.ca/search?q=%query%
+			
+			; If we should use the I'm Feeling Lucky, enable it.
+			if (imFeelingLucky)
+				address .= "&btnI=745"	; Adding &btnI=745 to the end of the URL uses Google's I'm Feeling Lucky.
+		}
 		
 		; Open up the address in a new tab.
 		Run, %address%
