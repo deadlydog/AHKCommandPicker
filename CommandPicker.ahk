@@ -587,7 +587,7 @@ CPCreateCommandPickerWindow()
 		gosub, HideTooltip	; Hide the tooltip that we were showing.
 	
 		; If the user just wants to close the window (i.e. they didn't submit a command), destroy it and exit.
-		if (commandWasSubmitted = false)
+		if (commandWasSubmitted != true)
 		{
 			Gui, 1:Destroy	; Close the GUI, but leave the script running.
 			return
