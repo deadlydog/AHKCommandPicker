@@ -1,8 +1,5 @@
 /*
 IDEAS:
-- Add options to save the following settings:
-	- Command window shown after running a command: Duration to show for, font size, only show if value returned (e.g. an error).
-
 - Have the GUI optional. Instead can just press CapsLock to bring up tooltip that says "Enter Command", and then user types in the tooltip instead of popping the large GUI. Could still autocomplete the command and show it in the tooltip though.
 - Maybe just hide the GUI instead of actually closing it every time; this would be good for tooltip mode too, since the tooltip could show the currently selected command from the window.
 - Allow user to create new simple commands easily from the GUI and save them in their own file (open file/program, path, website).
@@ -271,7 +268,7 @@ CPCreateCommandPickerWindow()
 	GuiControl, Focus, _cpSearchedString
 	
 	; Display a tooltip that we are waiting for a command to be entered.
-	ToolTip, Enter a command
+	CPShowTooltip("Enter a command")
 	
 	return  ; End of auto-execute section. The script is idle until the user does something.
 
@@ -342,9 +339,7 @@ CPCreateCommandPickerWindow()
 			GuiControl Choose, _cpCommandSelected, %currentSelectionsText%
 		
 		; Display the currently selected command in the tooltip, and hide it after a bit of time.
-		Tooltip %_cpSearchedString% (%currentSelectionsText%)
-		SetTimer, HideToolTip, Off		; Restart the timer.
-		SetTimer, HideTooltip, 3000
+		CPShowTooltip(_cpSearchedString . " (" . currentSelectionsText . ")")
 	return
 	
 	PerformSearchForPresetParameters:
@@ -547,12 +542,6 @@ CPCreateCommandPickerWindow()
 		GuiControl, +Redraw, _cpCommandSelected
 	return
 
-	HideTooltip:
-	   SetTimer HideTooltip, Off
-	   Tooltip
-	return
-
-
 	GuiSize:	; The user resized the window.
 	
 	return
@@ -584,7 +573,7 @@ CPCreateCommandPickerWindow()
 	GuiClose:			; The window was closed (by clicking X or through task manager).
 	GuiEscape:			; The Escape key was pressed.
 		Gui 1:Show, Hide	; Hide the GUI.
-		gosub, HideTooltip	; Hide the tooltip that we were showing.
+		CPHideTooltip()	; Hide the tooltip that we were showing.
 	
 		; If the user just wants to close the window (i.e. they didn't submit a command), destroy it and exit.
 		if (commandWasSubmitted != true)
@@ -668,6 +657,26 @@ CPCreateCommandPickerWindow()
 		GuiControl, , _cpCommandSelected, %_cpCommandDelimiter%%commandListBoxContents%	; Insert a delimiter onto the start of the list to clear the current listbox contents.
 		GuiControl, +Redraw, _cpCommandSelected
 	return
+}
+
+; Shows the given Tooltip for the specified amount of time.
+CPShowTooltip(tooltipText = "", durationInMilliseconds = 3000)
+{
+	ToolTip, %tooltipText%
+	SetTimer, HideToolTip, Off		; Restart the tooltip timer.
+	SetTimer, HideTooltip, %durationInMilliseconds%
+	return
+	
+	HideTooltip:
+		CPHideTooltip()
+	return
+}
+
+; Clears out and hides the Tooltip.
+CPHideTooltip()
+{
+	SetTimer HideTooltip, Off
+	Tooltip
 }
 
 ; Returns whether the given searchText matches against the words in the Array or not.
@@ -1127,6 +1136,9 @@ CPCommand_ToString(this)
 
 ; Calls the AddCommand() function for each command in the commandList.
 ; Each command in the list will call the given function, supplying the command's specific value as a parameter to the function.
+; commandList = The commands to show up in the picker that will call the function, separated with _cpParameterDelimiter (a comma by default).
+;				Separate the command name that appears in the picker with the value to pass to the function with _cpCommandNameValueSeparator (a pipe character | by default).
+;				If no pipe character is provided, the given value will be shown in the picker and passed to the function.
 AddCommands(functionName, descriptionOfWhatFunctionDoes = "", commandList = "")
 {	
 	global _cpCommandNameValueSeparator, _cpParameterDelimiter
@@ -1157,11 +1169,18 @@ AddCommands(functionName, descriptionOfWhatFunctionDoes = "", commandList = "")
 	}
 }
 
-; Example of how to add a named command.
+;~ ; Example of how to add a named command.
 ;~ AddNamedCommand("FF", "FireFox", "Opens Firefox", "xnaparticles.com, dpsf.com, digg.com")
 ;~ FireFox(website = "")
 ;~ {
-	
+	;~ ; Code to open website in firefox goes here.
+;~ }
+
+;~ ; Example of how to use AddCommands()
+;~ AddCommands("OpenDirectory", "Opens the specified directory in Windows Explorer", "exploreC|C:\, exploreDPSF|C:\DPSF, C:\Windows")
+;~ OpenDirectory(path = "")
+;~ {
+	;~ Run, explore %path%
 ;~ }
 
 ;==========================================================
@@ -1175,4 +1194,15 @@ CPShowAHKScriptInSystemTray(show)
 	; Else hide the Tray Icon.
 	else
 		menu, tray, NoIcon
+}
+
+;==========================================================
+; Adds the given parameter to parameter string
+;==========================================================
+AddParameterToString(ByRef parametersString, parameterToAdd)
+{	global _cpParameterDelimiter
+	if (parametersString = "")
+		parametersString := parameterToAdd
+	else
+		parametersString .= _cpParameterDelimiter . parameterToAdd
 }
