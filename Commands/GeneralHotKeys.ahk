@@ -24,3 +24,10 @@ WatchMouse:
                 MouseStartX := MouseX  ; Set a new mouse anchor.
                 MouseStartY := MouseY
 return
+
+;==========================================================
+; Ctrl+Win+v to do a text-only paste from the clipboard (excludes images, etc. on the clipboard and only text is pasted).
+;==========================================================
+^#v::
+   PasteText(Clipboard)	; ClipboardAll contains everything including images; Clipboard will only be the text on the clipboard.
+Return

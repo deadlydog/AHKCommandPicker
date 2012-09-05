@@ -89,8 +89,8 @@ PutWindowInFocus(windowName, applicationPath = "", titleMatchMode = "")
 			; Else the program was launched and the window opened.
 			else
 			{
-				WinShow
-				windowActivated := true
+				WinShow		; Show the window.
+				windowActivated := true		; Record that the window was successfully brought into focus.
 			}
 		}
 	}
@@ -122,6 +122,11 @@ PutWindowInFocus(windowName, applicationPath = "", titleMatchMode = "")
 			; Put the window in focus.
 			WinActivate
 			WinShow
+			
+			; Not all apps Restore properly when using WinShow and the app is Minimized (e.g. apps minimized using TrayIt!), so explicitly restore windows that are still minimized.
+			WinGet, isMinimized, MinMax
+			if (isMinimized = -1)
+				WinRestore
 			
 			; Record success.
 			windowActivated := true
@@ -204,4 +209,21 @@ ArrayContains(itemList, targetItem)
 
 	; The item was not found in the list, so return false.
 	return false
+}
+
+;==========================================================
+; Pastes the given text into the currently active window.
+; This can be better than just using "SendInput, Text to paste", especially for long strings, because the entire string will pasted at once rather than waiting for it all to be typed out.
+;
+; textToPaste = the text to paste to the window.
+; pasteKeys = the keys to simulate pressing in order to paste text. Ctrl+v is the default, but other windows may have different keys to paste text (e.g. Git Bash uses the Insert key to paste text).
+;==========================================================
+PasteText(textToPaste = "", pasteKeys = "^v")
+{
+	clipboardBackup := ClipboardAll	; Backup whatever is currently on the Clipboard, including pictures and anything else.
+	Clipboard := textToPaste
+	SendInput, %pasteKeys%			; Paste from the clipboard so all the text appears there instantly.
+	Sleep, 200						; Have to sleep so that we don't overwrite the Clipboard text before we've pasted it.
+	Clipboard := clipboardBackup	; Restore whatever was on the Clipboard.
+	clipboardBackup := ""			; Clear the variable's contents to free memory, as there could be lots of data on the clipboard.
 }

@@ -134,7 +134,7 @@ DummyCommand(parameters = "")
 ;		return false	; (optional) Return false to not display the command text after running the command.
 ;	}
 ;==========================================================
-#Include CommandScriptsToInclude.txt
+#Include CommandScriptsToInclude.ahk
 
 ;==========================================================
 ; Hotkey to launch the Command Picker window.
@@ -501,7 +501,7 @@ CPCreateCommandPickerWindow()
 			
 			; Get if this command matches against the searched string, and how good the match is.
 			lastWordIndexMatchedAgainst := CPCommandIsPossibleCamelCaseMatch(searchText, camelCaseWordsInCommandLine)
-			
+
 			; If we are searching through parameters, make sure that the parameterless command is always added to the listbox, but make sure it is given a high value so that it is not chosen over another potential match.
 			if (searchingWithParameters && InStr(commandLine, _cpCommandDescriptionSeparator))
 				lastWordIndexMatchedAgainst := 9999
@@ -687,7 +687,7 @@ CPCommandIsPossibleCamelCaseMatch(searchText, camelCaseWordsInCommandLine)
 	
 	; Get the number of characters that will need to be checked.
 	lengthOfUsersString := StrLen(searchText)
-	
+
 	; Call recursive function to roll through each letter the user typed, checking to see if it's part of one of the command's words.
 	return CPLetterMatchesPartOfCurrentWordOrBeginningOfNextWord(searchText, 1, lengthOfUsersString, camelCaseWordsInCommandLine.Words, 1, camelCaseWordsInCommandLine.Length, 1)
 }
@@ -709,7 +709,7 @@ CPLetterMatchesPartOfCurrentWordOrBeginningOfNextWord(searchString, searchCharac
 		; Return the index of the word that was last matched against.
 		return %wordIndex%
 	}
-	
+
 	; If we were asked to look against a word that doesn't exist, or past the last character in the word, just return false since we can't go any further on this path.
 	if (wordIndex > numberOfWordsInArray || wordCharacterIndex > StrLen(wordArray%wordIndex%))
 	{
@@ -787,8 +787,8 @@ CPRunCommand(commandName, parameters)
 	_cpListOfFunctionsCurrentlyRunning .= commandFunction . _cpListOfFunctionsCurrentlyRunningDelimiter
 
 	; If no parameters were given, but this command provides a default parameter, use the default parameter value.
-	if (parameters = "" && _cpCommandArray[commandName].DefaultParameter != "")
-		parameters := _cpCommandArray[commandName].DefaultParameter
+	if (parameters = "" && _cpCommandArray[commandName].DefaultParameterValue != "")
+		parameters := _cpCommandArray[commandName].DefaultParameterValue
 
 	; Call the Command's function, only passing in parameters if they were supplied (so that default parameter values will be used by functions).
 	if (parameters = "")
@@ -1114,7 +1114,7 @@ AddNamedCommand(commandName, functionName, descriptionOfWhatFunctionDoes = "", p
 	command.FunctionName := functionName
 	command.Description := descriptionOfWhatFunctionDoes
 	command.Parameters := parameterList
-	command.DefaultParameter := defaultParameterValue
+	command.DefaultParameterValue := defaultParameterValue
 	command.ToString := Func("CPCommand_ToString")
 	
 	; Add the command into the Command Array.
@@ -1134,14 +1134,21 @@ CPCommand_ToString(this)
 	return this.CommandName . " " . _cpCommandDescriptionSeparator . " " . this.Description
 }
 
-; Calls the AddCommand() function for each command in the commandList.
+; Calls the AddNamedCommand() function for each command in the commandList.
 ; Each command in the list will call the given function, supplying the command's specific value as a parameter to the function.
 ; commandList = The commands to show up in the picker that will call the function, separated with _cpParameterDelimiter (a comma by default).
 ;				Separate the command name that appears in the picker with the value to pass to the function with _cpCommandNameValueSeparator (a pipe character | by default).
 ;				If no pipe character is provided, the given value will be shown in the picker and passed to the function.
-AddCommands(functionName, descriptionOfWhatFunctionDoes = "", commandList = "")
+; prefix = The prefix to add to the beginning of all the command names in the commandList.
+; postfix = The postfix to add to the end of all the command names in the commandList.
+AddCommandsWithPrePostFix(functionName, descriptionOfWhatFunctionDoes = "", commandList = "", prefix = "", postfix = "")
 {	
 	global _cpCommandNameValueSeparator, _cpParameterDelimiter
+	
+	; Trim the given values that won't be passed explicitly into AddNamedCommand to be trimmed.
+	commandList := Trim(commandList)
+	prefix := Trim(prefix)
+	postfix := Trim(postfix)
 	
 	; Loop through each command in the commandList
 	Loop, Parse, commandList, %_cpParameterDelimiter%
@@ -1163,10 +1170,15 @@ AddCommands(functionName, descriptionOfWhatFunctionDoes = "", commandList = "")
 		}
 
 		; Add this command to the list of cmmands.
-		commandName := Trim(commandName)
+		commandName := prefix . Trim(commandName) . postfix
 		commandValue := Trim(commandValue)
 		AddNamedCommand(commandName, functionName, descriptionOfWhatFunctionDoes, commandValue, commandValue)
 	}
+}
+
+AddCommands(functionName, descriptionOfWhatFunctionDoes = "", commandList = "")
+{
+	AddCommandsWithPrePostFix(functionName, descriptionOfWhatFunctionDoes, commandList)
 }
 
 ;~ ; Example of how to add a named command.

@@ -46,8 +46,8 @@ eC()
 AddCommand("OpenClipboard", "Opens whatever file/folder/url path is in the Clipboard, if it is valid")
 OpenClipboard()
 {
-	; Trim any whitespace off of the clipboard text before processing it.
-	clipboardText := Trim(clipboard)
+	; Trim any whitespace, tabs, single-quotes and double-quotes off of the clipboard text before processing it.
+	clipboardText := Trim(clipboard, " `t`'`"`"")
 	
 	; If the file/folder path exists, open it.
 	IfExist, %clipboardText%
@@ -238,6 +238,12 @@ AddCommand("MediaStop", "Stops the current track from playing")
 MediaStop()
 {
 	SendInput, {Media_Stop}
+}
+
+AddCommand("ShowClipboard", "Shows the text that is currently in the clipboard")
+ShowClipboard()
+{
+	return "Clipboard contains: '" . Clipboard . "'"
 }
 
 AddCommand("URLShortenAndPaste", "Replaces the long URL in the clipboard with a shortened one and pastes it")
