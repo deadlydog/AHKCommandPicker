@@ -1,8 +1,7 @@
 ;==========================================================
 ; Global Variables
 ;==========================================================
-_OutlookExecutablePath = C:\Program Files\Microsoft Office\Office14\OUTLOOK.EXE
-
+_OutlookExecutablePath = C:\Program Files\Microsoft Office\Office15\OUTLOOK.EXE
 
 ;==========================================================
 ; Commands
@@ -23,6 +22,18 @@ AddCommand("PauseAHKScript", "Pauses this AutoHotKey script")
 PauseAHKScript()
 {
 	Pause
+}
+
+AddCommand("PCShutdown", "Turns the computer off")
+PCShutdown()
+{
+	run, shutdown.exe -s -t 00
+}
+
+AddCommand("PCRestart", "Restarts the computer")
+PCRestart()
+{
+	run, shutdown.exe -r -t 00
 }
 
 AddCommand("eMyComputer", "Explore My Computer")
@@ -70,24 +81,6 @@ OpenClipboard()
 			return %msg%
 		}
 	}
-}
-
-AddCommand("eWindows", "Explore C:\Windows")
-eWindows()
-{
-	Run, explore C:\Windows
-}
-
-AddCommand("eProgramFiles", "Explore C:\Program Files")
-eProgramFiles()
-{
-	Run, explore "C:\Program Files"
-}
-
-AddCommand("eProgramFilesx86", "Explore C:\Program Files (x86)")
-eProgramFilesx86()
-{
-	Run, explore "C:\Program Files (x86)"
 }
 
 AddCommand("NewEmail", "Opens a new email in the default main program")
@@ -244,6 +237,23 @@ AddCommand("ShowClipboard", "Shows the text that is currently in the clipboard")
 ShowClipboard()
 {
 	return "Clipboard contains: '" . Clipboard . "'"
+}
+
+AddCommand("CloseAllWindows", "Closes all open windows")
+CloseAllWindows()
+{
+	MatchList = AutoHotKey Help,Untitled - Notepad,Calculator
+
+	WinGet, ID, List, , , Program Manager
+	Loop, %ID%
+	   {
+		  StringTrimRight, This_ID, ID%A_Index%, 0
+		  WinGetTitle, This_Title, ahk_id %This_ID%
+		  If This_Title in %MatchList%
+			 Continue
+		  WinClose, %This_Title%
+	   }
+	Return	
 }
 
 AddCommand("URLShortenAndPaste", "Replaces the long URL in the clipboard with a shortened one and pastes it")

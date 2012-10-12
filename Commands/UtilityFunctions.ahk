@@ -75,7 +75,7 @@ PutWindowInFocus(windowName, applicationPath = "", titleMatchMode = "")
 		if (applicationPath != "")
 		{
 			; Create the window.
-			Run %applicationPath%
+			Run, %applicationPath%
 
 			; Make sure this window is in focus before sending commands.
 			WinWaitActive, %windowName%,, 30
@@ -164,9 +164,9 @@ StringListContains(ByRef itemList, targetItem, itemDelimiter = "", removeTargetI
 			{
 				; We don't know if this item is first, last, or the only item in the list, so try and remove the itemDelimiter with the item.
 				; ErrorLevel will be set to 1 if the string to replace is not found.
-				StringReplace, itemList, itemList, %A_LoopField% . %itemDelimiter%
+				StringReplace, itemList, itemList, %A_LoopField%%itemDelimiter%	
 				if (ErrorLevel = 1)
-					StringReplace, itemList, itemList, %itemDelimiter% . %A_LoopField%
+					StringReplace, itemList, itemList, %itemDelimiter%%A_LoopField%
 				if (ErrorLevel = 1)
 					StringReplace, itemList, itemList, %A_LoopField%
 			}
@@ -220,10 +220,29 @@ ArrayContains(itemList, targetItem)
 ;==========================================================
 PasteText(textToPaste = "", pasteKeys = "^v")
 {
+	if (pasteKeys = "git")
+		pasteKeys = {Insert}
+	else if (pasteKeys = "gitEnter")
+		pasteKeys = {Insert}{Enter}
+	else if (pasteKeys = "cmd")
+		pasteKeys = !{Space}ep
+	else if (pasteKeys = "cmdEnter")
+		pasteKeys = !{Space}ep{Enter}
+	
 	clipboardBackup := ClipboardAll	; Backup whatever is currently on the Clipboard, including pictures and anything else.
 	Clipboard := textToPaste
 	SendInput, %pasteKeys%			; Paste from the clipboard so all the text appears there instantly.
 	Sleep, 200						; Have to sleep so that we don't overwrite the Clipboard text before we've pasted it.
 	Clipboard := clipboardBackup	; Restore whatever was on the Clipboard.
 	clipboardBackup := ""			; Clear the variable's contents to free memory, as there could be lots of data on the clipboard.
+}
+
+;==========================================================
+; Displays the given message in a Message Box, but only if the global variable DebugMsgBox_ShowMessages is not false.
+; Toggling the DebugMsgBox_ShowMessages variable to true/false is a quick way to show/not show messages sent to this function (e.g. messages used for debugging).
+;==========================================================
+DebugMsgBox(message = "")
+{	global DebugMsgBox_ShowMessages
+	if (%DebugMsgBox_ShowMessages% != false)
+		MsgBox, %message%
 }
