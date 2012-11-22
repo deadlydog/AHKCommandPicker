@@ -249,7 +249,7 @@ CPCreateCommandPickerWindow()
 	Gui, font, S%_cpFontSize%	; S=Size
 
 	; Add the controls to the GUI.
-	Gui Add, Edit, w%_cpWindowWidthInPixels% h20 v_cpSearchedString gSearchForCommand
+	Gui Add, Edit, w%_cpWindowWidthInPixels% h20 v_cpSearchedString gSearchedStringChanged
 	Gui Add, ListBox, Sort v_cpCommandSelected gCommandSubmittedByListBoxClick w%_cpWindowWidthInPixels% r%_cpNumberOfCommandsToShow% hscroll vscroll
 	Gui Add, Button, gCommandSubmittedByButton Default, Run Command		; default makes this the default action when Enter is pressed.
 	
@@ -292,8 +292,31 @@ CPCreateCommandPickerWindow()
 		}
 	return
 	
-	SearchForCommand:
+	SearchedStringChanged:
 		Gui 1:Submit, NoHide		; Get the values from the GUI controls without closing the GUI.
+	
+		; A problem seemed to be introduced with Windows 8 where if the user types very fast the "text changed" event on the Edit box
+		; does not fire after the last key has been pressed, so we end up filtering the listbox on a different SearchedString than is in the Edit box.
+		; The solution is to re-run the search again if the SearchedString is different than what we just searched with, so we keep looping until we are sure we searched on the proper SearchedString.
+		haveEnteredLoopOnce := false
+		while ((haveEnteredLoopOnce = false) || isCurrentlyRunningSearchForCommand = false && textThatWillBeSearchedWith != _cpSearchedString)
+		{
+			haveEnteredLoopOnce := true
+			
+			; Save the text that we are going to search on, so that we know if it has changed by the time the search finishes and if we need to search again or not.
+			textThatWillBeSearchedWith := _cpSearchedString
+		
+			; Filter the listbox to show items based on the new SearchedString.
+			gosub, SearchForCommand
+			
+			; Sleep for a short period of time to allow the GUI to update, and then do the search again if necessary.
+			Sleep, 25
+			Gui 1:Submit, NoHide		; Get the values from the GUI controls without closing the GUI.
+		}
+	return
+	
+	SearchForCommand:
+		isCurrentlyRunningSearchForCommand := true
 	
 		searchingWithParameters := false	; Mark that we are searching for the command, ignoring any parameters that may be supplied.
 	
@@ -320,7 +343,9 @@ CPCreateCommandPickerWindow()
 		{
 			; Record that this search was NOT done on the preset parameters.
 			lastKeyPressWasSearchingParameters := false
-		}			
+		}
+		
+		isCurrentlyRunningSearchForCommand := false
 	return
 
 	PerformSearch:
@@ -561,12 +586,7 @@ CPCreateCommandPickerWindow()
 		gosub, CommandSubmitted
 	return
 		
-	CommandSubmitted:
-		; Sleep for a short period of time to allow the GUI to update before we retrieve it's values.
-		; This problem seemed to be introduced with Windows 8, where the text input does not keep up with how fast the
-		; user types, and Enter triggers this command befor all of the text is in the textbox and the Listbox updated.
-		Sleep, 50
-		
+	CommandSubmitted:	
 		Gui 1:Submit, NoHide			; Get the values from the GUI controls without closing the GUI.	
 		commandWasSubmitted := true		; Record that the user actually wants to run the selected command (e.g. not just exit).
 		

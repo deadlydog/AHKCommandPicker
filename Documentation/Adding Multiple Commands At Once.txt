@@ -6,7 +6,7 @@ So even though you can have your commands show a preset list of parameters, you 
 
 You would prefer to have this instead:
 [image:UsingManyCommands.png]
-Where each command-parameter combination shows up in the base list of commands; that is, the user does not have to type in some other command plus a comma to see the list of that commands preset parameters.
+Where each command-parameter combination shows up in the base list of commands; that is, the user does not have to type in some other command plus a comma to see the list of that command's preset parameters.
 
 Maybe you don't like having to press the comma (,) key after typing the command name, or maybe you just prefer to see ALL of your options without hiding any of them as parameters.  Of course we could accomplish this by adding a command for each command-parameter combination one by one, like so:
 {{

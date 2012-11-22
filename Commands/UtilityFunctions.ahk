@@ -231,6 +231,7 @@ PasteText(textToPaste = "", pasteKeys = "^v")
 	
 	clipboardBackup := ClipboardAll	; Backup whatever is currently on the Clipboard, including pictures and anything else.
 	Clipboard := textToPaste
+	Sleep, 100						; Sleep to make sure text is on the clipboard before we try and paste it (added this as potential bugfix....seems to work so far. If problem comes back, remove this).
 	SendInput, %pasteKeys%			; Paste from the clipboard so all the text appears there instantly.
 	Sleep, 200						; Have to sleep so that we don't overwrite the Clipboard text before we've pasted it.
 	Clipboard := clipboardBackup	; Restore whatever was on the Clipboard.

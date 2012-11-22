@@ -122,7 +122,7 @@ WindowNotAlwaysOnTop()
 AddCommand("Outlook", "Opens Outlook making sure it is maximized")
 Outlook()
 {	global _OutlookExecutablePath
-	windowID := PutWindowInFocus("Microsoft Outlook", _OutlookExecutablePath . " /recycle", 2)
+	windowID := PutWindowInFocus("Outlook", _OutlookExecutablePath . " /recycle", 2)
 	if (windowID > 0)
 	{
 		; Maximize the window if it is not already maximized.

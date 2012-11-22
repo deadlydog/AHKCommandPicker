@@ -11,6 +11,8 @@ If you want to turn Caps Lock on, use Shift + Caps Lock to toggle it on and off.
 !! Adding New Commands
 The commands to include in AHK Command Picker are defined in the "CommandScriptsToInclude.ahk" file. You can either create a new file and add it's path to this one, or simply open "Commands\General.ahk" for editing since it's path is already defined in "CommandScriptsToInclude.ahk". The best practice is to create new files to house your commands, but if you just want to get up and running quickly you may add commands to General.ahk.
 
+A Command is simply a function pointer (i.e. delegate) and collection of parameters.  So when you run a command it simply calls a function that you've defined, and optionally passes parameters to that function.
+
 There are 2 different (but similar) functions that may be used to add a command to the AHK Command Picker, _AddCommand()_ and _AddNamedCommand()_.  Both of these functions have optional parameters.  Here are the function prototypes, and descriptions of each of the parameters:
 {{
 AddCommand(functionName, descriptionOfWhatFunctionDoes = "", parameterList = "", defaultParameterValue = "")
