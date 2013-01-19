@@ -17,7 +17,8 @@ IDEAS:
 ;==========================================================
 ; Global Variables - prefix everything with "cp" for Command Picker, so that variable/function names are not likely to conflict with user variables/function names.
 ;==========================================================
-_cpWindowName := "Choose a command to run"
+_cpWindowName := "AHK Command Picker v1.1 - Choose a command to run"
+_cpWindowGroup := ""					; The group that will hold our Command Picker window so we can reference it from # directive statements (e.g. #IfWinExists).
 _cpCommandList := ""					; Will hold the list of all available commands.
 _cpCommandSelected := ""				; Will hold the command selected by the user.
 _cpSearchedString := ""					; Will hold the actual string that the user entered.
@@ -165,7 +166,7 @@ CPLaunchCommandPicker()
 ;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ; Only process the following hotkeys in this Command Picker window.
 ;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#IfWinActive, Choose a command to run
+#IfWinActive, ahk_group _cpWindowGroup
 
 ;==========================================================
 ; Intercept the Up and Down actions to move through the commands in the listbox.
@@ -201,34 +202,36 @@ CPForwardKeyPressToListBox(key = "Down")
 CPPutCommandPickerWindowInFocus()
 {
 	; Let this function know that all variables except the passed in parameters are global variables.
-	global _cpWindowName, _cpSearchedString
+	global _cpWindowName, _cpWindowGroup, _cpSearchedString
 	
-	; If the window is already open
-	if WinExist(_cpWindowName)
+	; If the window is already open.
+	windowID := WinExist(_cpWindowName)
+	if (windowID > 0)
 	{		
 		; Put the window in focus, and give focus to the text box.
 		WinActivate, %_cpWindowName%
 		ControlFocus, Edit1, %_cpWindowName%
 	}
-	; Else the window is not already open
+	; Else the window is not already open.
 	else
 	{
 		; Create the window	
 		CPCreateCommandPickerWindow()
 
-		; Make sure this window is in focus before sending commands
-		WinWaitActive, %_cpWindowName%
+		; Make sure this window is in focus before sending commands.
+		WinWaitActive, %_cpWindowName%,, 5
 		
-		; If the window wasn't opened for some reason
-		if Not WinExist(_cpWindowName)
+		; If the window wasn't opened for some reason (or it opened but was closed very quickly).
+		windowID := WinExist(_cpWindowName)
+		if (windowID = 0)
 		{
-			; Display an error message that the window couldn't be opened
-			MsgBox, There was a problem opening "%_cpWindowName%"
-		
-			; Exit, returning failure
+			; Exit.
 			return false
 		}
 	}
+	
+	; Add this window to Command Picker window group.
+	GroupAdd, _cpWindowGroup, ahk_id %windowID%
 }
 
 ;==========================================================
@@ -248,10 +251,15 @@ CPCreateCommandPickerWindow()
 	Gui, +AlwaysOnTop +Owner +OwnDialogs ToolWindow ; +Owner avoids a taskbar button ; +OwnDialogs makes any windows launched by this one modal ; ToolWindow makes border smaller and hides the min/maximize buttons.
 	Gui, font, S%_cpFontSize%	; S=Size
 
+	; Calculate how to size and position the controls to look nice.
+	editBoxWidth := _cpWindowWidthInPixels - (11.5 * _cpFontSize)	; Try and size the Edit box according to the font size so that it leaves enough room for the "Run Command" button.
+	buttonHeightOffset := 0.25 * _cpFontSize						; The Button is taller than the Edit box, so calculate how much to move it up according to the font size to try and vertically center it with the Edit box.
+	buttonLeftMargin := _cpFontSize									; Calculate how much to space the Button from the Edit box based on the font size.
+	
 	; Add the controls to the GUI.
-	Gui Add, Edit, w%_cpWindowWidthInPixels% h20 v_cpSearchedString gSearchedStringChanged
-	Gui Add, ListBox, Sort v_cpCommandSelected gCommandSubmittedByListBoxClick w%_cpWindowWidthInPixels% r%_cpNumberOfCommandsToShow% hscroll vscroll
-	Gui Add, Button, gCommandSubmittedByButton Default, Run Command		; default makes this the default action when Enter is pressed.
+	Gui Add, Edit, w%editBoxWidth% v_cpSearchedString gSearchedStringChanged
+	Gui Add, Button, gCommandSubmittedByButton Default x+%buttonLeftMargin% yp-%buttonHeightOffset%, Run Command		; default makes this the default action when Enter is pressed.
+	Gui Add, ListBox, Sort v_cpCommandSelected gCommandSubmittedByListBoxClick w%_cpWindowWidthInPixels% r%_cpNumberOfCommandsToShow% hscroll vscroll xm
 	
 	; Fill the ListBox with the commands.
 	gosub, FillListBoxWithAllCommands
@@ -418,6 +426,10 @@ CPCreateCommandPickerWindow()
 		searchText := SubStr(_cpSearchedString, 1, firstCommandParameterSeparatorPosition)	; Get the command text.
 		searchText .= SubStr(_cpSearchedString, lastCommandParameterSeparatorPosition + 1)	; Append the last parameter provided.
 
+		; Since we want to search through the parameters, but the user may not have provided the full command name, modify the searchText so it looks like they did provide the full command name so the search focuses on the parameters.
+		searchTextContentsAfterParameterSeparator := SubStr(searchText, firstCommandParameterSeparatorPosition + 2)	; +2 because SubStr first char position is 1 (not 0), and we don't want to include the CommandParameterSeparator.
+		searchText := commandName . _cpCommandParameterSeparator . searchTextContentsAfterParameterSeparator
+
 		; Search for the item to select based on the user's input, now that we have populated the listbox with the preset parameters (if any).
 		searchingWithParameters := true
 		gosub, PerformSearch
@@ -436,13 +448,6 @@ CPCreateCommandPickerWindow()
 			{
 				gosub, FillListBoxWithAllCommands
 			}
-		}
-		; Else we are searching through a command's preset parameters.
-		else
-		{			
-			; Since we now want to search through the parameters, but the user may not have provided the full command name, modify the searchedString so it looks like they did provide the full command name.
-			searchedStringContentsAfterParameterSeparator := SubStr(searchText, firstCommandParameterSeparatorPosition + 2)	; +2 because SubStr first char position is 1 (not 0), and we don't want to include the CommandParameterSeparator.
-			searchText := commandName . _cpCommandParameterSeparator . searchedStringContentsAfterParameterSeparator
 		}
 		
 		; Incremental search will need to exactly match the listbox contents, and items are never removed in incremental mode so we can always just search the listbox contents.
@@ -478,7 +483,7 @@ CPCreateCommandPickerWindow()
 		{
 			; Because we always repopulate the listbox contents with all preset parameters, we want to search through the listbox contents.
 			itemsToSearchThrough := commandListBoxContents
-			
+
 			StringReplace, searchText, searchText, %_cpCommandParameterListSeparator%	; Strip the command-parameter list separator out so that it doesn't mess up the search.
 		}
 

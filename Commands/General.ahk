@@ -1,7 +1,11 @@
 ;==========================================================
 ; Global Variables
 ;==========================================================
-_OutlookExecutablePath = C:\Program Files\Microsoft Office\Office15\OUTLOOK.EXE
+_Outlook2013ExecutablePath = C:\Program Files\Microsoft Office\Office15\OUTLOOK.EXE
+_Outlook2010ExecutablePath = C:\Program Files\Microsoft Office\Office14\OUTLOOK.EXE
+_Outlook2007ExecutablePath = C:\Program Files\Microsoft Office\Office12\OUTLOOK.EXE
+_Outlook2003ExecutablePath = C:\Program Files\Microsoft Office\Office11\OUTLOOK.EXE
+_Outlook2002ExecutablePath = C:\Program Files\Microsoft Office\Office10\OUTLOOK.EXE
 
 ;==========================================================
 ; Commands
@@ -95,6 +99,23 @@ WindowClose()
 	WinClose, ahk_id %_cpActiveWindowID%
 }
 
+AddCommand("WindowCloseAll", "Closes all open windows")
+CloseAllWindows()
+{
+	MatchList = AutoHotKey Help, Any Other Window Names To Leave Open
+
+	WinGet, ID, List, , , Program Manager
+	Loop, %ID%
+	   {
+		  StringTrimRight, This_ID, ID%A_Index%, 0
+		  WinGetTitle, This_Title, ahk_id %This_ID%
+		  If This_Title in %MatchList%
+			 Continue
+		  WinClose, %This_Title%
+	   }
+	Return	
+}
+
 AddCommand("WindowMinimize", "Minimizes the currently active window")
 WindowMinimize()
 {	global _cpActiveWindowID
@@ -121,8 +142,21 @@ WindowNotAlwaysOnTop()
 
 AddCommand("Outlook", "Opens Outlook making sure it is maximized")
 Outlook()
-{	global _OutlookExecutablePath
-	windowID := PutWindowInFocus("Outlook", _OutlookExecutablePath . " /recycle", 2)
+{	
+	outlookExecutablePath := GetOutlookExecutablePath()
+	
+	; Look for Outlook 2013.
+	windowID := PutWindowInFocus("- Outlook", outlookExecutablePath . " /recycle", 2)
+	
+	; If not found, try looking for Outlook 2010.
+	if (windowID < 1)
+		windowID := PutWindowInFocus("Microsoft Outlook", outlookExecutablePath . " /recycle", 2)
+	
+	; If not found, try looking for any version of Outlook.
+	if (windowID < 1)
+		windowID := PutWindowInFocus("Outlook", outlookExecutablePath . " /recycle", 2)
+	
+	; If we have a handle to the Outlook window, make sure it is maximized.
 	if (windowID > 0)
 	{
 		; Maximize the window if it is not already maximized.
@@ -136,9 +170,26 @@ Outlook()
 
 AddCommand("OutlookAppointment", "Creates a new Appointment in Outlook")
 OutlookAppointment()
-{	global _OutlookExecutablePath
-	Run, "%_OutlookExecutablePath%" /recycle /c ipm.appointment
+{	
+	outlookExecutablePath := GetOutlookExecutablePath()
+	Run, "%outlookExecutablePath%" /recycle /c ipm.appointment
 }
+
+GetOutlookExecutablePath()
+{	global _Outlook2002ExecutablePath, _Outlook2003ExecutablePath, _Outlook2007ExecutablePath, _Outlook2010ExecutablePath, _Outlook2013ExecutablePath
+	IfExist, %_Outlook2002ExecutablePath%
+		outlookExecutablePath := _Outlook2002ExecutablePath
+	IfExist, %_Outlook2003ExecutablePath%
+		outlookExecutablePath := _Outlook2003ExecutablePath
+	IfExist, %_Outlook2007ExecutablePath%
+		outlookExecutablePath := _Outlook2007ExecutablePath
+	IfExist, %_Outlook2010ExecutablePath%
+		outlookExecutablePath := _Outlook2010ExecutablePath
+	IfExist, %_Outlook2013ExecutablePath%
+		outlookExecutablePath := _Outlook2013ExecutablePath
+	return %outlookExecutablePath%
+}
+
 
 AddCommand("ContextMenu", "Simulates a right-click by using Shift+F10")
 ContextMenu()
@@ -237,23 +288,6 @@ AddCommand("ShowClipboard", "Shows the text that is currently in the clipboard")
 ShowClipboard()
 {
 	return "Clipboard contains: '" . Clipboard . "'"
-}
-
-AddCommand("CloseAllWindows", "Closes all open windows")
-CloseAllWindows()
-{
-	MatchList = AutoHotKey Help,Untitled - Notepad,Calculator
-
-	WinGet, ID, List, , , Program Manager
-	Loop, %ID%
-	   {
-		  StringTrimRight, This_ID, ID%A_Index%, 0
-		  WinGetTitle, This_Title, ahk_id %This_ID%
-		  If This_Title in %MatchList%
-			 Continue
-		  WinClose, %This_Title%
-	   }
-	Return	
 }
 
 AddCommand("URLShortenAndPaste", "Replaces the long URL in the clipboard with a shortened one and pastes it")

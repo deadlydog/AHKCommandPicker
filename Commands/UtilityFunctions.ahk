@@ -231,7 +231,6 @@ PasteText(textToPaste = "", pasteKeys = "^v")
 	
 	clipboardBackup := ClipboardAll	; Backup whatever is currently on the Clipboard, including pictures and anything else.
 	Clipboard := textToPaste
-	Sleep, 100						; Sleep to make sure text is on the clipboard before we try and paste it (added this as potential bugfix....seems to work so far. If problem comes back, remove this).
 	SendInput, %pasteKeys%			; Paste from the clipboard so all the text appears there instantly.
 	Sleep, 200						; Have to sleep so that we don't overwrite the Clipboard text before we've pasted it.
 	Clipboard := clipboardBackup	; Restore whatever was on the Clipboard.
@@ -242,8 +241,8 @@ PasteText(textToPaste = "", pasteKeys = "^v")
 ; Displays the given message in a Message Box, but only if the global variable DebugMsgBox_ShowMessages is not false.
 ; Toggling the DebugMsgBox_ShowMessages variable to true/false is a quick way to show/not show messages sent to this function (e.g. messages used for debugging).
 ;==========================================================
-DebugMsgBox(message = "")
+DebugMsgBox(message = "", showMsgBox = true)
 {	global DebugMsgBox_ShowMessages
-	if (%DebugMsgBox_ShowMessages% != false)
+	if (%DebugMsgBox_ShowMessages% != false && showMsgBox == true)
 		MsgBox, %message%
 }
