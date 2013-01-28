@@ -230,7 +230,8 @@ PasteText(textToPaste = "", pasteKeys = "^v")
 		pasteKeys = !{Space}ep{Enter}
 	
 	clipboardBackup := ClipboardAll	; Backup whatever is currently on the Clipboard, including pictures and anything else.
-	Clipboard := textToPaste
+	while (Clipboard != textToPaste)	; Make sure the Clipboard text has been updated before pasting it, as sometimes it does not get updated instantly.
+		Clipboard := textToPaste
 	SendInput, %pasteKeys%			; Paste from the clipboard so all the text appears there instantly.
 	Sleep, 200						; Have to sleep so that we don't overwrite the Clipboard text before we've pasted it.
 	Clipboard := clipboardBackup	; Restore whatever was on the Clipboard.

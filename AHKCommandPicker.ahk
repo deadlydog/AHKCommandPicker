@@ -17,7 +17,7 @@ IDEAS:
 ;==========================================================
 ; Global Variables - prefix everything with "cp" for Command Picker, so that variable/function names are not likely to conflict with user variables/function names.
 ;==========================================================
-_cpWindowName := "AHK Command Picker v1.1 - Choose a command to run"
+_cpWindowName := "AHK Command Picker v1.2 - Choose a command to run"
 _cpWindowGroup := ""					; The group that will hold our Command Picker window so we can reference it from # directive statements (e.g. #IfWinExists).
 _cpCommandList := ""					; Will hold the list of all available commands.
 _cpCommandSelected := ""				; Will hold the command selected by the user.
@@ -721,19 +721,19 @@ CPCommandIsPossibleCamelCaseMatch(searchText, camelCaseWordsInCommandLine)
 	lengthOfUsersString := StrLen(searchText)
 
 	; Call recursive function to roll through each letter the user typed, checking to see if it's part of one of the command's words.
-	return CPLetterMatchesPartOfCurrentWordOrBeginningOfNextWord(searchText, 1, lengthOfUsersString, camelCaseWordsInCommandLine.Words, 1, camelCaseWordsInCommandLine.Length, 1)
+	return CPLetterMatchesPartOfCurrentWordOrBeginningOfNextWord(searchText, lengthOfUsersString, 1, camelCaseWordsInCommandLine.Words, camelCaseWordsInCommandLine.Length, 1, 1)
 }
 
 ; Recursive function to see if the searchString characters sequentially match characters in the word array, where as long as the first character in the word
 ; was matched again, the searchString could then match against the next sequential characters in that word, or match against the start of the next word in the array.
 ; searchString = the user string that was entered.
-; searchCharacterIndex = the current character of the searchString that we are trying to find a match for.
 ; searchStringLength = the number of characters in the searchString.
+; searchCharacterIndex = the current character of the searchString that we are trying to find a match for.
 ; wordArray = the camel case words in the Command Name to match the searchString against.
-; wordIndex = the current word in the wordArray that we are looking to match against.
 ; numberOfWordsInArray = the number of words in the wordArray.
+; wordIndex = the current word in the wordArray that we are looking to match against.
 ; wordCharacterIndex = the current character of the wordIndex word that we are looking for a match against.
-CPLetterMatchesPartOfCurrentWordOrBeginningOfNextWord(searchString, searchCharacterIndex, searchStringLength, wordArray, wordIndex, numberOfWordsInArray, wordCharacterIndex)
+CPLetterMatchesPartOfCurrentWordOrBeginningOfNextWord(searchString, searchStringLength, searchCharacterIndex, wordArray, numberOfWordsInArray, wordIndex, wordCharacterIndex)
 {	
 	; If all of the characters in the search string were matched, return true that this command is a possible match.
 	if (searchCharacterIndex > searchStringLength)
@@ -755,8 +755,8 @@ CPLetterMatchesPartOfCurrentWordOrBeginningOfNextWord(searchString, searchCharac
 	if (character = SubStr(wordArray%wordIndex%, wordCharacterIndex, 1))
 	{		
 		; See if the next character matches the next character in the current word, or the start of the next word.
-		match1 := CPLetterMatchesPartOfCurrentWordOrBeginningOfNextWord(searchString, searchCharacterIndex + 1, searchStringLength, wordArray, wordIndex, numberOfWordsInArray, wordCharacterIndex + 1)
-		match2 := CPLetterMatchesPartOfCurrentWordOrBeginningOfNextWord(searchString, searchCharacterIndex + 1, searchStringLength, wordArray, wordIndex + 1, numberOfWordsInArray, 1)
+		match1 := CPLetterMatchesPartOfCurrentWordOrBeginningOfNextWord(searchString, searchStringLength, searchCharacterIndex + 1, wordArray, numberOfWordsInArray, wordIndex, wordCharacterIndex + 1)
+		match2 := CPLetterMatchesPartOfCurrentWordOrBeginningOfNextWord(searchString, searchStringLength, searchCharacterIndex + 1, wordArray, numberOfWordsInArray, wordIndex + 1, 1)
 		
 		; If one or both of the paths returned a match.
 		if (match1 > 0 || match2 > 0)
@@ -767,15 +767,15 @@ CPLetterMatchesPartOfCurrentWordOrBeginningOfNextWord(searchString, searchCharac
 			else
 				return match1 < match2 ? match2 : match1	; Returns the Max out of match1 and match2, since one of them is zero.
 		}
-		; Else neither path found a match so return zero.
+		; Else neither path found a match, so see if this character matches the start of the next word.
 		else
-			return 0
+			return CPLetterMatchesPartOfCurrentWordOrBeginningOfNextWord(searchString, searchStringLength, searchCharacterIndex, wordArray, numberOfWordsInArray, wordIndex + 1, 1)
 	}
 	; Otherwise the character doesn't match the current word.
 	else
 	{
 		; See if this character matches the start of the next word.
-		return CPLetterMatchesPartOfCurrentWordOrBeginningOfNextWord(searchString, searchCharacterIndex, searchStringLength, wordArray, wordIndex + 1, numberOfWordsInArray, 1)
+		return CPLetterMatchesPartOfCurrentWordOrBeginningOfNextWord(searchString, searchStringLength, searchCharacterIndex, wordArray, numberOfWordsInArray, wordIndex + 1, 1)
 	}
 }
 
