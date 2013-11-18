@@ -1,5 +1,6 @@
 ;==========================================================
 ; Create the window if necessary and put it in focus.
+; If found or created, the window's unique ID will be returned; 0 if not.
 ;
 ; windowName = Name of the window to put in focus.
 ; applicationPath = Path to the application to launch if the windowName window is not found.
@@ -11,22 +12,6 @@
 ;==========================================================
 PutWindowInFocus(windowName, applicationPath = "", titleMatchMode = "")
 {
-	;~ ; Check if we are already searching for the given Window Name, and if we are just exit, as looking for the 
-	;~ ; same window name simultaneously may cause a deadlock and cause the AHK script to crash.
-	;~ static PWIFWindowNamesBeingSearchedFor, PWIFDelimiter := "|"
-	;~ Loop Parse, PWIFWindowNamesBeingSearchedFor, %PWIFDelimiter%
-	;~ {
-		;~ ; Skip empty entries (somehow an empty one gets added after backspacing out the entire search string).
-		;~ if (A_LoopField = windowName)
-		;~ {
-			;~ MsgBox, Will not open '%windowName%' because already looking for '%A_LoopField%', so exiting.
-			;~ return 0
-		;~ }
-	;~ }
-;~ MsgBox, Before addition, %PWIFWindowNamesBeingSearchedFor%
-	;~ PWIFWindowNamesBeingSearchedFor .= windowName . PWIFDelimiter
-;~ MsgBox, After addition, %PWIFWindowNamesBeingSearchedFor%
-	
 	; Store the current values for the global modes, since we will be overwriting them.
 	previousTitleMatchMode := A_TitleMatchMode
 	previousDetectHiddenWindowsMode := A_DetectHiddenWindows
@@ -98,12 +83,6 @@ PutWindowInFocus(windowName, applicationPath = "", titleMatchMode = "")
 	; Restore the previous global modes that we might have changed.
 	SetTitleMatchMode, %previousTitleMatchMode%
 	DetectHiddenWindows, %previousDetectHiddenWindowsMode%
-	
-;~ MsgBox, Before removal, %PWIFWindowNamesBeingSearchedFor%
-	;~ ; Now that we are about to exit, remove this Window Name from our list of Window Names being search for.
-	;~ windowNameAndDelimeter := windowName . PWIFDelimiter
-	;~ StringReplace, PWIFWindowNamesBeingSearchedFor, PWIFWindowNamesBeingSearchedFor, %windowNameAndDelimeter%
-;~ MsgBox, After removal, %PWIFWindowNamesBeingSearchedFor%
 	
 	; Return the handle of the window that was activated.
 	if (windowActivated)

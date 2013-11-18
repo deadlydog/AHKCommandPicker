@@ -17,7 +17,7 @@ IDEAS:
 ;==========================================================
 ; Global Variables - prefix everything with "cp" for Command Picker, so that variable/function names are not likely to conflict with user variables/function names.
 ;==========================================================
-_cpWindowName := "AHK Command Picker v1.2 - Choose a command to run"
+_cpWindowName := "AHK Command Picker v1.2.1 - Choose a command to run"
 _cpWindowGroup := ""					; The group that will hold our Command Picker window so we can reference it from # directive statements (e.g. #IfWinExists).
 _cpCommandList := ""					; Will hold the list of all available commands.
 _cpCommandSelected := ""				; Will hold the command selected by the user.
@@ -34,7 +34,7 @@ _cpCommandParameterSeparator := ","		; The character or string used to separate 
 _cpParameterNameValueSeparator := "|"	; The character used to separate a preset parameter's name from its value, in the AddCommand() function's parameter list.
 _cpCommandNameValueSeparator := "|"		; The character used to separate a command's name from its value, in the AddCommands() function's command list.
 
-; ---------------------------------------------------------
+;----------------------------------------------------------
 ; AHK Command Picker Settings - Specify the default Command Picker Settings, then load any existing settings from the settings file.
 ;----------------------------------------------------------
 _cpSettingsFileName := "AHKCommandPicker.settings"
@@ -800,7 +800,7 @@ CPRunCommand(commandName, parameters)
 	; If the Function to call doesn't exist, display an error and exit.
 	if (!IsFunc(commandFunction))
 	{	
-		MsgBox Function "%commandFunction%" does not exist.
+		MsgBox, Function "%commandFunction%" does not exist.
 		return
 	}
 

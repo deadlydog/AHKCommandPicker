@@ -99,7 +99,7 @@ WindowClose()
 	WinClose, ahk_id %_cpActiveWindowID%
 }
 
-AddCommand("WindowCloseAll", "Closes all open windows")
+AddNamedCommand("WindowCloseAll", "CloseAllWindows", "Closes all open windows")
 CloseAllWindows()
 {
 	MatchList = AutoHotKey Help, Any Other Window Names To Leave Open
@@ -190,7 +190,6 @@ GetOutlookExecutablePath()
 	return %outlookExecutablePath%
 }
 
-
 AddCommand("ContextMenu", "Simulates a right-click by using Shift+F10")
 ContextMenu()
 {
@@ -256,7 +255,7 @@ MonitorOff()
 AddCommand("MuteSpeakersToggle", "Mutes/Un-mutes the volume on your computer")
 MuteSpeakersToggle()
 {
-	;SoundSet, +1, , mute	; Toggle volumne mute on and off.
+	;SoundSet, +1, , mute	; Toggle volume mute on and off.
 	SendInput, {Volume_Mute}
 }
 
@@ -284,10 +283,11 @@ MediaStop()
 	SendInput, {Media_Stop}
 }
 
-AddCommand("ShowClipboard", "Shows the text that is currently in the clipboard")
-ShowClipboard()
+AddCommand("ShowClipboardText", "Shows the text that is currently in the clipboard. Parameter specifies how many seconds before auto-closing it.", "3 seconds|3")
+ShowClipboardText(displayLengthInSeconds = 0)
 {
-	return "Clipboard contains: '" . Clipboard . "'"
+	MsgBox, , Clipboard Text (other content such as images are not shown here), %Clipboard%, %displayLengthInSeconds%
+	return "Clipboard contains the text (other content such as images are not shown here):`n" . Clipboard
 }
 
 AddCommand("URLShortenAndPaste", "Replaces the long URL in the clipboard with a shortened one and pastes it")
