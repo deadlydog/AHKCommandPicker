@@ -31,25 +31,25 @@ PauseAHKScript()
 AddCommand("PCShutdown", "Turns the computer off")
 PCShutdown()
 {
-	run, shutdown.exe -s -t 00
+	Run, shutdown.exe -s -t 00
 }
 
 AddCommand("PCRestart", "Restarts the computer")
 PCRestart()
 {
-	run, shutdown.exe -r -t 00
+	Run, shutdown.exe -r -t 00
 }
 
 AddCommand("eMyComputer", "Explore My Computer")
 eMyComputer()
 { 
-	Run ::{20d04fe0-3aea-1069-a2d8-08002b30309d}  ; Opens the "My Computer" folder.
+	Run, ::{20d04fe0-3aea-1069-a2d8-08002b30309d}  ; Opens the "My Computer" folder.
 }
 
 AddCommand("eRecycleBin", "Explore the Recycle Bin")
 eRecycleBin()
 { 
-	Run ::{645ff040-5081-101b-9f08-00aa002f954e}  ; Opens the Recycle Bin.
+	Run, ::{645ff040-5081-101b-9f08-00aa002f954e}  ; Opens the Recycle Bin.
 }
 
 AddCommand("eC", "Explore C:\")
@@ -81,8 +81,7 @@ OpenClipboard()
 		; Else this is not a file/folder path or a URL, so return error.
 		else
 		{
-			msg = PATH DOES NOT EXIST:`r`n %clipboardText%
-			return %msg%
+			return, "PATH DOES NOT EXIST:`r`n" . clipboardText
 		}
 	}
 }
@@ -106,14 +105,13 @@ CloseAllWindows()
 
 	WinGet, ID, List, , , Program Manager
 	Loop, %ID%
-	   {
-		  StringTrimRight, This_ID, ID%A_Index%, 0
-		  WinGetTitle, This_Title, ahk_id %This_ID%
-		  If This_Title in %MatchList%
-			 Continue
-		  WinClose, %This_Title%
-	   }
-	Return	
+	{
+		StringTrimRight, This_ID, ID%A_Index%, 0
+		WinGetTitle, This_Title, ahk_id %This_ID%
+		If This_Title in %MatchList%
+			Continue
+		WinClose, %This_Title%
+	}
 }
 
 AddCommand("WindowMinimize", "Minimizes the currently active window")
@@ -287,7 +285,6 @@ AddCommand("ShowClipboardText", "Shows the text that is currently in the clipboa
 ShowClipboardText(displayLengthInSeconds = 0)
 {
 	MsgBox, , Clipboard Text (other content such as images are not shown here), %Clipboard%, %displayLengthInSeconds%
-	return "Clipboard contains the text (other content such as images are not shown here):`n" . Clipboard
 }
 
 AddCommand("URLShortenAndPaste", "Replaces the long URL in the clipboard with a shortened one and pastes it")
