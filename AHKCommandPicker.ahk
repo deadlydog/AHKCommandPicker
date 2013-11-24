@@ -5,6 +5,7 @@ IDEAS:
 - Allow user to create new simple commands easily from the GUI and save them in their own file (open file/program, path, website).
 
 - Use Ctrl+Space to copy the full command/parameter into the input textbox, and Ctrl+, to copy it with a trailing comma (easier for parameters).  Or maybe use Shift instead of Ctrl.
+
 */
 
 ; Use the two following commands to debug a script.
@@ -17,14 +18,14 @@ IDEAS:
 ;==========================================================
 ; Global Variables - prefix everything with "cp" for Command Picker, so that variable/function names are not likely to conflict with user variables/function names.
 ;==========================================================
-_cpWindowName := "AHK Command Picker v1.2.1 - Choose a command to run"
+_cpWindowName := "AHK Command Picker v1.3.0"
 _cpWindowGroup := ""					; The group that will hold our Command Picker window so we can reference it from # directive statements (e.g. #IfWinExists).
 _cpCommandList := ""					; Will hold the list of all available commands.
 _cpCommandSelected := ""				; Will hold the command selected by the user.
 _cpSearchedString := ""					; Will hold the actual string that the user entered.
-_cpActiveWindowID := ""					; Will hold the ID of the Window that was Active when this picker was launched.
 _cpCommandArray := Object()				; Will hold the array of all Command objects.
 _cpCommandDelimiter := "|"				; The character used to separate each command in the _cpCommandList. This MUST be the pipe character in order to work with a ListBox/ComboBox/DropDownList/Tab.
+_cpCommandIsRunning := false			; Tells if a Command is currently being executed or not.
 
 ; Delimeters/Separators seen or used by the user.
 _cpParameterDelimiter := ","			; The character used to separate each parameter in the AddCommand() function's parameter list and when manually typing in custom parameters into the search box. Also used to separate and each command in the AddCommands() function's command list. This MUST be a comma for the Regex whitespace removal to work properly, and it makes it easy to loop through all of the parameters using CSV.
@@ -35,6 +36,12 @@ _cpParameterNameValueSeparator := "|"	; The character used to separate a preset 
 _cpCommandNameValueSeparator := "|"		; The character used to separate a command's name from its value, in the AddCommands() function's command list.
 
 ;----------------------------------------------------------
+; Global Variables Used By The User In Their Code.
+;----------------------------------------------------------
+_cpActiveWindowID := ""					; Will hold the ID of the Window that was Active when this picker was launched.
+_cpDisableEscapeKeyScriptReloadUntilAllCommandsComplete := false	; Variable that user can set to True to disable the Escape key from reloading the script.
+
+;----------------------------------------------------------
 ; AHK Command Picker Settings - Specify the default Command Picker Settings, then load any existing settings from the settings file.
 ;----------------------------------------------------------
 _cpSettingsFileName := "AHKCommandPicker.settings"
@@ -42,11 +49,12 @@ _cpShowAHKScriptInSystemTray := true
 _cpWindowWidthInPixels := 700
 _cpFontSize := 10
 _cpNumberOfCommandsToShow := 20
-_cpCommandMatchMethod := "Type Ahead"
+_cpCommandMatchMethod := "Type Ahead"	; Valid values are: "Type Ahead" and "Incremental".
 _cpShowSelectedCommandWindow := true
 _cpNumberOfSecondsToShowSelectedCommandWindowFor := 2.0
 _cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand := true
 _cpNumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand := 4.0
+_cpEscapeKeyShouldReloadScriptWhenACommandIsRunning := true
 CPLoadSettings()
 
 ;==========================================================
@@ -55,7 +63,7 @@ CPLoadSettings()
 CPLoadSettings()
 {
 	; Include any global setting variables the we need.
-	global _cpSettingsFileName, _cpWindowWidthInPixels, _cpNumberOfCommandsToShow, _cpShowAHKScriptInSystemTray, _cpShowSelectedCommandWindow, _cpCommandMatchMethod, _cpNumberOfSecondsToShowSelectedCommandWindowFor, _cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand, _cpNumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand
+	global _cpSettingsFileName, _cpWindowWidthInPixels, _cpNumberOfCommandsToShow, _cpShowAHKScriptInSystemTray, _cpShowSelectedCommandWindow, _cpCommandMatchMethod, _cpNumberOfSecondsToShowSelectedCommandWindowFor, _cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand, _cpNumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand, _cpEscapeKeyShouldReloadScriptWhenACommandIsRunning
 	
 	; If the file exists, read in its contents and then delete it.
 	If (FileExist(_cpSettingsFileName))
@@ -88,7 +96,7 @@ CPLoadSettings()
 CPSaveSettings()
 {
 	; Include any global setting variables the we need.
-	global _cpSettingsFileName, _cpWindowWidthInPixels, _cpNumberOfCommandsToShow, _cpShowAHKScriptInSystemTray, _cpShowSelectedCommandWindow, _cpCommandMatchMethod, _cpNumberOfSecondsToShowSelectedCommandWindowFor, _cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand, _cpNumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand
+	global _cpSettingsFileName, _cpWindowWidthInPixels, _cpNumberOfCommandsToShow, _cpShowAHKScriptInSystemTray, _cpShowSelectedCommandWindow, _cpCommandMatchMethod, _cpNumberOfSecondsToShowSelectedCommandWindowFor, _cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand, _cpNumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand, _cpEscapeKeyShouldReloadScriptWhenACommandIsRunning
 	
 	; Delete and recreate the settings file every time so that if new settings were added to code they will get written to the file.
 	If (FileExist(_cpSettingsFileName))
@@ -106,6 +114,7 @@ CPSaveSettings()
 	FileAppend, NumberOfSecondsToShowSelectedCommandWindowFor=%_cpNumberOfSecondsToShowSelectedCommandWindowFor%`n, %_cpSettingsFileName%
 	FileAppend, ShowSelectedCommandWindowWhenInfoIsReturnedFromCommand=%_cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand%`n, %_cpSettingsFileName%
 	FileAppend, NumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand=%_cpNumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand%`n, %_cpSettingsFileName%
+	FileAppend, EscapeKeyShouldReloadScriptWhenACommandIsRunning=%_cpEscapeKeyShouldReloadScriptWhenACommandIsRunning%`n, %_cpSettingsFileName%
 }
 
 ;==========================================================
@@ -162,6 +171,21 @@ CPLaunchCommandPicker()
 	}
 	CPPutCommandPickerWindowInFocus()
 }
+
+;==========================================================
+; Hotkey to reload the AHK Command Picker when it is executing a command.
+; This can be used if one of the scripts is out of control and you need to kill it quickly.
+;==========================================================
+Esc Up::
+	global _cpEscapeKeyShouldReloadScriptWhenACommandIsRunning, _cpCommandIsRunning, _cpDisableEscapeKeyScriptReloadUntilAllCommandsComplete
+	
+	; Rethrow the Escape keypress that we intercepted.
+	SendInput, {Esc}
+	
+	; If the Escape key is allowed to reload the script when a Command is running, AND a Command is running, AND the user hasn't temporarily disabled the Escape key refresh functionaliry, then reload the script.
+	if (_cpEscapeKeyShouldReloadScriptWhenACommandIsRunning && _cpCommandIsRunning && !_cpDisableEscapeKeyScriptReloadUntilAllCommandsComplete)
+		Run, %A_ScriptFullPath%		
+return
 
 ;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ; Only process the following hotkeys in this Command Picker window.
@@ -274,13 +298,23 @@ CPCreateCommandPickerWindow()
 	Gui, Menu, MyMenuBar
 	
 	; Show the GUI, set focus to the input box, and wait for input.
-	Gui, Show, AutoSize Center, %_cpWindowName%
+	Gui, Show, AutoSize Center, %_cpWindowName% - Choose a command to run
 	GuiControl, Focus, _cpSearchedString
 	
 	; Display a tooltip that we are waiting for a command to be entered.
 	CPShowTooltip("Enter a command")
 	
+	SetTimer, SleepScript, Off		; Restart the Sleep timer.
+	SetTimer, SleepScript, 100		; Sleep the AHK Command Picker several times a second so we can process hotkeys sent while commands are running.
+	
 	return  ; End of auto-execute section. The script is idle until the user does something.
+
+	SleepScript:
+		; Just sleep the script for one millisecond, so that if we are in a long-running loop in a user's command, the script will stop to 
+		; check if any other hotkeys or hotstrings have been sent.
+		; This is extremely important as it allows us to kill this script with a hotkey if the user's command is out of control.
+		Sleep, 1
+	return
 
 	MenuHandler:
 		; File menu commands.
@@ -784,7 +818,7 @@ CPLetterMatchesPartOfCurrentWordOrBeginningOfNextWord(searchString, searchString
 ;==========================================================
 CPRunCommand(commandName, parameters)
 {
-	global _cpCommandArray, _cpShowSelectedCommandWindow, _cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand
+	global _cpCommandArray, _cpShowSelectedCommandWindow, _cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand, _cpCommandIsRunning, _cpDisableEscapeKeyScriptReloadUntilAllCommandsComplete
 	static _cpListOfFunctionsCurrentlyRunning, _cpListOfFunctionsCurrentlyRunningDelimiter := "|"
 
 	; If the Command to run doesn't exist, display error and exit.
@@ -817,6 +851,7 @@ CPRunCommand(commandName, parameters)
 
 	; Record that we are running this function.
 	_cpListOfFunctionsCurrentlyRunning .= commandFunction . _cpListOfFunctionsCurrentlyRunningDelimiter
+	_cpCommandIsRunning := true
 
 	; If no parameters were given, but this command provides a default parameter, use the default parameter value.
 	if (parameters = "" && _cpCommandArray[commandName].DefaultParameterValue != "")
@@ -831,6 +866,13 @@ CPRunCommand(commandName, parameters)
 	; Now that we are done running the function, remove it from our list of functions currently running.
 	functionNameAndDelimeter := commandFunction . _cpListOfFunctionsCurrentlyRunningDelimiter
 	StringReplace, _cpListOfFunctionsCurrentlyRunning, _cpListOfFunctionsCurrentlyRunning, %functionNameAndDelimeter%
+
+	; If we are no longer running any Commands at the moment.
+	if (_cpListOfFunctionsCurrentlyRunning = "")
+	{
+		_cpCommandIsRunning := false	; Record that all functions have finished running.
+		_cpDisableEscapeKeyScriptReloadUntilAllCommandsComplete := false	; Reset the Disable Escape Key user variable (if it was enabled) now that all commands have finished running.
+	}
 
 	;~ ; Example of how to loop through the parameters
 	;~ For index, value in parameters
@@ -947,10 +989,10 @@ CPAppendParameterValueToEndOfList(parameterList, parameterValue)
 CPShowSettingsWindow()
 {
 	; Let this function know about the necessary global variables.
-	global _cpWindowName, _cpNumberOfCommandsToShow, _cpWindowWidthInPixels, _cpFontSize, _cpShowAHKScriptInSystemTray, _cpCommandMatchMethod, _cpShowSelectedCommandWindow, _cpNumberOfSecondsToShowSelectedCommandWindowFor, _cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand, _cpNumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand
+	global _cpWindowName, _cpNumberOfCommandsToShow, _cpWindowWidthInPixels, _cpFontSize, _cpShowAHKScriptInSystemTray, _cpCommandMatchMethod, _cpShowSelectedCommandWindow, _cpNumberOfSecondsToShowSelectedCommandWindowFor, _cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand, _cpNumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand, _cpEscapeKeyShouldReloadScriptWhenACommandIsRunning
 	
 	; Define any static variables needed for the GUI.
-	static commandMatchMethodDescription
+	static CommandMatchMethodDescription
 	
 	Gui 2:Default	; Specify that these controls are for window #2.
 	
@@ -975,7 +1017,7 @@ CPShowSettingsWindow()
 		
 		Gui, Add, Text, yp+25 x20, Command search method:
 		Gui, Add, DropDownList, x+5 v_cpCommandMatchMethod gCommandMatchMethodChanged Sort, Type Ahead|Incremental
-		Gui, Add, Text, yp+25 x40 vcommandMatchMethodDescription w450 h45,
+		Gui, Add, Text, yp+25 x40 vCommandMatchMethodDescription w450 h45,
 	
 	;gui, add, text, xm w500 0x10  ;Horizontal Line
 	
@@ -987,9 +1029,13 @@ CPShowSettingsWindow()
 		Gui, Add, Checkbox, yp+25 x20 v_cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand Checked%_cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand% gShowSelectedCommandWindowWhenInfoIsReturnedFromCommandToggled, Show selected command window when command returns info for 
 		Gui, Add, Edit, x+0 w50 v_cpNumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand, %_cpNumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand%
 		Gui, Add, Text, x+5, seconds.
+		
+	Gui, Add, GroupBox, x10 w500 r4, Escape Key Options:
+		Gui, Add, Checkbox, yp+25 x20 v_cpEscapeKeyShouldReloadScriptWhenACommandIsRunning Checked%_cpEscapeKeyShouldReloadScriptWhenACommandIsRunning%, Allow the Escape key to kill all currently running commands.
+		Gui, Add, Text, yp+20 x40, The Escape key can be used to kill Commands that are currently running by reloading the script.`nIf enabled, but you need to use "Send {Escape}" in your Command, temporarily disable this by`nusing "_cpDisableEscapeKeyScriptReloadUntilAllCommandsComplete := true" in your Command.
 	
-	Gui, Add, Button, gSettingsCancelButton xm, Cancel
-	Gui, Add, Button, gSettingsSaveButton x+400, Save
+	Gui, Add, Button, gSettingsCancelButton xm w100, Cancel
+	Gui, Add, Button, gSettingsSaveButton x+300 w100, Save
 	
 	GuiControl, Choose, _cpCommandMatchMethod, %_cpCommandMatchMethod%
 	gosub, CommandMatchMethodChanged	; Display the description of the currently selected Command Match Method.

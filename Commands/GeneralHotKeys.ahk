@@ -1,11 +1,4 @@
 ;==========================================================
-; Use Win+Z to reload the AHK Command Picker.
-; This can be used if one of your scripts is out of control and you need to kill it quickly.
-;==========================================================
-;~ #z:: Run, %A_ScriptFullPath%
-;~ Esc::ExitApp
-
-;==========================================================
 ; Use Alt+Left Mouse Button to move a window
 ;==========================================================
 Alt & LButton::
