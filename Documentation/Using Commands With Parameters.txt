@@ -8,9 +8,9 @@ ExploreDirectory(directoryToOpen = "")
 {
 	Run, explore "%directoryToOpen%"
 }
-}}Notice that after the functionName and descriptionOfWhatFunctionDoes parameters, we supply an empty string for the parameterList and "C:\" for the defaultParameterValue.  We want to provide that default parameter value in case the user does not supply a parameter when selecting to run this Command; in this example if no parameters are supplied then "C:\" will be passed into the function and will be opened.
+}}Notice that after the functionName and descriptionOfWhatFunctionDoes parameters, we supply an empty string for the parameterList and "C:\" for the defaultParameterValue.  Technically both of these parameters are optional, but in this case we want to provide a default parameter value in case the user does not supply a parameter when selecting to run this Command; in this example if no parameters are supplied then "C:\" will be passed into the function and will be opened.
 
-Because AHK Command Picker supports passing multiple parameters into a command, we would probaly want to re-write our function to support opening each directory path that is passe in like so:
+Because AHK Command Picker supports passing multiple parameters into a command, we would probaly want to re-write our function to support opening each directory path that is passed in like so:
 {{
 AddCommand("ExploreDirectory", "Opens the directory supplied in the parameters", "", "C:\")
 ExploreDirectory(directoriesToOpen = "")

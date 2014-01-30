@@ -52,7 +52,7 @@ ExploreDirectory(directoriesToOpen = "")
 		Run, explore "%directoryToOpen%"
 	}
 }
-}}Here we used the same technique as in the [Preset Parameters|Using Commands With Parameters] documentation to build a comma-separated list of directories to add.  We also used the exact same ExploreDirectory() function.  The only thing different here is that we used the AddCommands() function, which will essentially loop through each command in the commandList and call AddCommand() for you, passing in "ExploreDirectory" as the function to call and "Open directory" as the user-friendly description.
+}}Here we used the same technique as in the [Preset Parameters|Using Commands With Parameters] documentation to build a comma-separated list of directories to add.  We also used the exact same ExploreDirectory() function.  The only thing different here is that we used the AddCommands() function, which will essentially loop through each command in the commandList (i.e. the directories variable above) and call AddCommand() for you, passing in "ExploreDirectory" as the function to call and "Open directory" as the user-friendly description.
 
 One more time, this is what the result might look like if we added many more directories and had some other commands defined:
 [image:UsingManyCommands.png]
