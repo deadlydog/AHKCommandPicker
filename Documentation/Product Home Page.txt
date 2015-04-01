@@ -26,7 +26,7 @@ Get started with AHK Command Picker in under 2 minutes:
 Some out of the box functionality provided by AHK Command Picker:
 {video:url=https://www.youtube.com/watch?v=kr5nBVOXVkE,type=youtube}
 
-Motivation for creating AHK Command Picker and some AHK problems is solves:
+Motivation for creating AHK Command Picker and some AHK problems it solves:
 {video:url=https://www.youtube.com/watch?v=E0LnMtWVVuA,type=youtube}
 
 *Quotes*
