@@ -18,7 +18,7 @@ IDEAS:
 ;==========================================================
 ; Global Variables - prefix everything with "cp" for Command Picker, so that variable/function names are not likely to conflict with user variables/function names.
 ;==========================================================
-_cpWindowName := "AHK Command Picker v1.3.1"
+_cpWindowName := "AHK Command Picker v1.3.2"
 _cpWindowGroup := ""					; The group that will hold our Command Picker window so we can reference it from # directive statements (e.g. #IfWinExists).
 _cpCommandList := ""					; Will hold the list of all available commands.
 _cpCommandSelected := ""				; Will hold the command selected by the user.
@@ -44,7 +44,7 @@ _cpDisableEscapeKeyScriptReloadUntilAllCommandsComplete := false	; Variable that
 ;----------------------------------------------------------
 ; AHK Command Picker Settings - Specify the default Command Picker Settings, then load any existing settings from the settings file.
 ;----------------------------------------------------------
-_cpSettingsFileName := "AHKCommandPicker.settings"
+_cpSettingsFilePath := A_ScriptDir . "\AHKCommandPicker.settings"
 _cpShowAHKScriptInSystemTray := true
 _cpWindowWidthInPixels := 700
 _cpFontSize := 10
@@ -63,13 +63,13 @@ CPLoadSettings()
 CPLoadSettings()
 {
 	; Include any global setting variables the we need.
-	global _cpSettingsFileName, _cpWindowWidthInPixels, _cpNumberOfCommandsToShow, _cpShowAHKScriptInSystemTray, _cpShowSelectedCommandWindow, _cpCommandMatchMethod, _cpNumberOfSecondsToShowSelectedCommandWindowFor, _cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand, _cpNumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand, _cpEscapeKeyShouldReloadScriptWhenACommandIsRunning
+	global _cpSettingsFilePath, _cpWindowWidthInPixels, _cpNumberOfCommandsToShow, _cpShowAHKScriptInSystemTray, _cpShowSelectedCommandWindow, _cpCommandMatchMethod, _cpNumberOfSecondsToShowSelectedCommandWindowFor, _cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand, _cpNumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand, _cpEscapeKeyShouldReloadScriptWhenACommandIsRunning
 	
 	; If the file exists, read in its contents and then delete it.
-	If (FileExist(_cpSettingsFileName))
+	If (FileExist(_cpSettingsFilePath))
 	{
 		; Read in each line of the file.
-		Loop, Read, %_cpSettingsFileName%
+		Loop, Read, %_cpSettingsFilePath%
 		{
 			; Split the string at the = sign
 			StringSplit, setting, A_LoopReadLine, =
@@ -96,25 +96,25 @@ CPLoadSettings()
 CPSaveSettings()
 {
 	; Include any global setting variables the we need.
-	global _cpSettingsFileName, _cpWindowWidthInPixels, _cpNumberOfCommandsToShow, _cpShowAHKScriptInSystemTray, _cpShowSelectedCommandWindow, _cpCommandMatchMethod, _cpNumberOfSecondsToShowSelectedCommandWindowFor, _cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand, _cpNumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand, _cpEscapeKeyShouldReloadScriptWhenACommandIsRunning
+	global _cpSettingsFilePath, _cpWindowWidthInPixels, _cpNumberOfCommandsToShow, _cpShowAHKScriptInSystemTray, _cpShowSelectedCommandWindow, _cpCommandMatchMethod, _cpNumberOfSecondsToShowSelectedCommandWindowFor, _cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand, _cpNumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand, _cpEscapeKeyShouldReloadScriptWhenACommandIsRunning
 	
 	; Delete and recreate the settings file every time so that if new settings were added to code they will get written to the file.
-	If (FileExist(_cpSettingsFileName))
+	If (FileExist(_cpSettingsFilePath))
 	{
-		FileDelete, %_cpSettingsFileName%
+		FileDelete, %_cpSettingsFilePath%
 	}
 	
 	; Write the settings to the file (will be created automatically if needed)
 	; Setting name in file should be the variable name, without the "_cp" prefix.
-	FileAppend, CPShowAHKScriptInSystemTray=%_cpShowAHKScriptInSystemTray%`n, %_cpSettingsFileName%
-	FileAppend, WindowWidthInPixels=%_cpWindowWidthInPixels%`n, %_cpSettingsFileName%
-	FileAppend, NumberOfCommandsToShow=%_cpNumberOfCommandsToShow%`n, %_cpSettingsFileName%
-	FileAppend, CommandMatchMethod=%_cpCommandMatchMethod%`n, %_cpSettingsFileName%
-	FileAppend, ShowSelectedCommandWindow=%_cpShowSelectedCommandWindow%`n, %_cpSettingsFileName%
-	FileAppend, NumberOfSecondsToShowSelectedCommandWindowFor=%_cpNumberOfSecondsToShowSelectedCommandWindowFor%`n, %_cpSettingsFileName%
-	FileAppend, ShowSelectedCommandWindowWhenInfoIsReturnedFromCommand=%_cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand%`n, %_cpSettingsFileName%
-	FileAppend, NumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand=%_cpNumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand%`n, %_cpSettingsFileName%
-	FileAppend, EscapeKeyShouldReloadScriptWhenACommandIsRunning=%_cpEscapeKeyShouldReloadScriptWhenACommandIsRunning%`n, %_cpSettingsFileName%
+	FileAppend, CPShowAHKScriptInSystemTray=%_cpShowAHKScriptInSystemTray%`n, %_cpSettingsFilePath%
+	FileAppend, WindowWidthInPixels=%_cpWindowWidthInPixels%`n, %_cpSettingsFilePath%
+	FileAppend, NumberOfCommandsToShow=%_cpNumberOfCommandsToShow%`n, %_cpSettingsFilePath%
+	FileAppend, CommandMatchMethod=%_cpCommandMatchMethod%`n, %_cpSettingsFilePath%
+	FileAppend, ShowSelectedCommandWindow=%_cpShowSelectedCommandWindow%`n, %_cpSettingsFilePath%
+	FileAppend, NumberOfSecondsToShowSelectedCommandWindowFor=%_cpNumberOfSecondsToShowSelectedCommandWindowFor%`n, %_cpSettingsFilePath%
+	FileAppend, ShowSelectedCommandWindowWhenInfoIsReturnedFromCommand=%_cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand%`n, %_cpSettingsFilePath%
+	FileAppend, NumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand=%_cpNumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand%`n, %_cpSettingsFilePath%
+	FileAppend, EscapeKeyShouldReloadScriptWhenACommandIsRunning=%_cpEscapeKeyShouldReloadScriptWhenACommandIsRunning%`n, %_cpSettingsFilePath%
 }
 
 ;==========================================================
@@ -146,7 +146,7 @@ DummyCommand(parameters = "")
 ;		return false	; (optional) Return false to not display the command text after running the command.
 ;	}
 ;==========================================================
-#Include CommandScriptsToInclude.ahk
+#Include %A_ScriptDir%\CommandScriptsToInclude.ahk
 
 ;==========================================================
 ; Hotkey to launch the Command Picker window.
