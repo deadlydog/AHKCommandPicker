@@ -19,21 +19,26 @@ To add your own commands to AHK Command Picker, see [the documentation][Document
 ## Screen Shots
 
 All commands:
+
 ![All Commands](docs\Images\AHKCommandPicker-AllCommands.png)
 
 Commands filtered as you type:
+
 ![Filtered Commands](docs\Images\AHKCommandPicker-FilteredCommands.png)
 
 
 ## Videos
 
 Get started with AHK Command Picker in under 2 minutes:
+
 [![AHK Command Picker in under 2 minutes video][AhkCommandPickerInUnder2MinutesYouTubeImageUrl]][AhkCommandPickerInUnder2MinutesYouTubeUrl]
 
 Some out of the box functionality provided by AHK Command Picker:
+
 [![Out of the box functionality video][OutOfTheBoxFunctionalityProvidedByAhkCommandPickerYouTubeImageUrl]][OutOfTheBoxFunctionalityProvidedByAhkCommandPickerYouTubeUrl]
 
 Motivation for creating AHK Command Picker and some AHK problems it solves:
+
 [![Motivation for creating AHK Command Picker video][MotivationForCreatingAhkCommandPickerYouTubeImageUrl]][MotivationForCreatingAhkCommandPickerYouTubeUrl]
 
 
