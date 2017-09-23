@@ -20,11 +20,11 @@ To add your own commands to AHK Command Picker, see [the documentation][Document
 
 All commands:
 
-![All Commands](docs/Images/AHKCommandPicker-AllCommands.png)
+![All Commands][AllCommandsImage]
 
 Commands filtered as you type:
 
-![Filtered Commands](docs/Images/AHKCommandPicker-FilteredCommands.png)
+![Filtered Commands][FilteredCommandsImage]
 
 
 ## Videos
@@ -51,8 +51,6 @@ Motivation for creating AHK Command Picker and some AHK problems it solves:
 
 <!-- Links -->
 [AutoHotkeyWebsiteUrl]: http://www.autohotkey.com
-[WhyUseAhkCommandPickerPage]: docs\WhyUseAhkCommandPicker.md
-[DocumentationPage]: docs\DocumentationHomePage.md
 
 [AhkCommandPickerInUnder2MinutesYouTubeUrl]: https://www.youtube.com/watch?v=gevnQAwYLAg,type=youtube
 [AhkCommandPickerInUnder2MinutesYouTubeImageUrl]: https://img.youtube.com/vi/gevnQAwYLAg/0.jpg
@@ -62,3 +60,9 @@ Motivation for creating AHK Command Picker and some AHK problems it solves:
 
 [MotivationForCreatingAhkCommandPickerYouTubeUrl]: https://www.youtube.com/watch?v=E0LnMtWVVuA,type=youtube
 [MotivationForCreatingAhkCommandPickerYouTubeImageUrl]: https://img.youtube.com/vi/E0LnMtWVVuA/0.jpg
+
+[WhyUseAhkCommandPickerPage]: docs\WhyUseAhkCommandPicker.md
+[DocumentationPage]: docs\DocumentationHomePage.md
+
+[AllCommandsImage]: docs/Images/AHKCommandPicker-AllCommands.png
+[FilteredCommandsImage]: docs/Images/AHKCommandPicker-FilteredCommands.png
