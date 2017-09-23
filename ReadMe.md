@@ -30,16 +30,13 @@ Commands filtered as you type:
 ## Videos
 
 Get started with AHK Command Picker in under 2 minutes:
-
 [![AHK Command Picker in under 2 minutes video][AhkCommandPickerInUnder2MinutesYouTubeImageUrl]][AhkCommandPickerInUnder2MinutesYouTubeUrl]
 
 Some out of the box functionality provided by AHK Command Picker:
-
-[![YouTube Video][OutOfTheBoxFunctionalityProvidedByAhkCommandPickerYouTubeImageUrl]][OutOfTheBoxFunctionalityProvidedByAhkCommandPickerYouTubeUrl]
+[![Out of the box functionality video][OutOfTheBoxFunctionalityProvidedByAhkCommandPickerYouTubeImageUrl]][OutOfTheBoxFunctionalityProvidedByAhkCommandPickerYouTubeUrl]
 
 Motivation for creating AHK Command Picker and some AHK problems it solves:
-
-[![YouTube Video][MotivationForCreatingAhkCommandPickerYouTubeImageUrl]][MotivationForCreatingAhkCommandPickerYouTubeUrl]
+[![Motivation for creating AHK Command Picker video][MotivationForCreatingAhkCommandPickerYouTubeImageUrl]][MotivationForCreatingAhkCommandPickerYouTubeUrl]
 
 
 ## Quotes / Testimonials
