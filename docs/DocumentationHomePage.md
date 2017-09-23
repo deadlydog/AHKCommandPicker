@@ -1,17 +1,25 @@
-! Documentation Table Of Contents
+# Documentation Table Of Contents
 
-AHK Command Picker requires [url:AutoHotkey_L|http://www.autohotkey.com/download/] to be installed, as it uses features that are only available in this version of AutoHotkey.
+AHK Command Picker requires [AutoHotkey_L][AutoHotkeyWebsiteUrl] to be installed, as it uses features that are only available in this version of AutoHotkey.
 
-[Why Use AHK Command Picker]
+[Why Use AHK Command Picker][WhyUseAhkCommandPickerPage]
 
-[Getting Started With AHK Command Picker|Getting Started]
+[Getting Started With AHK Command Picker][GettingStartedPage]
 
-[Using Commands With Parameters]
+[Using Commands With Parameters][UsingCommandsWithParametersPage]
 
-[Adding Multiple Commands At Once]
+[Adding Multiple Commands At Once][AddingMultipleCommandsAtOncePage]
 
-[Best Practices]
+[Best Practices][BestPracticesPage]
 
-[Tips and Tricks|Tips And Tricks]
+[Tips and Tricks][TipsAndTricksPage]
 
 
+<!-- Links -->
+[AutoHotkeyWebsiteUrl]: http://www.autohotkey.com
+[WhyUseAhkCommandPickerPage]: WhyUseAhkCommandPicker.md
+[GettingStartedPage]: GettingStarted.md
+[UsingCommandsWithParametersPage]: UsingCommandsWithParameters.md
+[AddingMultipleCommandsAtOncePage]: AddingMultipleCommandsAtOnce.md
+[BestPracticesPage]: BestPractices.md
+[TipsAndTricksPage]: TipsAndTricks.md
