@@ -31,15 +31,15 @@ Commands filtered as you type:
 
 Get started with AHK Command Picker in under 2 minutes:
 
-[![YouTube Video][AhkCommandPickerInUnder2MinutesYouTubeUrl]][AhkCommandPickerInUnder2MinutesYouTubeUrl]
+[![AHK Command Picker in under 2 minutes video][AhkCommandPickerInUnder2MinutesYouTubeImageUrl]][AhkCommandPickerInUnder2MinutesYouTubeUrl]
 
 Some out of the box functionality provided by AHK Command Picker:
 
-[![YouTube Video][OutOfTheBoxFunctionalityProvidedByAhkCommandPickerYouTubeUrl]][OutOfTheBoxFunctionalityProvidedByAhkCommandPickerYouTubeUrl]
+[![YouTube Video][OutOfTheBoxFunctionalityProvidedByAhkCommandPickerYouTubeImageUrl]][OutOfTheBoxFunctionalityProvidedByAhkCommandPickerYouTubeUrl]
 
 Motivation for creating AHK Command Picker and some AHK problems it solves:
 
-[![YouTube Video][MotivationForCreatingAhkCommandPickerYouTubeUrl]][MotivationForCreatingAhkCommandPickerYouTubeUrl]
+[![YouTube Video][MotivationForCreatingAhkCommandPickerYouTubeImageUrl]][MotivationForCreatingAhkCommandPickerYouTubeUrl]
 
 
 ## Quotes / Testimonials
@@ -53,6 +53,12 @@ Motivation for creating AHK Command Picker and some AHK problems it solves:
 [AutoHotkeyWebsiteUrl]: http://www.autohotkey.com
 [WhyUseAhkCommandPickerPage]: docs\WhyUseAhkCommandPicker.md
 [DocumentationPage]: docs\DocumentationHomePage.md
+
 [AhkCommandPickerInUnder2MinutesYouTubeUrl]: https://www.youtube.com/watch?v=gevnQAwYLAg,type=youtube
+[AhkCommandPickerInUnder2MinutesYouTubeImageUrl]: https://img.youtube.com/vi/gevnQAwYLAg/0.jpg
+
 [OutOfTheBoxFunctionalityProvidedByAhkCommandPickerYouTubeUrl]: https://www.youtube.com/watch?v=kr5nBVOXVkE,type=youtube
+[OutOfTheBoxFunctionalityProvidedByAhkCommandPickerYouTubeImageUrl]: https://img.youtube.com/vi/kr5nBVOXVkE/0.jpg
+
 [MotivationForCreatingAhkCommandPickerYouTubeUrl]: https://www.youtube.com/watch?v=E0LnMtWVVuA,type=youtube
+[MotivationForCreatingAhkCommandPickerYouTubeImageUrl]: https://img.youtube.com/vi/E0LnMtWVVuA/0.jpg
