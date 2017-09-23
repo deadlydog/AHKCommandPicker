@@ -19,11 +19,9 @@ To add your own commands to AHK Command Picker, see [the documentation][Document
 ## Screen Shots
 
 All commands:
-
 ![All Commands](docs\Images\AHKCommandPicker-AllCommands.png)
 
 Commands filtered as you type:
-
 ![Filtered Commands](docs\Images\AHKCommandPicker-FilteredCommands.png)
 
 
