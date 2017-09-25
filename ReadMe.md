@@ -11,7 +11,7 @@ For more reasons to use this with your AHK scripts, see [Why Use AHK Command Pic
 
 To launch AHK Command Picker run the `AHKCommandPicker.ahk` script.
 
-Press the Caps Lock key to bring up the AHK Command Picker GUI. From there just type the name of the command that you want to run and hit enter to run it. You can still toggle Caps Lock on and off by pressing `Shift`+`Caps Lock`.
+Press the `Caps Lock` key to bring up the AHK Command Picker GUI. From there just type the name of the command that you want to run and hit enter to run it. You can still toggle Caps Lock on and off by pressing `Shift`+`Caps Lock`.
 
 To add your own commands to AHK Command Picker, see [the documentation][DocumentationPage].
 
