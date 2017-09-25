@@ -9,7 +9,7 @@ For more reasons to use this with your AHK scripts, see [Why Use AHK Command Pic
 
 ## How To Use AHK Command Picker
 
-To launch AHK Command Picker run the `AHKCommandPicker.ahk` script.
+Start by [downloading the latest release][DownloadLatestReleaseUrl]. To launch AHK Command Picker run the `AHKCommandPicker.ahk` script.
 
 Press the `Caps Lock` key to bring up the AHK Command Picker GUI. From there just type the name of the command that you want to run and hit enter to run it. You can still toggle Caps Lock on and off by pressing `Shift`+`Caps Lock`.
 
@@ -60,6 +60,8 @@ Motivation for creating AHK Command Picker and some AHK problems it solves:
 
 [MotivationForCreatingAhkCommandPickerYouTubeUrl]: https://www.youtube.com/watch?v=E0LnMtWVVuA,type=youtube
 [MotivationForCreatingAhkCommandPickerYouTubeImageUrl]: https://img.youtube.com/vi/E0LnMtWVVuA/0.jpg
+
+[DownloadLatestReleaseUrl]: https://github.com/deadlydog/AHKCommandPicker/releases
 
 [WhyUseAhkCommandPickerPage]: docs/WhyUseAhkCommandPicker.md
 [DocumentationPage]: docs/DocumentationHomePage.md
