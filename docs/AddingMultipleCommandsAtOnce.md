@@ -49,7 +49,7 @@ These both call the `AddNamedCommand()` function for each command in the command
 So to use the `AddCommands()` function to get the same type of look that you would get from manually adding each command individually you could do:
 
 ```AutoHotkey
-// Add all of our preset parameters to the directories variable, which will actually be a comma-separated string list.
+; Add all of our preset parameters to the directories variable, which will actually be a comma-separated string list.
 AddParameterToString(directories, "C Drive|C:\")
 AddParameterToString(directories, "My Directory|C:\MyDir")
 AddParameterToString(directories, "Other Directory|C:\Other")
@@ -73,6 +73,9 @@ One more time, this is what the result might look like if we added many more dir
 ![Using Many Commands][UsingManyCommandsImage]
 
 Notice that you no longer need to type "ExploreDirectory," to see the list of directories to explore; they are listed along-side all of the other commands. For example, you could now just type "C Drive" to open `C:\`.
+
+
+## Prepend Command Names
 
 So that's nice, but what if you want to group all of these related commands that essentially do the same operation. That's what the `AddCommandsWithPrePostfix()` function is for. To prepend all of our "ExploreDirectory" commands with the letter "e", we could have used:
 
