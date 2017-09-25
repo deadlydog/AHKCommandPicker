@@ -61,8 +61,8 @@ Motivation for creating AHK Command Picker and some AHK problems it solves:
 [MotivationForCreatingAhkCommandPickerYouTubeUrl]: https://www.youtube.com/watch?v=E0LnMtWVVuA,type=youtube
 [MotivationForCreatingAhkCommandPickerYouTubeImageUrl]: https://img.youtube.com/vi/E0LnMtWVVuA/0.jpg
 
-[WhyUseAhkCommandPickerPage]: docs\WhyUseAhkCommandPicker.md
-[DocumentationPage]: docs\DocumentationHomePage.md
+[WhyUseAhkCommandPickerPage]: docs/WhyUseAhkCommandPicker.md
+[DocumentationPage]: docs/DocumentationHomePage.md
 
 [AllCommandsImage]: docs/Images/AHKCommandPicker-AllCommands.png
 [FilteredCommandsImage]: docs/Images/AHKCommandPicker-FilteredCommands.png
