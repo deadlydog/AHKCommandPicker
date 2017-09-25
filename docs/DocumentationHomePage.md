@@ -2,17 +2,15 @@
 
 AHK Command Picker requires [AutoHotkey_L][AutoHotkeyWebsiteUrl] to be installed, as it uses features that are only available in this version of AutoHotkey.
 
-[Why Use AHK Command Picker][WhyUseAhkCommandPickerPage]
+1. [Getting Started With AHK Command Picker][GettingStartedPage]
 
-[Getting Started With AHK Command Picker][GettingStartedPage]
+1. [Using Commands With Parameters][UsingCommandsWithParametersPage]
 
-[Using Commands With Parameters][UsingCommandsWithParametersPage]
+1. [Adding Multiple Commands At Once][AddingMultipleCommandsAtOncePage]
 
-[Adding Multiple Commands At Once][AddingMultipleCommandsAtOncePage]
+1. [Tips and Tricks][TipsAndTricksPage]
 
-[Best Practices][BestPracticesPage]
-
-[Tips and Tricks][TipsAndTricksPage]
+1. [Best Practices][BestPracticesPage]
 
 
 <!-- Links -->
