@@ -64,7 +64,7 @@ CPLoadSettings()
 {
 	; Include any global setting variables the we need.
 	global _cpSettingsFilePath, _cpWindowWidthInPixels, _cpNumberOfCommandsToShow, _cpShowAHKScriptInSystemTray, _cpShowSelectedCommandWindow, _cpCommandMatchMethod, _cpNumberOfSecondsToShowSelectedCommandWindowFor, _cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand, _cpNumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand, _cpEscapeKeyShouldReloadScriptWhenACommandIsRunning
-	
+
 	; If the file exists, read in its contents and then delete it.
 	If (FileExist(_cpSettingsFilePath))
 	{
@@ -73,7 +73,7 @@ CPLoadSettings()
 		{
 			; Split the string at the = sign
 			StringSplit, setting, A_LoopReadLine, =
-			
+
 			; If this is a valid setting line (e.g. setting=value)
 			if (setting0 = 2)
 			{
@@ -85,7 +85,7 @@ CPLoadSettings()
 
 	; Save the settings.
 	CPSaveSettings()
-	
+
 	; Apply any applicable settings.
 	CPShowAHKScriptInSystemTray(_cpShowAHKScriptInSystemTray)
 }
@@ -97,13 +97,13 @@ CPSaveSettings()
 {
 	; Include any global setting variables the we need.
 	global _cpSettingsFilePath, _cpWindowWidthInPixels, _cpNumberOfCommandsToShow, _cpShowAHKScriptInSystemTray, _cpShowSelectedCommandWindow, _cpCommandMatchMethod, _cpNumberOfSecondsToShowSelectedCommandWindowFor, _cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand, _cpNumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand, _cpEscapeKeyShouldReloadScriptWhenACommandIsRunning
-	
+
 	; Delete and recreate the settings file every time so that if new settings were added to code they will get written to the file.
 	If (FileExist(_cpSettingsFilePath))
 	{
 		FileDelete, %_cpSettingsFilePath%
 	}
-	
+
 	; Write the settings to the file (will be created automatically if needed)
 	; Setting name in file should be the variable name, without the "_cp" prefix.
 	FileAppend, CPShowAHKScriptInSystemTray=%_cpShowAHKScriptInSystemTray%`n, %_cpSettingsFilePath%
@@ -126,11 +126,11 @@ DummyCommand(parameters = "")
 	; Example of how to check if parameters were provided.
 	if (parameters != "")
 		MsgBox, Parameters were provided!
-	
+
 	; Example of how to loop through the parameters
 	Loop, Parse, parameters, CSV
 		MsgBox Item %A_Index% is '%A_LoopField%'
-	
+
 	return, "This is some text returned by the dummy command."
 }
 
@@ -153,7 +153,7 @@ DummyCommand(parameters = "")
 ;==========================================================
 CapsLock::
 	SetCapslockState, Off				; Turn CapsLock off after it was pressed
-	CPLaunchCommandPicker()	
+	CPLaunchCommandPicker()
 return
 
 ;==========================================================
@@ -163,7 +163,7 @@ CPLaunchCommandPicker()
 {
 	; Let this function know about the necessary global variables.
 	global _cpWindowName, _cpActiveWindowID
-	
+
 	; If the Command Picker Window is not already open and in focus.
 	if !WinActive(_cpWindowName)
 	{
@@ -178,13 +178,13 @@ CPLaunchCommandPicker()
 ;==========================================================
 Esc Up::
 	global _cpEscapeKeyShouldReloadScriptWhenACommandIsRunning, _cpCommandIsRunning, _cpDisableEscapeKeyScriptReloadUntilAllCommandsComplete
-	
+
 	; Rethrow the Escape keypress that we intercepted.
 	SendInput, {Esc}
-	
+
 	; If the Escape key is allowed to reload the script when a Command is running, AND a Command is running, AND the user hasn't temporarily disabled the Escape key refresh functionaliry, then reload the script.
 	if (_cpEscapeKeyShouldReloadScriptWhenACommandIsRunning && _cpCommandIsRunning && !_cpDisableEscapeKeyScriptReloadUntilAllCommandsComplete)
-		Run, %A_ScriptFullPath%		
+		Run, %A_ScriptFullPath%
 return
 
 ;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -205,7 +205,7 @@ PgDn::CPForwardKeyPressToListBox("PgDn") return
 CPForwardKeyPressToListBox(key = "Down")
 {
 	global _cpWindowName
-	
+
 	; If the Command Picker window is active and the Edit box (i.e. search box) has focus.
 	ControlGetFocus, control, %_cpWindowName%
 	if (%control% = Edit1)
@@ -219,7 +219,7 @@ CPForwardKeyPressToListBox(key = "Down")
 ; Return hotkeys back to being processed in all windows.
 ;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #IfWinActive
-   
+
 ;==========================================================
 ; Create the Command Picker window if necessary and put it in focus.
 ;==========================================================
@@ -227,11 +227,11 @@ CPPutCommandPickerWindowInFocus()
 {
 	; Let this function know that all variables except the passed in parameters are global variables.
 	global _cpWindowName, _cpWindowGroup, _cpSearchedString
-	
+
 	; If the window is already open.
 	windowID := WinExist(_cpWindowName)
 	if (windowID > 0)
-	{		
+	{
 		; Put the window in focus, and give focus to the text box.
 		WinActivate, %_cpWindowName%
 		ControlFocus, Edit1, %_cpWindowName%
@@ -239,12 +239,12 @@ CPPutCommandPickerWindowInFocus()
 	; Else the window is not already open.
 	else
 	{
-		; Create the window	
+		; Create the window
 		CPCreateCommandPickerWindow()
 
 		; Make sure this window is in focus before sending commands.
 		WinWaitActive, %_cpWindowName%,, 5
-		
+
 		; If the window wasn't opened for some reason (or it opened but was closed very quickly).
 		windowID := WinExist(_cpWindowName)
 		if (windowID = 0)
@@ -253,7 +253,7 @@ CPPutCommandPickerWindowInFocus()
 			return false
 		}
 	}
-	
+
 	; Add this window to Command Picker window group.
 	GroupAdd, _cpWindowGroup, ahk_id %windowID%
 }
@@ -265,7 +265,7 @@ CPCreateCommandPickerWindow()
 {
 	; Let this function know about the necessary global variables.
 	global _cpWindowName, _cpCommandList, _cpCommandArray, _cpCommandDelimiter, _cpCommandSelected, _cpSearchedString, _cpNumberOfCommandsToShow, _cpWindowWidthInPixels, _cpFontSize, _cpShowAHKScriptInSystemTray, _cpShowSelectedCommandWindow, _cpCommandParameterSeparator, _cpParameterNameValueSeparator, _cpCommandMatchMethod, _cpCommandParameterListSeparator, _cpParameterDelimiter, _cpCommandDescriptionSeparator
-	
+
 	; Define any static variables needed for the GUI.
 	static commandListBoxContents := ""	; Will hold the commands currently being shown in the command list.
 	static lastKeyPressWasSearchingParameters := false	; Tells if the last search performed was on the command's preset parameters or not.
@@ -279,15 +279,15 @@ CPCreateCommandPickerWindow()
 	editBoxWidth := _cpWindowWidthInPixels - (11.5 * _cpFontSize)	; Try and size the Edit box according to the font size so that it leaves enough room for the "Run Command" button.
 	buttonHeightOffset := 0.25 * _cpFontSize						; The Button is taller than the Edit box, so calculate how much to move it up according to the font size to try and vertically center it with the Edit box.
 	buttonLeftMargin := _cpFontSize									; Calculate how much to space the Button from the Edit box based on the font size.
-	
+
 	; Add the controls to the GUI.
 	Gui Add, Edit, w%editBoxWidth% v_cpSearchedString gSearchedStringChanged
 	Gui Add, Button, gCommandSubmittedByButton Default x+%buttonLeftMargin% yp-%buttonHeightOffset%, Run Command		; default makes this the default action when Enter is pressed.
 	Gui Add, ListBox, Sort v_cpCommandSelected gCommandSubmittedByListBoxClick w%_cpWindowWidthInPixels% r%_cpNumberOfCommandsToShow% hscroll vscroll xm
-	
+
 	; Fill the ListBox with the commands.
 	gosub, FillListBoxWithAllCommands
-	
+
 	; Create and attach the Menu Bar
 	Menu, FileMenu, Add, &Close Window, MenuHandler
 	Menu, FileMane, Add			; Separator
@@ -296,21 +296,21 @@ CPCreateCommandPickerWindow()
 	Menu, MyMenuBar, Add, &File, :FileMenu
 	Menu, MyMenuBar, Add, &Settings, :SettingsMenu
 	Gui, Menu, MyMenuBar
-	
+
 	; Show the GUI, set focus to the input box, and wait for input.
 	Gui, Show, AutoSize Center, %_cpWindowName% - Choose a command to run
 	GuiControl, Focus, _cpSearchedString
-	
+
 	; Display a tooltip that we are waiting for a command to be entered.
 	CPShowTooltip("Enter a command")
-	
+
 	SetTimer, SleepScript, Off		; Restart the Sleep timer.
 	SetTimer, SleepScript, 100		; Sleep the AHK Command Picker several times a second so we can process hotkeys sent while commands are running.
-	
+
 	return  ; End of auto-execute section. The script is idle until the user does something.
 
 	SleepScript:
-		; Just sleep the script for one millisecond, so that if we are in a long-running loop in a user's command, the script will stop to 
+		; Just sleep the script for one millisecond, so that if we are in a long-running loop in a user's command, the script will stop to
 		; check if any other hotkeys or hotstrings have been sent.
 		; This is extremely important as it allows us to kill this script with a hotkey if the user's command is out of control.
 		Sleep, 1
@@ -333,10 +333,10 @@ CPCreateCommandPickerWindow()
 			CPShowSettingsWindow()	; Show the Settings window so the user can change settings if they want.
 		}
 	return
-	
+
 	SearchedStringChanged:
 		Gui 1:Submit, NoHide		; Get the values from the GUI controls without closing the GUI.
-	
+
 		; A problem seemed to be introduced with Windows 8 where if the user types very fast the "text changed" event on the Edit box
 		; does not fire after the last key has been pressed, so we end up filtering the listbox on a different SearchedString than is in the Edit box.
 		; The solution is to re-run the search again if the SearchedString is different than what we just searched with, so we keep looping until we are sure we searched on the proper SearchedString.
@@ -344,40 +344,40 @@ CPCreateCommandPickerWindow()
 		while ((haveEnteredLoopOnce = false) || isCurrentlyRunningSearchForCommand = false && textThatWillBeSearchedWith != _cpSearchedString)
 		{
 			haveEnteredLoopOnce := true
-			
+
 			; Save the text that we are going to search on, so that we know if it has changed by the time the search finishes and if we need to search again or not.
 			textThatWillBeSearchedWith := _cpSearchedString
-		
+
 			; Filter the listbox to show items based on the new SearchedString.
 			gosub, SearchForCommand
-			
+
 			; Sleep for a short period of time to allow the GUI to update, and then do the search again if necessary.
 			Sleep, 25
 			Gui 1:Submit, NoHide		; Get the values from the GUI controls without closing the GUI.
 		}
 	return
-	
+
 	SearchForCommand:
 		isCurrentlyRunningSearchForCommand := true
-	
+
 		searchingWithParameters := false	; Mark that we are searching for the command, ignoring any parameters that may be supplied.
-	
+
 		; Get the user's search string, stripping off any parameters that may have been provided.
 		searchText := _cpSearchedString
 		StringGetPos, firstCommandParameterSeparatorPosition, _cpSearchedString, %_cpCommandParameterListSeparator%
 		if (firstCommandParameterSeparatorPosition >= 0)
 		{
 			searchText := SubStr(_cpSearchedString, 1, firstCommandParameterSeparatorPosition)
-		}			
+		}
 
 		; Search for the command to select based on the user's input.
 		gosub, PerformSearch
-		
+
 		; If parameters are being provided, narrow the listbox contents down to just the currently selected command and any preset parameters that it might have before performing the search.
 		if (firstCommandParameterSeparatorPosition >= 0)
 		{
 			gosub, PerformSearchForPresetParameters
-			
+
 			; Record that this search was done on the preset parameters.
 			lastKeyPressWasSearchingParameters := true
 		}
@@ -386,36 +386,36 @@ CPCreateCommandPickerWindow()
 			; Record that this search was NOT done on the preset parameters.
 			lastKeyPressWasSearchingParameters := false
 		}
-		
+
 		isCurrentlyRunningSearchForCommand := false
 	return
 
 	PerformSearch:
 		indexThatShouldBeSelected := 0		; Assume that there are no matches for the given user string.
 		currentSelectionsText := ""			; The text of the selected command that will be run.
-	
+
 		; Do the search using whatever search method is specified in the settings.
 		if (_cpCommandMatchMethod = "Incremental")
 			gosub, IncrementalSearch
 		else
 			gosub, CamelCaseSearch
-		
+
 		; Select the command in the list, using the index if we have it (faster than using string).
 		; If currentSelectedText is empty then indexThatShouldBeSelected is likely 0, but we still use the index so that NO item gets selected.
 		if (indexThatShouldBeSelected > 0 || currentSelectionsText = "")
 			GuiControl Choose, _cpCommandSelected, %indexThatShouldBeSelected%
 		else
 			GuiControl Choose, _cpCommandSelected, %currentSelectionsText%
-		
+
 		; Display the currently selected command in the tooltip, and hide it after a bit of time.
 		CPShowTooltip(_cpSearchedString . " (" . currentSelectionsText . ")")
 	return
-	
+
 	PerformSearchForPresetParameters:
 		; If the user is trying to enter parameters for a command that doesn't exist, just exit.
 		if (_cpCommandSelected = "")
 			return
-		
+
 		; Get the name of the currently selected command.
 		commandName := CPGetCommandName(_cpCommandSelected)
 
@@ -425,7 +425,7 @@ CPCreateCommandPickerWindow()
 		Loop, Parse, commandParametersArray, %_cpParameterDelimiter%
 		{
 			parameterNameAndValue := A_LoopField
-			
+
 			; If this preset parameter has both a name and a value, strip them out to get the name.
 			StringGetPos, firstDelimiterPosition, parameterNameAndValue, %_cpParameterNameValueSeparator%
 			if (firstDelimiterPosition >= 0)
@@ -453,7 +453,7 @@ CPCreateCommandPickerWindow()
 		GuiControl, -Redraw, _cpCommandSelected		; To improve performance, don't redraw the list box until all items have been added.
 		GuiControl, , _cpCommandSelected, %_cpCommandDelimiter%%commandListBoxContents%	; Put a delimiter before the contents to clear the current listbox contents.
 		GuiControl, +Redraw, _cpCommandSelected
-		
+
 		; Setup the searchText to use to search for.
 		; Since the user may provide multiple parameters, we only want to search on the last parameter provided.
 		StringGetPos, lastCommandParameterSeparatorPosition, _cpSearchedString, %_cpCommandParameterListSeparator%, R	; Search from the Right side of the string.
@@ -467,7 +467,7 @@ CPCreateCommandPickerWindow()
 		; Search for the item to select based on the user's input, now that we have populated the listbox with the preset parameters (if any).
 		searchingWithParameters := true
 		gosub, PerformSearch
-		
+
 		; If no matches were found, choose the parameterless command (should always be the first item in the listbox).
 		if (currentSelectionsText = "")
 			GuiControl Choose, _cpCommandSelected, 1
@@ -483,10 +483,10 @@ CPCreateCommandPickerWindow()
 				gosub, FillListBoxWithAllCommands
 			}
 		}
-		
+
 		; Incremental search will need to exactly match the listbox contents, and items are never removed in incremental mode so we can always just search the listbox contents.
 		itemsToSearchThrough := commandListBoxContents
-		
+
 		searchedStringLength := StrLen(searchText)	; Get the length of the string the user entered.
 
 		; Loop through each item in the ListBox to see if the typed text matches any of the items.
@@ -501,7 +501,7 @@ CPCreateCommandPickerWindow()
 			}
 		}
 	return
-	
+
 	CamelCaseSearch:
 		matchingCommands := ""					; Will hold all of the commands that match the search string, so we know which ones to keep in the ListBox.
 		lowestWordIndexMatchedAgainst = 9999	; Used to keep track of which command matched against the string in the least number of words (as we want to select that command by default).
@@ -527,23 +527,23 @@ CPCreateCommandPickerWindow()
 			; Skip empty entries (somehow an empty one gets added after backspacing out the entire search string).
 			if (A_LoopField = "")
 				continue
-			
+
 			; Get the commandLine to process.
 			commandLine := A_LoopField
-			
+
 			; If we are not searching through preset parameters.
 			if (searchingWithParameters = false)
 			{
 				; Let's only search the command name, so that the camel-case search doesn't include the command description when matching.
 				commandLine := CPGetCommandName(commandLine)
 			}
-			
+
 			; Strip any spaces out of the command name, as they just get in the way of the camel case matching.
 			StringReplace, commandLine, commandLine, %A_Space%, , All
-			
+
 			; Also strip out the command-parameter separator so that it doesn't interfere.
 			StringReplace, commandLine, commandLine, %_cpCommandParameterSeparator%
-			
+
 			; Break each camel-case word out of the Command Line by separating them with a space.
 			; Regex Breakdown:	This will match against each word in Camel and Pascal case strings, while properly handling acrynoms.
 			;	(^[a-z]+)								Match against any lower-case letters at the start of the command.
@@ -552,10 +552,10 @@ CPCreateCommandPickerWindow()
 			;	([A-Z]+(?=([A-Z][a-z])|($)|([0-9])))	Match against multiple consecutive upper-case letters, leaving the last upper case letter out the match if it is followed by lower case letters, and including it if it's followed by the end of the string or a number.
 			words := RegExReplace(commandLine, "((^[a-z]+)|([0-9]+)|([A-Z]{1}[a-z]+)|([A-Z]+(?=([A-Z][a-z])|($)|([0-9]))))", "$1 ")
 			words := Trim(words)
-			
+
 			; Split the string into an array at each space.
 			StringSplit, wordArray, words, %A_Space%
-			
+
 			; Throw the array of words into an object so that we can pass it into the function below (array can't be passed directly by itself).
 			camelCaseWordsInCommandLine := {}					; Create a new object to hold the array of words.
 			camelCaseWordsInCommandLine.Length := wordArray0	; Record how many words are in the array.
@@ -564,20 +564,20 @@ CPCreateCommandPickerWindow()
 			{
 				camelCaseWordsInCommandLine.Words[%A_Index%] := wordArray%A_Index%
 			}
-			
+
 			; Get if this command matches against the searched string, and how good the match is.
 			lastWordIndexMatchedAgainst := CPCommandIsPossibleCamelCaseMatch(searchText, camelCaseWordsInCommandLine)
 
 			; If we are searching through parameters, make sure that the parameterless command is always added to the listbox, but make sure it is given a high value so that it is not chosen over another potential match.
 			if (searchingWithParameters && InStr(commandLine, _cpCommandDescriptionSeparator))
 				lastWordIndexMatchedAgainst := 9999
-			
+
 			; If this Command matches the search string, add it to our list of Commands to be displayed.
 			if (lastWordIndexMatchedAgainst > 0)
 			{
 				; Add this command to the list of matching commands.
 				matchingCommands .= _cpCommandDelimiter . A_LoopField
-				
+
 				; We want to select the command whose match is closest to the start of the string.
 				if (lastWordIndexMatchedAgainst < lowestWordIndexMatchedAgainst)
 				{
@@ -609,38 +609,38 @@ CPCreateCommandPickerWindow()
 	return
 
 	GuiSize:	; The user resized the window.
-	
+
 	return
 
 
-	CommandSubmittedByButton:		; The user submitted a selection using the Enter key or the Run Command button.		
+	CommandSubmittedByButton:		; The user submitted a selection using the Enter key or the Run Command button.
 	   gosub, CommandSubmitted
 	return
-	
+
 	CommandSubmittedByListBoxClick:	; The user submitted a selection by clicking in the ListBox.
 		; Only allow double clicks to run a command.
 		if (A_GuiEvent != "DoubleClick")
 			return
-		
+
 		gosub, CommandSubmitted
 	return
-		
-	CommandSubmitted:	
-		Gui 1:Submit, NoHide			; Get the values from the GUI controls without closing the GUI.	
+
+	CommandSubmitted:
+		Gui 1:Submit, NoHide			; Get the values from the GUI controls without closing the GUI.
 		commandWasSubmitted := true		; Record that the user actually wants to run the selected command (e.g. not just exit).
-		
+
 		; If the user did not specify a valid command, don't process anything.
 		if (_cpCommandSelected = "")
 		{
 			commandWasSubmitted := false
 			return
 		}
-		
+
 	GuiClose:			; The window was closed (by clicking X or through task manager).
 	GuiEscape:			; The Escape key was pressed.
 		Gui 1:Show, Hide	; Hide the GUI.
 		CPHideTooltip()	; Hide the tooltip that we were showing.
-	
+
 		; If the user just wants to close the window (i.e. they didn't submit a command), destroy it and exit.
 		if (commandWasSubmitted != true)
 		{
@@ -650,7 +650,7 @@ CPCreateCommandPickerWindow()
 		; Else the user submitted a command.
 
 		; Strip the Description off the command to get just the Command Name.
-		commandName := CPGetCommandName(_cpCommandSelected)			
+		commandName := CPGetCommandName(_cpCommandSelected)
 
 		; Get each provided parameter and store it in an array.
 		StringSplit, parametersArray, _cpSearchedString, %_cpCommandParameterListSeparator%
@@ -661,7 +661,7 @@ CPCreateCommandPickerWindow()
 		{
 			; Loop over each parameter that was typed by the user.
 			Loop, %parametersArray0%
-			{				
+			{
 				; Skip the first loop since it just contains the command name that the user typed.
 				if (A_Index = 1)
 					continue
@@ -671,7 +671,7 @@ CPCreateCommandPickerWindow()
 				{
 					; Form a new string to search the listbox with, which is just the Command Name and this one parameter.
 					_cpSearchedString := commandName . _cpCommandParameterListSeparator . parametersArray%A_Index%
-					
+
 					; Select the proper parameter value in the ListBox
 					gosub, PerformSearchForPresetParameters
 					Gui 1:Submit, NoHide	; Get the GUI's selected ListBox value.
@@ -691,7 +691,7 @@ CPCreateCommandPickerWindow()
 					parameterValue := parametersArray%A_Index%
 				}
 				parameterValue := Trim(parameterValue)
-				
+
 				; If a parameter was provided, add it to the list of parameters.
 				if (parameterValue != "")
 				{
@@ -699,7 +699,7 @@ CPCreateCommandPickerWindow()
 					if (parameters = "")
 						parameters := parameterValue
 					else
-						parameters .= _cpCommandParameterListSeparator . parameterValue 
+						parameters .= _cpCommandParameterListSeparator . parameterValue
 				}
 			}
 		}
@@ -714,10 +714,10 @@ CPCreateCommandPickerWindow()
 	FillListBoxWithAllCommands:
 		; Copy the _cpCommandList into commandListBoxContents.
 		commandListBoxContents := _cpCommandList
-		
+
 		; Sort the list of commands alphabetically.
 		Sort, commandListBoxContents, D%_cpCommandDelimiter%
-		
+
 		; Refresh the list of words in the ListBox.
 		GuiControl, -Redraw, _cpCommandSelected		; To improve performance, don't redraw the list box until all items have been added.
 		GuiControl, , _cpCommandSelected, %_cpCommandDelimiter%%commandListBoxContents%	; Insert a delimiter onto the start of the list to clear the current listbox contents.
@@ -732,7 +732,7 @@ CPShowTooltip(tooltipText = "", durationInMilliseconds = 3000)
 	SetTimer, HideToolTip, Off		; Restart the tooltip timer.
 	SetTimer, HideTooltip, %durationInMilliseconds%
 	return
-	
+
 	HideTooltip:
 		CPHideTooltip()
 	return
@@ -747,10 +747,10 @@ CPHideTooltip()
 
 ; Returns whether the given searchText matches against the words in the Array or not.
 CPCommandIsPossibleCamelCaseMatch(searchText, camelCaseWordsInCommandLine)
-{	
+{
 	; Strip any spaces out of the user's string, as they just get in the way of the camel case matching.
 	StringReplace, searchText, searchText, %A_Space%, , All
-	
+
 	; Get the number of characters that will need to be checked.
 	lengthOfUsersString := StrLen(searchText)
 
@@ -768,7 +768,7 @@ CPCommandIsPossibleCamelCaseMatch(searchText, camelCaseWordsInCommandLine)
 ; wordIndex = the current word in the wordArray that we are looking to match against.
 ; wordCharacterIndex = the current character of the wordIndex word that we are looking for a match against.
 CPLetterMatchesPartOfCurrentWordOrBeginningOfNextWord(searchString, searchStringLength, searchCharacterIndex, wordArray, numberOfWordsInArray, wordIndex, wordCharacterIndex)
-{	
+{
 	; If all of the characters in the search string were matched, return true that this command is a possible match.
 	if (searchCharacterIndex > searchStringLength)
 	{
@@ -781,17 +781,17 @@ CPLetterMatchesPartOfCurrentWordOrBeginningOfNextWord(searchString, searchString
 	{
 		return 0
 	}
-	
+
 	; Get the character at the specified character index
 	character := SubStr(searchString, searchCharacterIndex, 1)
-	
+
 	; If the character matches in this word, then keep going down this path.
 	if (character = SubStr(wordArray%wordIndex%, wordCharacterIndex, 1))
-	{		
+	{
 		; See if the next character matches the next character in the current word, or the start of the next word.
 		match1 := CPLetterMatchesPartOfCurrentWordOrBeginningOfNextWord(searchString, searchStringLength, searchCharacterIndex + 1, wordArray, numberOfWordsInArray, wordIndex, wordCharacterIndex + 1)
 		match2 := CPLetterMatchesPartOfCurrentWordOrBeginningOfNextWord(searchString, searchStringLength, searchCharacterIndex + 1, wordArray, numberOfWordsInArray, wordIndex + 1, 1)
-		
+
 		; If one or both of the paths returned a match.
 		if (match1 > 0 || match2 > 0)
 		{
@@ -833,7 +833,7 @@ CPRunCommand(commandName, parameters)
 
 	; If the Function to call doesn't exist, display an error and exit.
 	if (!IsFunc(commandFunction))
-	{	
+	{
 		MsgBox, Function "%commandFunction%" does not exist.
 		return
 	}
@@ -883,7 +883,7 @@ CPRunCommand(commandName, parameters)
 	{
 		; Get the command's text to show.
 		command := _cpCommandArray[commandName].ToString()
-		
+
 		; Display the Command's text on the screen, as well as any text returned from the command (i.e. the textReturnedFromCommand).
 		CPDisplayTextOnScreen(command, textReturnedFromCommand)
 	}
@@ -896,18 +896,18 @@ CPGetCommandName(command)
 {
 	; Let this function know about the necessary global variables.
 	global _cpCommandDescriptionSeparator, _cpCommandParameterSeparator
-	
+
 	; We're not sure if we are being given the Command+Description or Command+Parameter, so try and split against both.
-	
+
 	; Replace each Command-Description separator string with an accent symbol so that it is easy to split against (since we can only split against characters, not strings).
 	StringReplace, command, command, %_cpCommandDescriptionSeparator%, ``, All
-	
+
 	; Replace each Command-Parameter separator string with an accent symbol so that it is easy to split against (since we can only split against characters, not strings).
 	StringReplace, command, command, %_cpCommandParameterSeparator%, ``, All
-	
+
 	; Split the string at the accent symbol, and strip spaces and tabs off each element.
 	StringSplit, commandArray, command,``, %A_Space%%A_Tab%
-	
+
 	; return the first element of the array, as that should be the command name.
 	return %commandArray1%
 }
@@ -928,10 +928,10 @@ CPGetPresetParameterValues(commandName, presetParameterNames)
 	{
 		; Trim any whitespace off the preset parameter name so that we can match against it properly.
 		presetParameterName := Trim(A_LoopField)
-		
+
 		; Variable to tell if we found a value for this presetParameterName or not.
 		matchFound := false
-		
+
 		; Get the command's preset parameters and loop through each of them.
 		presetParameters := _cpCommandArray[commandName].Parameters
 		Loop, Parse, presetParameters, %_cpParameterDelimiter%
@@ -959,7 +959,7 @@ CPGetPresetParameterValues(commandName, presetParameterNames)
 				break
 			}
 		}
-		
+
 		; If we couldn't find the parameter name in the list of preset parameters, assume this is a custom parameter and append it to the end of the list.
 		if (matchFound = false)
 			parameterValues := CPAppendParameterValueToEndOfList(parameterValues, presetParameterName)
@@ -973,13 +973,13 @@ CPGetPresetParameterValues(commandName, presetParameterNames)
 CPAppendParameterValueToEndOfList(parameterList, parameterValue)
 {
 	global _cpParameterDelimiter
-	
+
 	; If the list is empty right now, just set it to this value, otherwise append this value to the end of the list, separating it from the previous paramter value with the delimiter.
 	if (parameterList = "")
 		parameterList := parameterValue
 	else
 		parameterList .= _cpParameterDelimiter . parameterValue
-	
+
 	return parameterList
 }
 
@@ -990,98 +990,98 @@ CPShowSettingsWindow()
 {
 	; Let this function know about the necessary global variables.
 	global _cpWindowName, _cpNumberOfCommandsToShow, _cpWindowWidthInPixels, _cpFontSize, _cpShowAHKScriptInSystemTray, _cpCommandMatchMethod, _cpShowSelectedCommandWindow, _cpNumberOfSecondsToShowSelectedCommandWindowFor, _cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand, _cpNumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand, _cpEscapeKeyShouldReloadScriptWhenACommandIsRunning
-	
+
 	; Define any static variables needed for the GUI.
 	static CommandMatchMethodDescription
-	
+
 	Gui 2:Default	; Specify that these controls are for window #2.
-	
+
 	; Create the GUI.
 	Gui, +AlwaysOnTop +Owner ToolWindow ; +Owner avoids a taskbar button ; +OwnDialogs makes any windows launched by this one modal ; ToolWindow makes border smaller and hides the min/maximize buttons.
 
 	; Add the controls to the GUI.
 	Gui, Add, Checkbox, v_cpShowAHKScriptInSystemTray Checked%_cpShowAHKScriptInSystemTray%, Show AHK script in the system tray
-	
+
 	Gui, Add, GroupBox, x10 w500 r8, Command Picker Window Options:
 		Gui, Add, Text, yp+25 x20, Number of commands to show:
 		Gui, Add, Edit, x+5
 		Gui, Add, UpDown, v_cpNumberOfCommandsToShow Range1-50, %_cpNumberOfCommandsToShow%
-		
+
 		Gui, Add, Text, yp+25 x20, Font size:
 		Gui, Add, Edit, x+5
 		Gui, Add, UpDown, v_cpFontSize Range5-25, %_cpFontSize%
-		
+
 		Gui, Add, Text, yp+25 x20, Window width (in pixels):
 		Gui, Add, Edit, x+5
 		Gui, Add, UpDown, v_cpWindowWidthInPixels Range100-2000, %_cpWindowWidthInPixels%
-		
+
 		Gui, Add, Text, yp+25 x20, Command search method:
 		Gui, Add, DropDownList, x+5 v_cpCommandMatchMethod gCommandMatchMethodChanged Sort, Type Ahead|Incremental
 		Gui, Add, Text, yp+25 x40 vCommandMatchMethodDescription w450 h45,
-	
+
 	;gui, add, text, xm w500 0x10  ;Horizontal Line
-	
+
 	Gui, Add, GroupBox, x10 w500 r3, Selected Command Window Options:
 		Gui, Add, Checkbox, yp+25 x20 v_cpShowSelectedCommandWindow Checked%_cpShowSelectedCommandWindow% gShowSelectedCommandWindowToggled, Show selected command window (after picker closes) for
 		Gui, Add, Edit, x+0 w50 v_cpNumberOfSecondsToShowSelectedCommandWindowFor, %_cpNumberOfSecondsToShowSelectedCommandWindowFor%
 		;~ Gui, Add, UpDown, v_cpNumberOfSecondsToShowSelectedCommandWindowFor Range1-10, %_cpNumberOfSecondsToShowSelectedCommandWindowFor%
 		Gui, Add, Text, x+5, seconds.
-		Gui, Add, Checkbox, yp+25 x20 v_cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand Checked%_cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand% gShowSelectedCommandWindowWhenInfoIsReturnedFromCommandToggled, Show selected command window when command returns info for 
+		Gui, Add, Checkbox, yp+25 x20 v_cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand Checked%_cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand% gShowSelectedCommandWindowWhenInfoIsReturnedFromCommandToggled, Show selected command window when command returns info for
 		Gui, Add, Edit, x+0 w50 v_cpNumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand, %_cpNumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand%
 		Gui, Add, Text, x+5, seconds.
-		
+
 	Gui, Add, GroupBox, x10 w500 r4, Escape Key Options:
 		Gui, Add, Checkbox, yp+25 x20 v_cpEscapeKeyShouldReloadScriptWhenACommandIsRunning Checked%_cpEscapeKeyShouldReloadScriptWhenACommandIsRunning%, Allow the Escape key to kill all currently running commands.
 		Gui, Add, Text, yp+20 x40, The Escape key can be used to kill Commands that are currently running by reloading the script.`nIf enabled, but you need to use "Send {Escape}" in your Command, temporarily disable this by`nusing "_cpDisableEscapeKeyScriptReloadUntilAllCommandsComplete := true" in your Command.
-	
+
 	Gui, Add, Button, gSettingsCancelButton xm w100, Cancel
 	Gui, Add, Button, gSettingsSaveButton x+300 w100, Save
-	
+
 	GuiControl, Choose, _cpCommandMatchMethod, %_cpCommandMatchMethod%
 	gosub, CommandMatchMethodChanged	; Display the description of the currently selected Command Match Method.
-	
+
 	; Show the GUI, set focus to the input box, and wait for input.
 	Gui, Show, AutoSize Center, %_cpWindowName% - Settings
-	
+
 	return  ; End of auto-execute section. The script is idle until the user does something.
-	
+
 	CommandMatchMethodChanged:
 		Gui 2:Submit, NoHide	; Get the values from the GUI controls without closing the GUI.
 
 		; Update the shown description based on which search method is selected.
-		if (_cpCommandMatchMethod = "Type Ahead")	
+		if (_cpCommandMatchMethod = "Type Ahead")
 			GuiControl, , Static5, - Matches against Camel/Pascal Casing of any part of the command name.`n- Filters the list as you type to only show possible matches.`nE.g. 'WebBro', 'WB', 'B', and 'Brow' would all match against a 'WebBrowser' command.
 		else
 			GuiControl, , Static5, - Only matches against the command name exactly.`n- Will not filter the list as you type.`nE.g. 'WebBro' would match against a 'WebBrowser' command.
 	return
-	
+
 	ShowSelectedCommandWindowToggled:
 		Gui 2:Submit, NoHide	; Get the values from the GUI controls without closing the GUI.
-		
+
 		; If ShowSelectedCommandWindow is checked, also check off the ShowSelectedCommandWindowWhenInfoIsReturnedFromCommand checkbox.
 		if (_cpShowSelectedCommandWindow)
 			GuiControl, , Button5, 1
 	return
-	
+
 	ShowSelectedCommandWindowWhenInfoIsReturnedFromCommandToggled:
 		Gui 2:Submit, NoHide	; Get the values from the GUI controls without closing the GUI.
-		
+
 		; If ShowSelectedCommandWindowWhenInfoIsReturnedFromCommand is unchecked, also uncheck the ShowSelectedCommandWindow checkbox.
 		if (_cpShowSelectedCommandWindowWhenInfoIsReturnedFromCommand = false)
 			GuiControl, , Button4, 0
 	return
-		
+
 	SettingsSaveButton:		; Settings Save button was clicked.
 		Gui 2:Submit, NoHide	; Get the values from the GUI controls without closing the GUI.
 		CPSaveSettings()	; Save the settings before loading them again.
-	
+
 	SettingsCancelButton:	; Settings Cancel button was clicked.
 	2GuiClose:				; The window was closed (by clicking X or through task manager).
 	2GuiEscape:				; The Escape key was pressed.
 		CPLoadSettings()	; If user pressed Cancel the old settings will be loaded. If they pressed Save the saved settings will be loaded.
 		Gui, 2:Destroy		; Close the GUI, but leave the script running.
 		CPLaunchCommandPicker()	; Re-launch the Command Picker.
-	return	
+	return
 }
 
 ;==========================================================
@@ -1091,15 +1091,15 @@ CPDisplayTextOnScreen(title, text = "")
 {
 	; Import any required global variables.
 	global _cpNumberOfSecondsToShowSelectedCommandWindowFor, _cpNumberOfSecondsToShowSelectedCommandWindowForWhenInfoIsReturnedFromCommand
-	
+
 	titleFontSize := 24
 	textFontSize := 16
-	
+
 	; Shrink the margin so that the text goes up close to the edge of the window border.
 	windowMargin := titleFontSize * 0.1
-	
+
 	Gui 3:Default	; Specify that these controls are for window #3.
-	
+
 	; Create the transparent window to display the text
 	backgroundColor = DDDDDD  ; Can be any RGB color (it will be made transparent below).
 	Gui +LastFound +AlwaysOnTop -Caption +ToolWindow +Border  ; +ToolWindow avoids a taskbar button and an alt-tab menu item.
@@ -1112,7 +1112,7 @@ CPDisplayTextOnScreen(title, text = "")
 		Gui, Add, Text,, %text%
 	WinSet, TransColor, FFFFFF 180	; Make all pixels of this color transparent (shouldn't be any with color FFFFFF) and make all other pixels semi-transparent.
 	Gui, Show, AutoSize Center NoActivate  ; NoActivate avoids deactivating the currently active window.
-	
+
 	; Set the window to close after the given duration.
 	if (text = "")
 		durationToShowWindowForInMilliseconds := _cpNumberOfSecondsToShowSelectedCommandWindowFor * 1000
@@ -1123,7 +1123,7 @@ CPDisplayTextOnScreen(title, text = "")
 	return
 
 	FadeOutText:
-		
+
 	return
 
 	CloseWindow:
@@ -1150,21 +1150,21 @@ AddCommand(functionName, descriptionOfWhatFunctionDoes = "", parameterList = "",
 AddNamedCommand(commandName, functionName, descriptionOfWhatFunctionDoes = "", parameterList = "", defaultParameterValue = "")
 {
 	global _cpCommandList, _cpCommandArray, _cpCommandDelimiter, _cpCommandDescriptionSeparator, _cpCommandParameterSeparator, _cpCommandParameterListSeparator
-	
+
 	; Trim all of the given values.
 	commandName := Trim(commandName)
 	functionName := Trim(functionName)
 	descriptionOfWhatFunctionDoes := Trim(descriptionOfWhatFunctionDoes)
 	parameterList := Trim(parameterList)
 	defaultParameterValue := Trim(defaultParameterValue)
-	
+
 	; The Command Names should be unique, so make sure it is not already in the list.
 	if (_cpCommandArray[commandName])
 	{
 		MsgBox, The command '%commandName%' has already been added to the list of commands. Command names should be unique.
 		return
 	}
-	
+
 	; Make sure the Command Name does not contain any special strings that we parse on.
 	if (InStr(commandName, _cpCommandDescriptionSeparator))
 	{
@@ -1181,7 +1181,7 @@ AddNamedCommand(commandName, functionName, descriptionOfWhatFunctionDoes = "", p
 		MsgBox, The command '%commandName%' is not allowed to contain the special string '%_cpCommandParameterListSeparator%'. You must remove this string from the command's name before it will be allowed.
 		return
 	}
-	
+
 	; Remove any whitespace around the parameter.
 	; Ideally this regex would be the following, but it breaks at run-time since ',' is a special character:
 	; RegExReplace(parameters, "(\s*%_cpParameterDelimiter%\s*)", "%_cpParameterDelimiter%")
@@ -1195,10 +1195,10 @@ AddNamedCommand(commandName, functionName, descriptionOfWhatFunctionDoes = "", p
 	command.Parameters := parameterList
 	command.DefaultParameterValue := defaultParameterValue
 	command.ToString := Func("CPCommand_ToString")
-	
+
 	; Add the command into the Command Array.
 	_cpCommandArray[commandName] := command
-	
+
 	; Add the command into our delimited list of commands string.
 	commandString := commandName . " " . _cpCommandDescriptionSeparator . " " . descriptionOfWhatFunctionDoes
 	if (_cpCommandList = "")
@@ -1221,19 +1221,19 @@ CPCommand_ToString(this)
 ; prefix = The prefix to add to the beginning of all the command names in the commandList.
 ; postfix = The postfix to add to the end of all the command names in the commandList.
 AddCommandsWithPrePostfix(functionName, descriptionOfWhatFunctionDoes = "", commandList = "", prefix = "", postfix = "")
-{	
+{
 	global _cpCommandNameValueSeparator, _cpParameterDelimiter
-	
+
 	; Trim the given values that won't be passed explicitly into AddNamedCommand to be trimmed.
 	commandList := Trim(commandList)
 	prefix := Trim(prefix)
 	postfix := Trim(postfix)
-	
+
 	; Loop through each command in the commandList
 	Loop, Parse, commandList, %_cpParameterDelimiter%
 	{
 		commandNameAndValue := A_LoopField
-		
+
 		; If this command has both a name and a value, strip them out.
 		StringGetPos, firstDelimiterPosition, commandNameAndValue, %_cpCommandNameValueSeparator%
 		if (firstDelimiterPosition >= 0)
