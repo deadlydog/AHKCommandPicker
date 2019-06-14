@@ -14,7 +14,6 @@ CloseWindow()
 
 In this example you can see that the global variable `_cpActiveWindowID` contains the AHK ID of the window that was active before the AHK Command Picker window was opened. Use this variable whenever you need to reference the last active window from a AHK Command Picker command.
 
-
 ## How To Send A Virtual Escape Key Press Without Reloading The Script
 
 If you have the `Allow the Escape key to kill all currently running commands` setting enabled, but need one of your commands to send an Escape key press to a window (e.g. SendInput, {Esc}), then use:
@@ -29,7 +28,6 @@ This will prevent the virtual Escape key press from reloading the script, and th
 
 If you just use __cpDisableEscapeKeyScriptReloadUntilAllCommandsComplete := true_, but never set it back to false, it will automatically be set back to false once there are no longer any commands running. Keep in mind though, the Escape key will not be able to kill any running commands until this happens.
 
-
 ## Reporting Errors Or Extra Information From A Command
 
 After a command runs, its name and description are displayed for a short period to give the user confirmation that the actions were indeed performed. If a command returns some text, this text will also be displayed.
@@ -39,27 +37,32 @@ For example, if we wanted our _ExploreDirectory_ command to tell us which direct
 ```AutoHotkey
 ExploreDirectory(directoriesToOpen = "")
 {
-	Loop, Parse, directoriesToOpen, CSV
-	{
-		directoryToOpen := A_LoopField
-		Run, explore "%directoryToOpen%"
-	}
-	return Opening %directoriesToOpen%
+    Loop, Parse, directoriesToOpen, CSV
+    {
+        directoryToOpen := A_LoopField
+        Run, explore "%directoryToOpen%"
+    }
+    return Opening %directoriesToOpen%
 }
 ```
 
 ## Have AHK Command Picker Automatically Start When You Log Into Windows
 
-If you do not require the `AHKCommandPicker.ahk` script to run as an admin (see below), it is fairly straight forward to have AHK Command Picker (or any program) start when you log into Windows:
+It is fairly straight forward to have AHK Command Picker (or any program) start when you log into Windows:
 
-Open up the Windows Start Menu, navigate to the Startup folder within All Programs, right-click on it and choose Open All Users (or navigate to "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp"). Then simply paste a shortcut to AHK Command Picker's `AHKCommandPicker.ahk` file in this folder. That's it; the script will now launch whenever any user logs into Windows. If you only want the script to run when YOU log into Windows (no other users), then just choose Open instead of Open All Users when right-clicking on the Startup folder (or navigate to "C:\Users\<User Name>\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup").
+1. Press `Windows Key` + `R` to open the Run window.
+1. Type `shell:startup` and hit enter.
+   - If you want AHK Command Picker to start whenever _anybody_ logs into Windows, not just you, use `shell:common startup`.
+1. File Explorer should open at a location like, `C:\Users\[Your Username]\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup`, or `C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp` if you used the common startup command.
+1. Paste a shortcut to the `AHKCommandPicker.ahk` script into this directory.
+
+That's it; the script will now launch whenever you (or any user depending which startup directory you used) logs into Windows.
 
 ## Have AHK Command Picker Run As An Administrator
 
 In order to launch the AHK Command Picker GUI when an application running as administrator has focus (such as the Control Panel or Windows Explorer / File Explorer, in Windows 8), either the [AutoHotkey executable will need to be signed][BlogShowingHowToSignAutoHotkeyUrl] (preferred method), or the `AHKCommandPicker.ahk` script will also need to be running as an administrator.
 
 You can check out [my blog post][BlogShowingHowToHaveAutoHotkeyStartAsAdminAtStartupUrl] to see how to have the script automatically run as an administrator at login. If you want to run the script as an admin, but don't want it to automatically start when you log into Windows, you can simply right-click on the `AHKCommandPicker.ahk` file and choose Run As Admin. However, it will likely be more convenient for you to create a shortcut to that file, place the shortcut somewhere easily accessible (such as on your desktop), and set the shortcut properties to always launch the script as an admin. Part of [my other blog post][BlogShowingHowToHaveAutoHotkeyInteractWithAdminWindowsUrl] contains similar instructions and a screenshot on how to do this.
-
 
 <!-- Links -->
 [BlogShowingHowToSignAutoHotkeyUrl]: http://blog.danskingdom.com/get-autohotkey-to-interact-with-admin-windows-without-running-ahk-script-as-admin/
