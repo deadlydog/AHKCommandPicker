@@ -1,6 +1,6 @@
 # AHK Command Picker Description
 
-An AutoHotkey (AHK) script that allows you to easily call AHK functions to run other AHK scripts. (Requires [AutoHotkey_L][AutoHotkeyWebsiteUrl]).
+An AutoHotkey (AHK) script that allows you to easily call AHK functions and run other AHK scripts. (Requires [AutoHotkey_L][AutoHotkeyWebsiteUrl]).
 
 Instead of having to remember what hotkey maps to each of your AHK scripts (as you could have hundreds), this displays a list of Commands in a light-weight GUI that allows you to quickly and easily run your scripts. Simply type part of the command name and hit enter to run your script. You can also provide parameters to your commands, allowing you to change the functionality of a command with a few keystrokes.
 
