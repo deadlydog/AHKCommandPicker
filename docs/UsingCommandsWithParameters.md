@@ -62,6 +62,7 @@ AddCommand("ExploreDirectory", "Opens the directory supplied in the parameters",
 ```
 
 Here is an example of what the GUI might look like if we had added many more directories:
+
 ![Using preset parameters][UsingPresetParametersImage]
 
 ## Passing Parameters Into The Selected Command From The GUI
