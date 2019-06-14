@@ -1,4 +1,4 @@
-# Project Description
+# AHK Command Picker Description
 
 An AutoHotkey (AHK) script that allows you to easily call AHK functions to run other AHK scripts. (Requires [AutoHotkey_L][AutoHotkeyWebsiteUrl]).
 
