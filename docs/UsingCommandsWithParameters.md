@@ -8,7 +8,7 @@ For example, we could re-write the _ExploreCDrive_ Command and Function to open 
 AddCommand("ExploreDirectory", "Opens the directory supplied in the parameters", "", "C:\")
 ExploreDirectory(directoryToOpen = "")
 {
-	Run, explore "%directoryToOpen%"
+    Run, explore "%directoryToOpen%"
 }
 ```
 
@@ -20,11 +20,11 @@ Because AHK Command Picker supports passing multiple parameters into a command, 
 AddCommand("ExploreDirectory", "Opens the directory supplied in the parameters", "", "C:\")
 ExploreDirectory(directoriesToOpen = "")
 {
-	Loop, Parse, directoriesToOpen, CSV
-	{
-		directoryToOpen := A_LoopField
-		Run, explore "%directoryToOpen%"
-	}
+    Loop, Parse, directoriesToOpen, CSV
+    {
+        directoryToOpen := A_LoopField
+        Run, explore "%directoryToOpen%"
+    }
 }
 ```
 
@@ -64,7 +64,6 @@ AddCommand("ExploreDirectory", "Opens the directory supplied in the parameters",
 Here is an example of what the GUI might look like if we had added many more directories:
 ![Using preset parameters][UsingPresetParametersImage]
 
-
 ## Passing Parameters Into The Selected Command From The GUI
 
 When using the GUI to select a command to run, you can pass a parameter to the selected command to run by placing a comma (,) after the name of the command to run and then typing in the parameter value. If any preset parameters have been defined for the command then they will show up in the GUI list. You may pass multiple parameters into the command by using a comma-separated list; that is, every comma specifies that the following text is a new parameter value.
@@ -72,7 +71,6 @@ When using the GUI to select a command to run, you can pass a parameter to the s
 Going back to our _ExploreDirectory_ command we defined above, you could have it open the C:\SomeDir directory by typing "ExploreDirectory, C:\SomeDir". You could also have it open many directories by passing in a comma separated list, such as "ExploreDirectory, C:\SomeDirectory, C:\Some\Other\Directory", or if the command has a preset parameter with a user-friendly name, you can use that too. From the example above, we could type, "ExploreDirectory, My Directory, C Drive, C:\Some\Other\Directory".
 
 Note too that you do not have to type in the entire command and parameter name; only enough so that it gets selected in the list box. So in the above example you might be able to simply type, "Ex, MyD, CD, C:\Some" to open all of those same directories.
-
 
 <!-- Links -->
 [UsingPresetParametersImage]: Images/UsingPresetParameters.png

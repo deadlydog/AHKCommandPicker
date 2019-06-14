@@ -26,7 +26,7 @@ ExploreCDrive()
 AddCommand("ExploreProgramFiles", "Explore Program Files")
 ExploreProgramFiles()
 {
-	Run, explore "C:\Program Files"
+    Run, explore "C:\Program Files"
 }
 ```
 
@@ -58,11 +58,11 @@ AddParameterToString(directories, "Program Files|C:\Program Files")
 AddCommands("ExploreDirectory", "Open directory", directories)
 ExploreDirectory(directoriesToOpen = "")
 {
-	Loop, Parse, directoriesToOpen, CSV
-	{
-		directoryToOpen := A_LoopField
-		Run, explore "%directoryToOpen%"
-	}
+    Loop, Parse, directoriesToOpen, CSV
+    {
+        directoryToOpen := A_LoopField
+        Run, explore "%directoryToOpen%"
+    }
 }
 ```
 
@@ -73,7 +73,6 @@ One more time, this is what the result might look like if we added many more dir
 ![Using Many Commands][UsingManyCommandsImage]
 
 Notice that you no longer need to type "ExploreDirectory," to see the list of directories to explore; they are listed along-side all of the other commands. For example, you could now just type "C Drive" to open `C:\`.
-
 
 ## Prepend Command Names
 
@@ -88,7 +87,6 @@ Here we specified that all of these commands should have a prefix of "e" (and we
 ![Using many commands with prefix][UsingManyCommandsWithPrefixImage]
 
 Note the "e" at the beginning of our commands that call ExploreDirectory().
-
 
 <!-- Links -->
 [UsingCommandsWithParametersPage]: UsingCommandsWithParameters.md

@@ -8,7 +8,6 @@ Once the AHKCommandPicker.ahk script is running, press the `Caps Lock` key to br
 
 If you want to turn Caps Lock on, use `Shift` + `Caps Lock` to toggle it on and off.
 
-
 ## Adding New Commands
 
 Open the `Commands\MyCommands.ahk` file for editing; this can be done quickly by using CapsLock to open the AHK Command Picker and running the `EditMyCommands` command. From here you can either write your custom commands directly in MyCommands.ahk, or create a new ahk file and `#Include` its path in MyCommands.ahk, or a mix of the two approaches.
@@ -51,13 +50,11 @@ ExploreCDrive()
 }
 ```
 
-
 ## Where To Create Hotkeys
 
 Hotkeys and hotstrings should be added to the `Commands\MyHotkeys.ahk` file; this file can be opened for editing by using CapsLock to open the AHK Command Picker and running the `EditMyHotkeys` command. From here you can either write your custom hotkeys and hotstrings directly in MyHotkeys.ahk, or create a new ahk file and `#Include` it's path in MyHotkeys.ahk, or a mix of the two approaches.
 
 **Any commands defined after a hotkey or hotstring will not show up in the AHK Command Picker**. This is why it is vital that hotkeys and hotstrings are created in the MyHotkeys.ahk file, since MyCommands.ahk is included before MyHotkeys.ahk.
-
 
 ## How To Convert An Existing Hotkey Into a Command
 
@@ -65,7 +62,7 @@ Typically most of your existing AHK scripts are bound to a hotkey so that you ca
 
 ```AutoHotkey
 #z::
-	Run, explore C:\SomeFolder
+    Run, explore C:\SomeFolder
 return
 ```
 
@@ -75,7 +72,7 @@ To convert this into a command that will show up in the AHK Command Picker, you 
 AddCommand("OpenSomeFolder", "Opens C:\SomeFolder in Windows Explorer")
 OpenSomeFolder()
 {
-	Run, explore C:\SomeFolder
+    Run, explore C:\SomeFolder
 }
 ```
 
@@ -83,12 +80,11 @@ If you still wanted to have the hotkey, be sure you define it in the MyHotkeys.a
 
 ```AutoHotkey
 #z::
-	OpenSomeFolder()
+    OpenSomeFolder()
 return
 ```
 
 Typically your AHK scripts/hotkeys are probably more than one line long, but this shows the general concept.
-
 
 ## Additional Info
 

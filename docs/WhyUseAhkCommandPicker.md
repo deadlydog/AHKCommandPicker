@@ -18,7 +18,6 @@ AHK Command Picker also allows you to:
 
 If you are trying to determine if something is worth taking the time to automate, [consult this handy chart][XkcdComicAboutDeterminingIfSomethingIsWorthAutomatingUrl].
 
-
 <!-- Links -->
 [CamelCaseExplanationUrl]: http://en.wikipedia.org/wiki/CamelCase
 [XkcdComicAboutDeterminingIfSomethingIsWorthAutomatingUrl]: http://xkcd.com/1205/
