@@ -56,6 +56,9 @@ It is fairly straight forward to have AHK Command Picker (or any program) start 
 1. File Explorer should open at a location like, `C:\Users\[Your Username]\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup`, or `C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp` if you used the common startup command.
 1. Paste a shortcut to the `AHKCommandPicker.ahk` script into this directory.
 
+![Run window with shell startup command][RunWindowWithShellStartupImage]
+![Users Startup directory with shortcut][UsersStartupDirectoryWithShortcutImage]
+
 That's it; the script will now launch whenever you (or any user depending which startup directory you used) logs into Windows.
 
 ## Have AHK Command Picker Run As An Administrator
@@ -68,3 +71,5 @@ You can check out [my blog post][BlogShowingHowToHaveAutoHotkeyStartAsAdminAtSta
 [BlogShowingHowToSignAutoHotkeyUrl]: http://blog.danskingdom.com/get-autohotkey-to-interact-with-admin-windows-without-running-ahk-script-as-admin/
 [BlogShowingHowToHaveAutoHotkeyStartAsAdminAtStartupUrl]: http://blog.danskingdom.com/get-autohotkey-script-to-run-as-admin-at-startup/
 [BlogShowingHowToHaveAutoHotkeyInteractWithAdminWindowsUrl]: http://blog.danskingdom.com/autohotkey-cannot-interact-with-windows-8-windowsor-can-it/
+[RunWindowWithShellStartupImage]: Images/RunWindowWithShellStartup.png
+[UsersStartupDirectoryWithShortcutImage]: Images/UsersStartupDirectoryWithShortcut.png
