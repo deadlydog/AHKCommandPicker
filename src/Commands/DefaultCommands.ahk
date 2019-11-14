@@ -1,6 +1,7 @@
 ;==========================================================
 ; Global Variables
 ;==========================================================
+_Outlook2016ExecutablePath = C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE
 _Outlook2013ExecutablePath = C:\Program Files\Microsoft Office\Office15\OUTLOOK.EXE
 _Outlook2010ExecutablePath = C:\Program Files\Microsoft Office\Office14\OUTLOOK.EXE
 _Outlook2007ExecutablePath = C:\Program Files\Microsoft Office\Office12\OUTLOOK.EXE
@@ -174,7 +175,7 @@ OutlookAppointment()
 }
 
 GetOutlookExecutablePath()
-{	global _Outlook2002ExecutablePath, _Outlook2003ExecutablePath, _Outlook2007ExecutablePath, _Outlook2010ExecutablePath, _Outlook2013ExecutablePath
+{	global _Outlook2002ExecutablePath, _Outlook2003ExecutablePath, _Outlook2007ExecutablePath, _Outlook2010ExecutablePath, _Outlook2013ExecutablePath, _Outlook2016ExecutablePath
 	IfExist, %_Outlook2002ExecutablePath%
 		outlookExecutablePath := _Outlook2002ExecutablePath
 	IfExist, %_Outlook2003ExecutablePath%
@@ -185,6 +186,8 @@ GetOutlookExecutablePath()
 		outlookExecutablePath := _Outlook2010ExecutablePath
 	IfExist, %_Outlook2013ExecutablePath%
 		outlookExecutablePath := _Outlook2013ExecutablePath
+	IfExist, %_Outlook2016ExecutablePath%
+		outlookExecutablePath := _Outlook2016ExecutablePath
 	return %outlookExecutablePath%
 }
 
@@ -400,3 +403,15 @@ UrlDownloadToVar(URL, ByRef Result, UserAgent = "", Proxy = "", ProxyBypass = ""
     DllCall("FreeLibrary", "UInt", hModule)
 }
 
+AddCommand("PastePlainText", "Pastes the contents of the clipboard as plain text, with all special formatting removed")
+PastePlainText()
+{
+	originalClipboardContents = %ClipBoardAll%
+	
+	ClipBoard = %ClipBoard%					; Convert to text
+	Send ^v									; Paste the text
+	
+	Sleep 50								; Don't change clipboard while it is pasted
+	ClipBoard := OriginalClipboardContents	; Restore original clipboard contents
+	originalClipboardContents =				; Free memory
+}
