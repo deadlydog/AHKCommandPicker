@@ -18,7 +18,7 @@ IDEAS:
 ;==========================================================
 ; Global Variables - prefix everything with "cp" for Command Picker, so that variable/function names are not likely to conflict with user variables/function names.
 ;==========================================================
-_cpWindowName := "AHK Command Picker v1.3.2"
+_cpWindowName := "AHK Command Picker v2.0.0"
 _cpWindowGroup := ""					; The group that will hold our Command Picker window so we can reference it from # directive statements (e.g. #IfWinExists).
 _cpCommandList := ""					; Will hold the list of all available commands.
 _cpCommandSelected := ""				; Will hold the command selected by the user.
@@ -118,8 +118,20 @@ CPSaveSettings()
 }
 
 ;==========================================================
-; Add a Dummy command to use for debugging.
+; Add and include the commands that should be available.
+;
+; Example:
+;	AddCommand("SQL", "Launch SQL Management Studio")
+;	SQL()
+;	{
+;		Run "C:\Program Files (x86)\Microsoft SQL Server\100\Tools\Binn\VSShell\Common7\IDE\Ssms.exe"
+;		return false	; (optional) Return false to not display the command text after running the command.
+;	}
 ;==========================================================
+
+;----------------------------------------------------------
+; Add a Dummy command to use for debugging.
+;----------------------------------------------------------
 AddNamedCommand("Dummy Command", "DummyCommand", "A command that doesn't do anything, but can be useful for testing and debugging", "Parameter1Name|Parameter1Value, Parameter2Value,Param3Name|Param3Value,Param4Value")
 DummyCommand(parameters = "")
 {
@@ -134,19 +146,44 @@ DummyCommand(parameters = "")
 	return, "This is some text returned by the dummy command."
 }
 
-;==========================================================
-; Inserts the scripts containing the commands (i.e. string + function) to run.
-; The scripts we are including should add commands and their associated functions.
-;
-; Example:
-;	AddCommand("SQL", "Launch SQL Management Studio")
-;	SQL()
-;	{
-;		Run "C:\Program Files (x86)\Microsoft SQL Server\100\Tools\Binn\VSShell\Common7\IDE\Ssms.exe"
-;		return false	; (optional) Return false to not display the command text after running the command.
-;	}
-;==========================================================
-#Include %A_ScriptDir%\CommandScriptsToInclude.ahk
+;----------------------------------------------------------
+; Define commands for users to easily edit their commands and hotkeys.
+;----------------------------------------------------------
+AddCommand("EditMyCommands", "Opens the MyCommands.ahk script for editing in the default editor, or notepad.")
+EditMyCommands()
+{
+	filePath = %A_ScriptDir%\Commands\MyCommands.ahk
+	Run, edit %filePath%,,UseErrorLevel
+	if (%ErrorLevel% = ERROR)
+		Run, "notepad" "%filePath%"
+}
+
+AddCommand("EditMyHotkeys", "Opens the MyHotkeys.ahk script for editing in the default editor, or notepad.")
+EditMyHotkeys()
+{
+	filePath = %A_ScriptDir%\Commands\MyHotkeys.ahk
+	Run, edit %filePath%,,UseErrorLevel
+	if (%ErrorLevel% = ERROR)
+		Run, "notepad" "%filePath%"
+}
+
+;----------------------------------------------------------
+; Include our utility functions used by some of the Commands first.
+;----------------------------------------------------------
+#Include %A_ScriptDir%\Commands\UtilityFunctions.ahk
+
+;----------------------------------------------------------
+; Include the files with the Commands we want to include in the picker.
+;----------------------------------------------------------
+#Include %A_ScriptDir%\Commands\DefaultCommands.ahk
+#Include %A_ScriptDir%\Commands\MyCommands.ahk
+
+;----------------------------------------------------------
+; Include any files containing HotKeys/HotStrings last, as any AddCommand functions defined after
+; a HotKey/HotString won't be loaded at startup, and hence, won't show up in the Command Picker list.
+;----------------------------------------------------------
+#Include %A_ScriptDir%\Commands\DefaultHotkeys.ahk
+#Include %A_ScriptDir%\Commands\MyHotkeys.ahk
 
 ;==========================================================
 ; Hotkey to launch the Command Picker window.
@@ -614,7 +651,7 @@ CPCreateCommandPickerWindow()
 
 
 	CommandSubmittedByButton:		; The user submitted a selection using the Enter key or the Run Command button.
-	   gosub, CommandSubmitted
+		gosub, CommandSubmitted
 	return
 
 	CommandSubmittedByListBoxClick:	; The user submitted a selection by clicking in the ListBox.
@@ -1297,4 +1334,3 @@ AddParameterToString(ByRef parametersString, parameterToAdd)
 	else
 		parametersString .= _cpParameterDelimiter . parameterToAdd
 }
-
