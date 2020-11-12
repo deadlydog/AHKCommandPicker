@@ -1,5 +1,12 @@
 /*
 IDEAS:
+
+- Make it easy for users to install and update AHK Command Picker without losing their customization commands/hotkeys.
+	- This is the main factor to consider for v2.0.
+	- Have an installer perhaps, along with a checkbox to automatically run the script at startup.
+- Make the AddCommandsFromVariable a standard thing so it's easy for people to add apps, directories, and websites to launch.
+- Dark mode. Ideally use Windows system default.
+
 - Have the GUI optional. Instead can just press CapsLock to bring up tooltip that says "Enter Command", and then user types in the tooltip instead of popping the large GUI. Could still autocomplete the command and show it in the tooltip though.
 - Maybe just hide the GUI instead of actually closing it every time; this would be good for tooltip mode too, since the tooltip could show the currently selected command from the window.
 - Allow user to create new simple commands easily from the GUI and save them in their own file (open file/program, path, website).
