@@ -1,20 +1,10 @@
 ;==========================================================
-; Global Variables
-;==========================================================
-_Outlook2016ExecutablePath = C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE
-_Outlook2013ExecutablePath = C:\Program Files\Microsoft Office\Office15\OUTLOOK.EXE
-_Outlook2010ExecutablePath = C:\Program Files\Microsoft Office\Office14\OUTLOOK.EXE
-_Outlook2007ExecutablePath = C:\Program Files\Microsoft Office\Office12\OUTLOOK.EXE
-_Outlook2003ExecutablePath = C:\Program Files\Microsoft Office\Office11\OUTLOOK.EXE
-_Outlook2002ExecutablePath = C:\Program Files\Microsoft Office\Office10\OUTLOOK.EXE
-
-;==========================================================
-; Commands
+; Commands that will work without any additional things installed.
 ;==========================================================
 AddCommand("ReloadAHKScript", "Reloads this AutoHotKey script")
 ReloadAHKScript()
 {
-	Run, %A_ScriptFullPath%	
+	Run, %A_ScriptFullPath%
 }
 
 AddCommand("ExitAHKScript", "Stops and closes this AutoHotKey script")
@@ -43,13 +33,13 @@ PCRestart()
 
 AddCommand("eMyComputer", "Explore My Computer")
 eMyComputer()
-{ 
+{
 	Run, ::{20d04fe0-3aea-1069-a2d8-08002b30309d}  ; Opens the "My Computer" folder.
 }
 
 AddCommand("eRecycleBin", "Explore the Recycle Bin")
 eRecycleBin()
-{ 
+{
 	Run, ::{645ff040-5081-101b-9f08-00aa002f954e}  ; Opens the Recycle Bin.
 }
 
@@ -64,7 +54,7 @@ OpenClipboard()
 {
 	; Trim any whitespace, tabs, single-quotes and double-quotes off of the clipboard text before processing it.
 	clipboardText := Trim(clipboard, " `t`'`"`"")
-	
+
 	; If the file/folder path exists, open it.
 	IfExist, %clipboardText%
 	{
@@ -75,7 +65,7 @@ OpenClipboard()
 		; Determine if the clipboard contains a URL.
 		urlRegex := "((https?|ftp|gopher|telnet|file|notes|ms-help):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+-=\\\.&]*)"
 		foundPosition := RegExMatch(clipboardText, urlRegex)
-		
+
 		; If the start of the clipboard is a URL, open it.
 		if (foundPosition = 1)
 			Run, %clipboardText%
@@ -139,58 +129,6 @@ WindowNotAlwaysOnTop()
 	WinSet, AlwaysOnTop, Off, ahk_id %_cpActiveWindowID%
 }
 
-AddCommand("Outlook", "Opens Outlook making sure it is maximized")
-Outlook()
-{	
-	outlookExecutablePath := GetOutlookExecutablePath()
-	
-	; Look for Outlook 2013.
-	windowID := PutWindowInFocus("- Outlook", outlookExecutablePath . " /recycle", 2)
-	
-	; If not found, try looking for Outlook 2010.
-	if (windowID < 1)
-		windowID := PutWindowInFocus("Microsoft Outlook", outlookExecutablePath . " /recycle", 2)
-	
-	; If not found, try looking for any version of Outlook.
-	if (windowID < 1)
-		windowID := PutWindowInFocus("Outlook", outlookExecutablePath . " /recycle", 2)
-	
-	; If we have a handle to the Outlook window, make sure it is maximized.
-	if (windowID > 0)
-	{
-		; Maximize the window if it is not already maximized.
-		WinGet, maximized, MinMax, ahk_id %windowID%
-		if (maximized != 1)
-		{
-			WinMaximize, ahk_id %windowID%
-		}
-	}
-}
-
-AddCommand("OutlookAppointment", "Creates a new Appointment in Outlook")
-OutlookAppointment()
-{	
-	outlookExecutablePath := GetOutlookExecutablePath()
-	Run, "%outlookExecutablePath%" /recycle /c ipm.appointment
-}
-
-GetOutlookExecutablePath()
-{	global _Outlook2002ExecutablePath, _Outlook2003ExecutablePath, _Outlook2007ExecutablePath, _Outlook2010ExecutablePath, _Outlook2013ExecutablePath, _Outlook2016ExecutablePath
-	IfExist, %_Outlook2002ExecutablePath%
-		outlookExecutablePath := _Outlook2002ExecutablePath
-	IfExist, %_Outlook2003ExecutablePath%
-		outlookExecutablePath := _Outlook2003ExecutablePath
-	IfExist, %_Outlook2007ExecutablePath%
-		outlookExecutablePath := _Outlook2007ExecutablePath
-	IfExist, %_Outlook2010ExecutablePath%
-		outlookExecutablePath := _Outlook2010ExecutablePath
-	IfExist, %_Outlook2013ExecutablePath%
-		outlookExecutablePath := _Outlook2013ExecutablePath
-	IfExist, %_Outlook2016ExecutablePath%
-		outlookExecutablePath := _Outlook2016ExecutablePath
-	return %outlookExecutablePath%
-}
-
 AddCommand("ContextMenu", "Simulates a right-click by using Shift+F10")
 ContextMenu()
 {
@@ -215,7 +153,7 @@ DoWebSearch(queries = "")
 	Loop, Parse, queries, CSV
 	{
 		query := A_LoopField
-		
+
 		; If this query is actually a URL, just go to the URL directly.
 		if (RegExMatch(query, "^(https?://|www\.)|([a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(/\S*)?)$"))
 		{
@@ -223,7 +161,7 @@ DoWebSearch(queries = "")
 		}
 		; Else the query is not a URL, so Google it.
 		else
-		{		
+		{
 			; If the query starts with a "1", then do an "I'm feeling lucky" search.
 			firstChar := SubStr(query, 1, 1)
 			imFeelingLucky := false
@@ -232,15 +170,15 @@ DoWebSearch(queries = "")
 				StringTrimLeft, query, query, 1
 				imFeelingLucky = true
 			}
-			
+
 			; Construct the address and then go to.
 			address = www.google.ca/search?q=%query%
-			
+
 			; If we should use the I'm Feeling Lucky, enable it.
 			if (imFeelingLucky)
 				address .= "&btnI=745"	; Adding &btnI=745 to the end of the URL uses Google's I'm Feeling Lucky.
 		}
-		
+
 		; Open up the address in a new tab.
 		Run, %address%
 	}
@@ -294,8 +232,8 @@ AddCommand("URLShortenAndPaste", "Replaces the long URL in the clipboard with a 
 URLShortenAndPaste()
 {
 	; Get the URL from the clipboard
-	longURL = %clipboard%	
-	
+	longURL = %clipboard%
+
 	; Try and shorten the URL
 	URL = http://tinyurl.com/api-create.php?url=%longURL%
 	UrlDownloadToVar(URL,shortURL)
@@ -304,7 +242,7 @@ URLShortenAndPaste()
 	StringLeft, prefix, shortURL, 4
 	if (%prefix% = http)
 		Goto, ShortenURL_Shortened
-	
+
 	; Try and shorten the URL
 	URL = http://is.gd/api.php?longurl=%longURL%
 	UrlDownloadToVar(URL,shortURL)
@@ -321,12 +259,12 @@ URLShortenAndPaste()
 	StringLeft, prefix, shortURL, 4
 	if (%prefix% = http)
 		Goto, ShortenURL_Shortened
-	
-	
+
+
 	ShortenURL_ERROR:
 		msg = Could not shorten the URL: `r`n %longURL%
 	return %msg%
-	
+
 	ShortenURL_Shortened:
 		Clipboard = %shortURL%
 		SendInput, %shortURL%
@@ -407,11 +345,73 @@ AddCommand("PastePlainText", "Pastes the contents of the clipboard as plain text
 PastePlainText()
 {
 	originalClipboardContents = %ClipBoardAll%
-	
+
 	ClipBoard = %ClipBoard%					; Convert to text
 	Send ^v									; Paste the text
-	
+
 	Sleep 50								; Don't change clipboard while it is pasted
 	ClipBoard := OriginalClipboardContents	; Restore original clipboard contents
 	originalClipboardContents =				; Free memory
+}
+
+;==========================================================
+; Commands that require Outlook to be installed.
+;==========================================================
+
+AddCommand("Outlook", "Opens Outlook making sure it is maximized")
+Outlook()
+{
+	outlookExecutablePath := GetOutlookExecutablePath()
+
+	; Look for Outlook 2013.
+	windowID := PutWindowInFocus("- Outlook", outlookExecutablePath . " /recycle", 2)
+
+	; If not found, try looking for Outlook 2010.
+	if (windowID < 1)
+		windowID := PutWindowInFocus("Microsoft Outlook", outlookExecutablePath . " /recycle", 2)
+
+	; If not found, try looking for any version of Outlook.
+	if (windowID < 1)
+		windowID := PutWindowInFocus("Outlook", outlookExecutablePath . " /recycle", 2)
+
+	; If we have a handle to the Outlook window, make sure it is maximized.
+	if (windowID > 0)
+	{
+		; Maximize the window if it is not already maximized.
+		WinGet, maximized, MinMax, ahk_id %windowID%
+		if (maximized != 1)
+		{
+			WinMaximize, ahk_id %windowID%
+		}
+	}
+}
+
+AddCommand("OutlookAppointment", "Creates a new Appointment in Outlook")
+OutlookAppointment()
+{
+	outlookExecutablePath := GetOutlookExecutablePath()
+	Run, "%outlookExecutablePath%" /recycle /c ipm.appointment
+}
+
+GetOutlookExecutablePath()
+{
+	outlookExecutablePaths := [ "C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE"
+		, "C:\Program Files\Microsoft Office\Office15\OUTLOOK.EXE"
+		, "C:\Program Files\Microsoft Office\Office14\OUTLOOK.EXE"
+		, "C:\Program Files\Microsoft Office\Office12\OUTLOOK.EXE"
+		, "C:\Program Files\Microsoft Office\Office11\OUTLOOK.EXE"
+		, "C:\Program Files\Microsoft Office\Office10\OUTLOOK.EXE" ]
+
+	; Look for the executable in known locations, starting with the newest version.
+	for index, outlookExecutablePath in outlookExecutablePaths
+	{
+		IfExist, %outlookExecutablePath%
+			return %outlookExecutablePath%
+	}
+
+	; If we couldn't find it in known locations, look for it dynamically (future proofing a bit).
+	Loop Files, %A_ProgramFiles%\Microsoft Office\*Outlook.exe, R
+	{
+		return %A_LoopFileFullPath%
+	}
 }
