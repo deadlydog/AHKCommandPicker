@@ -4,3 +4,4 @@
 ;	e.g. #Include MyWorkRelatedHotkeys.ahk	; MyWorkRelatedHotkeys.ahk should be in the Commands directory along with this MyHotkeys.ahk file.
 ; ===============================================
 
+; #Include %A_ScriptDir%\Commands\MyWorkRelatedHotkeys.ahk
