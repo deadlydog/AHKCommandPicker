@@ -66,3 +66,9 @@ Motivation for creating AHK Command Picker and some AHK problems it solves:
 
 [AllCommandsImage]: docs/Images/AHKCommandPicker-AllCommands.png
 [FilteredCommandsImage]: docs/Images/AHKCommandPicker-FilteredCommands.png
+
+## 💳 Donate
+
+Buy me a pastry 🍰 for providing this script open source and for free 🙂
+
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=D7PW6YBWNDLXW)
