@@ -1,16 +1,22 @@
 # AHK Command Picker Description
 
-An AutoHotkey (AHK) script that allows you to easily call AHK functions and run other AHK scripts. (Requires [AutoHotkey_L][AutoHotkeyWebsiteUrl]).
+An AutoHotkey (AHK) script that allows you to easily call AHK functions and run other AHK scripts.
+(Requires [AutoHotkey_L][AutoHotkeyWebsiteUrl]).
 
-Instead of having to remember what hotkey maps to each of your AHK scripts (as you could have hundreds), this displays a list of Commands in a light-weight GUI that allows you to quickly and easily run your scripts. Simply type part of the command name and hit enter to run your script. You can also provide parameters to your commands, allowing you to change the functionality of a command with a few keystrokes.
+Instead of having to remember what hotkey maps to each of your AHK scripts (as you could have hundreds), this displays a list of Commands in a light-weight GUI that allows you to quickly and easily run your scripts.
+Simply type part of the command name and hit enter to run your script.
+You can also provide parameters to your commands, allowing you to change the functionality of a command with a few keystrokes.
 
 For more reasons to use this with your AHK scripts, see [Why Use AHK Command Picker][WhyUseAhkCommandPickerPage].
 
 ## How To Use AHK Command Picker
 
-Start by [downloading the latest release][DownloadLatestReleaseUrl]. To launch AHK Command Picker run the `AHKCommandPicker.ahk` script.
+Start by [downloading the latest release][DownloadLatestReleaseUrl].
+To launch AHK Command Picker run the `AHKCommandPicker.ahk` script.
 
-Press the `Caps Lock` key to bring up the AHK Command Picker GUI. From there just type the name of the command that you want to run and hit enter to run it. You can still toggle Caps Lock on and off by pressing `Shift`+`Caps Lock`.
+Press the `Caps Lock` key to bring up the AHK Command Picker GUI.
+From there just type the name of the command that you want to run and hit enter to run it.
+You can still toggle Caps Lock on and off by pressing `Shift`+`Caps Lock`.
 
 To add your own commands to AHK Command Picker, see [the documentation][DocumentationPage].
 
@@ -42,9 +48,18 @@ Motivation for creating AHK Command Picker and some AHK problems it solves:
 
 ## Quotes / Testimonials
 
-> I've found that by not having to find and assign a specific hotkey (i.e. keyboard combination) to each of my scripts, I am more likely to automate many more of my tasks. Before I would worry about having to remember too many keyboard shortcuts and the overhead involved (remembering which shortcut launches what, accidentally triggering them, etc.), so I would only use AHK to automate the tasks that I did all of the time. Now with AHK Command Picker these problems are gone, so I automate everything; even the tasks that I might only do once a month.
+> I've found that by not having to find and assign a specific hotkey (i.e. keyboard combination) to each of my scripts, I am more likely to automate many more of my tasks.
+> Before I would worry about having to remember too many keyboard shortcuts and the overhead involved (remembering which shortcut launches what, accidentally triggering them, etc.), so I would only use AHK to automate the tasks that I did all of the time.
+> Now with AHK Command Picker these problems are gone, so I automate everything; even the tasks that I might only do once a month.
 
-> A great tool for any AHK user: the interface is intuitive, adding your own commands\hotkeys and interacting with other AHK programs is easy, and the source code is well written and modifiable. Most of all, Command picker does what it claims to do: make windows automation easy by removing the need to remember hotkeys.
+> A great tool for any AHK user: the interface is intuitive, adding your own commands\hotkeys and interacting with other AHK programs is easy, and the source code is well written and modifiable.
+> Most of all, Command picker does what it claims to do: make windows automation easy by removing the need to remember hotkeys.
+
+## 💳 Donate
+
+Buy me a pastry 🍰 for providing this script open source and for free 🙂
+
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=D7PW6YBWNDLXW)
 
 <!-- Links -->
 [AutoHotkeyWebsiteUrl]: http://www.autohotkey.com
@@ -66,9 +81,3 @@ Motivation for creating AHK Command Picker and some AHK problems it solves:
 
 [AllCommandsImage]: docs/Images/AHKCommandPicker-AllCommands.png
 [FilteredCommandsImage]: docs/Images/AHKCommandPicker-FilteredCommands.png
-
-## 💳 Donate
-
-Buy me a pastry 🍰 for providing this script open source and for free 🙂
-
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=D7PW6YBWNDLXW)
