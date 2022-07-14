@@ -9,7 +9,7 @@ You can also provide parameters to your commands, allowing you to change the fun
 
 For more reasons to use this with your AHK scripts, see [Why Use AHK Command Picker][WhyUseAhkCommandPickerPage].
 
-## How To Use AHK Command Picker
+## 🚀 How To Use AHK Command Picker
 
 Start by [downloading the latest release][DownloadLatestReleaseUrl].
 To launch AHK Command Picker run the `AHKCommandPicker.ahk` script.
@@ -22,7 +22,7 @@ To add your own commands to AHK Command Picker, see [the documentation][Document
 
 You will likely want to [have AHKCommandPicker start automatically when you log into Windows][AutomaticallyStartAtLogin].
 
-## Screen Shots
+## 🖼 Screen Shots
 
 All commands:
 
@@ -32,7 +32,7 @@ Commands filtered as you type:
 
 ![Filtered Commands][FilteredCommandsImage]
 
-## Videos
+## 🎦 Videos
 
 Get started with AHK Command Picker in under 2 minutes:
 
@@ -46,7 +46,7 @@ Motivation for creating AHK Command Picker and some AHK problems it solves:
 
 [![Motivation for creating AHK Command Picker video][MotivationForCreatingAhkCommandPickerYouTubeImageUrl]][MotivationForCreatingAhkCommandPickerYouTubeUrl]
 
-## Quotes / Testimonials
+## 💬 Quotes / Testimonials
 
 > I've found that by not having to find and assign a specific hotkey (i.e. keyboard combination) to each of my scripts, I am more likely to automate many more of my tasks.
 > Before I would worry about having to remember too many keyboard shortcuts and the overhead involved (remembering which shortcut launches what, accidentally triggering them, etc.), so I would only use AHK to automate the tasks that I did all of the time.
