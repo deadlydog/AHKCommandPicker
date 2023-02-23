@@ -12,6 +12,7 @@ Features:
 
 Fixes:
 
+- Fix issue where the wrong command is sometimes selected when typing quickly ([GitHub issue #3](https://github.com/deadlydog/AHKCommandPicker/issues/3)).
 - Make Outlook commands more resilient.
 
 Breaking changes:
