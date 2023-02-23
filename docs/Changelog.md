@@ -4,22 +4,38 @@ This page is a list of _notable_ changes made in each version.
 
 ## vNext
 
+### App
+
 Features:
 
-- Updated file structure to make updating to new versions easier down the road.
-- Added support for Outlook 2016.
-- Add commands for creating an Outlook appointment and opening the Outlook calendar.
+- Updated file structure to separate User Commands from the built-in Default Commands to make updating to new versions easier in the future (BREAKING CHANGE).
 
 Fixes:
 
 - Fix issue where the wrong command is sometimes selected when typing quickly ([GitHub issue #3](https://github.com/deadlydog/AHKCommandPicker/issues/3)).
-- Make Outlook commands more resilient.
 
 Breaking changes:
 
 - Removed the `CommandScriptsToInclude.ahk` file.
   If you had added lines to that file to include other scripts, you will need to move those include statements to the `MyCommands.ahk` file.
-- Changed Default Hotkey for moving a window from Alt+MouseDrag to LeftWin+MouseDrag.
+- Moved the `MyCommands.ahk` and `MyHotkeys.ahk` files to the `UserCommands` directory.
+  If you had customized the `MyCommands.ahk` or `MyHotkeys.ahk` files, you will need to copy their contents into the new equivalent files in the `UserCommands` directory.
+  If you had added lines to include other scripts, you will need to update the include statement's directory path from `Commands` to `UserCommands`.
+
+### Default Commands
+
+Features:
+
+- Added support for Outlook 2016.
+- Add commands for creating an Outlook appointment and opening the Outlook calendar.
+
+Fixes:
+
+- Make Outlook commands more resilient.
+
+Breaking changes:
+
+- Changed the Default Hotkey for moving a window with your mouse by grabbing it anywhere (not just the title bar) from `Alt`+`MouseDrag` to `LeftWin`+`MouseDrag`.
 
 ## v1.3.2 - May 4, 2016
 

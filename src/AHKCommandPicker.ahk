@@ -175,22 +175,22 @@ EditMyHotkeys()
 }
 
 ;----------------------------------------------------------
-; Include our utility functions used by some of the Commands first.
+; Include our utility functions used by some of the Default Commands first.
 ;----------------------------------------------------------
-#Include %A_ScriptDir%\Commands\UtilityFunctions.ahk
+#Include %A_ScriptDir%\DefaultCommands\UtilityFunctions.ahk
 
 ;----------------------------------------------------------
 ; Include the files with the Commands we want to include in the picker.
 ;----------------------------------------------------------
-#Include %A_ScriptDir%\Commands\DefaultCommands.ahk
-#Include %A_ScriptDir%\Commands\MyCommands.ahk
+#Include %A_ScriptDir%\DefaultCommands\DefaultCommands.ahk
+#Include %A_ScriptDir%\UserCommands\MyCommands.ahk
 
 ;----------------------------------------------------------
 ; Include any files containing HotKeys/HotStrings last, as any AddCommand functions defined after
 ; a HotKey/HotString won't be loaded at startup, and hence, won't show up in the Command Picker list.
 ;----------------------------------------------------------
-#Include %A_ScriptDir%\Commands\DefaultHotkeys.ahk
-#Include %A_ScriptDir%\Commands\MyHotkeys.ahk
+#Include %A_ScriptDir%\DefaultCommands\DefaultHotkeys.ahk
+#Include %A_ScriptDir%\UserCommands\MyHotkeys.ahk
 
 ;==========================================================
 ; Hotkey to launch the Command Picker window.
