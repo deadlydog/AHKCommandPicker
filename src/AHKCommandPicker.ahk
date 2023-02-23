@@ -25,7 +25,7 @@ IDEAS:
 ;==========================================================
 ; Global Variables - prefix everything with "cp" for Command Picker, so that variable/function names are not likely to conflict with user variables/function names.
 ;==========================================================
-_cpWindowName := "AHK Command Picker v2.0.0"
+_cpWindowName := "AHK Command Picker v2.0.1"
 _cpWindowGroup := ""					; The group that will hold our Command Picker window so we can reference it from # directive statements (e.g. #IfWinExists).
 _cpCommandList := ""					; Will hold the list of all available commands.
 _cpCommandSelected := ""				; Will hold the command selected by the user.
@@ -450,6 +450,10 @@ CPCreateCommandPickerWindow()
 			GuiControl Choose, _cpCommandSelected, %indexThatShouldBeSelected%
 		else
 			GuiControl Choose, _cpCommandSelected, %currentSelectionsText%
+
+		; Ensure _cpCommandSelected gets updated with the new value, otherwise it sometimes has
+		; the wrong value when typing quickly, due to a race condition I suppose.
+		Gui 1:Submit, NoHide		; Get the values from the GUI controls without closing the GUI.
 
 		; Display the currently selected command in the tooltip, and hide it after a bit of time.
 		CPShowTooltip(_cpSearchedString . " (" . currentSelectionsText . ")")
