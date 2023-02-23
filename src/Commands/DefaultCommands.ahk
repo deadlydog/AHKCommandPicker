@@ -349,7 +349,7 @@ PastePlainText()
 	ClipBoard = %ClipBoard%					; Convert to text
 	Send ^v									; Paste the text
 
-	Sleep 50								; Don't change clipboard while it is pasted
+	Sleep 50								; Don't change clipboard until it is done pasting
 	ClipBoard := OriginalClipboardContents	; Restore original clipboard contents
 	originalClipboardContents =				; Free memory
 }
@@ -363,8 +363,21 @@ Outlook()
 {
 	outlookExecutablePath := GetOutlookExecutablePath()
 
-	; Look for Outlook 2013.
-	windowID := PutWindowInFocus("- Outlook", outlookExecutablePath . " /recycle", 2)
+	; Try finding the window using the process name first (rather than matching the window title).
+	windowID := PutWindowInFocus("ahk_exe OUTLOOK.EXE", outlookExecutablePath . " /recycle", 2)
+
+	; If we found a window using the process name, make sure it's the main Outlook window and not the Reminders or other window.
+	if (windowID > 0)
+	{
+		; If this isn't the main Outlook window, reset the windowID so we can search for it by window title.
+		WinGetTitle, windowTitle, A
+		IfNotInString, windowTitle, "Outlook"
+			windowID := 0
+	}
+
+	; If not found, try looking for Outlook 2013+.
+	if (windowID < 1)
+		windowID := PutWindowInFocus("- Outlook", outlookExecutablePath . " /recycle", 2)
 
 	; If not found, try looking for Outlook 2010.
 	if (windowID < 1)
@@ -377,6 +390,11 @@ Outlook()
 	; If we have a handle to the Outlook window, make sure it is maximized.
 	if (windowID > 0)
 	{
+		; Get the active window's Title to ensure it has "Outlook" in the name so we don't maximize the Reminders or other windows.
+		WinGetTitle, windowTitle, A
+		IfNotInString, windowTitle, "Outlook"
+			return
+
 		; Maximize the window if it is not already maximized.
 		WinGet, maximized, MinMax, ahk_id %windowID%
 		if (maximized != 1)
@@ -384,13 +402,6 @@ Outlook()
 			WinMaximize, ahk_id %windowID%
 		}
 	}
-}
-
-AddCommand("OutlookAppointment", "Creates a new Appointment in Outlook")
-OutlookAppointment()
-{
-	outlookExecutablePath := GetOutlookExecutablePath()
-	Run, "%outlookExecutablePath%" /recycle /c ipm.appointment
 }
 
 GetOutlookExecutablePath()
@@ -414,4 +425,18 @@ GetOutlookExecutablePath()
 	{
 		return %A_LoopFileFullPath%
 	}
+}
+
+AddCommand("NewOutlookAppointment", "Creates a new Appointment in Outlook")
+NewOutlookAppointment()
+{
+	outlookExecutablePath := GetOutlookExecutablePath()
+	Run, "%outlookExecutablePath%" /recycle /c ipm.appointment
+}
+
+AddCommand("OutlookCalendar", "Creates a new Meeting in Outlook")
+OutlookCalendar()
+{
+	outlookExecutablePath := GetOutlookExecutablePath()
+	Run, "%outlookExecutablePath%" /recycle /select outlook:calendar
 }
