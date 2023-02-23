@@ -434,7 +434,7 @@ NewOutlookAppointment()
 	Run, "%outlookExecutablePath%" /recycle /c ipm.appointment
 }
 
-AddCommand("OutlookCalendar", "Creates a new Meeting in Outlook")
+AddCommand("OutlookCalendar", "Opens Outlook to the calendar view")
 OutlookCalendar()
 {
 	outlookExecutablePath := GetOutlookExecutablePath()
