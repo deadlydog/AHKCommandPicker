@@ -14,7 +14,6 @@ AHK Command Picker requires [AutoHotkey_L][AutoHotkeyWebsiteUrl] to be installed
 
 <!-- Links -->
 [AutoHotkeyWebsiteUrl]: http://www.autohotkey.com
-[WhyUseAhkCommandPickerPage]: WhyUseAhkCommandPicker.md
 [GettingStartedPage]: GettingStarted.md
 [UsingCommandsWithParametersPage]: UsingCommandsWithParameters.md
 [AddingMultipleCommandsAtOncePage]: AddingMultipleCommandsAtOnce.md
