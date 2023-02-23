@@ -2,6 +2,24 @@
 
 This page is a list of _notable_ changes made in each version.
 
+## vNext
+
+Features:
+
+- Updated file structure to make updating to new versions easier down the road.
+- Added support for Outlook 2016.
+- Add commands for creating an Outlook appointment and opening the Outlook calendar.
+
+Fixes:
+
+- Make Outlook commands more resilient.
+
+Breaking changes:
+
+- Removed the `CommandScriptsToInclude.ahk` file.
+  If you had added lines to that file to include other scripts, you will need to move those include statements to the `MyCommands.ahk` file.
+- Changed Default Hotkey for moving a window from Alt+MouseDrag to LeftWin+MouseDrag.
+
 ## v1.3.2 - May 4, 2016
 
 Fixes:
