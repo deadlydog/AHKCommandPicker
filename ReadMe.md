@@ -55,6 +55,15 @@ Motivation for creating AHK Command Picker and some AHK problems it solves:
 > A great tool for any AHK user: the interface is intuitive, adding your own commands\hotkeys and interacting with other AHK programs is easy, and the source code is well written and modifiable.
 > Most of all, Command picker does what it claims to do: make windows automation easy by removing the need to remember hotkeys.
 
+## ➕ How to contribute
+
+Issues and Pull Requests are welcome.
+See [the Contributing page](docs/Contributing.md) for more details.
+
+## 📃 Changelog
+
+See what's changed in the application over time by viewing [the changelog](docs/Changelog.md).
+
 ## 💳 Donate
 
 Buy me a pastry 🍰 for providing this script open source and for free 🙂
