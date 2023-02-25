@@ -66,7 +66,7 @@ See [the Contributing page](docs/Contributing.md) for more details.
 
 ## 📃 Changelog
 
-See what's changed in the application over time by viewing [the changelog](docs/Changelog.md).
+See what's changed in the application over time by viewing [the Changelog](docs/Changelog.md).
 
 ## 💳 Donate
 
