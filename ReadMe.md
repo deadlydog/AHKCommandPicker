@@ -1,7 +1,7 @@
 # AHK Command Picker Description
 
-An AutoHotkey (AHK) script that allows you to easily call AHK functions and run other AHK scripts.
-(Requires [AutoHotkey_L][AutoHotkeyWebsiteUrl]).
+An [AutoHotkey][AutoHotkeyWebsiteUrl] (AHK) script that allows you to easily call AHK functions and run other AHK scripts.
+(Requires [AutoHotkey v1.1][AutoHotkeyDownloadPageUrl]).
 
 Instead of having to remember what hotkey maps to each of your AHK scripts (as you could have hundreds), this displays a list of Commands in a light-weight GUI that allows you to quickly and easily run your scripts.
 Simply type part of the command name and hit enter to run your script.
@@ -71,7 +71,8 @@ Buy me a pastry 🍰 for providing this script open source and for free 🙂
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=D7PW6YBWNDLXW)
 
 <!-- Links -->
-[AutoHotkeyWebsiteUrl]: http://www.autohotkey.com
+[AutoHotkeyWebsiteUrl]: https://www.autohotkey.com
+[AutoHotkeyDownloadPageUrl]: https://www.autohotkey.com/download/
 
 [AhkCommandPickerInUnder2MinutesYouTubeUrl]: https://www.youtube.com/watch?v=gevnQAwYLAg,type=youtube
 [AhkCommandPickerInUnder2MinutesYouTubeImageUrl]: https://img.youtube.com/vi/gevnQAwYLAg/0.jpg
