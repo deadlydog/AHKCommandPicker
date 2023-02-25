@@ -58,13 +58,21 @@ ExploreCDrive()
 }
 ```
 
-## Where To Create Hotkeys
+## Where To Create Hotkeys and Hotstrings
 
-Hotkeys and hotstrings should be added to the `UserCommands\MyHotkeys.ahk` file; this file can be opened for editing by using `Caps Lock` to open the AHK Command Picker and running the `EditMyHotkeys` command.
-From here you can either write your custom hotkeys and hotstrings directly in MyHotkeys.ahk, or create a new ahk file in the `UserCommands` directory and `#Include` it's path in `MyHotkeys.ahk`, or a mix of the two approaches.
+Both `hotkeys` (e.g. _^j::_) and `hotstrings` (e.g. _::btw::by the way_) should be added to (or referenced from) the `UserCommands\MyHotkeys.ahk` file.
+The `MyHotkeys.ahk` file can be opened for editing by using `Caps Lock` to open the AHK Command Picker and running the `EditMyHotkeys` command.
+From here you can either write your custom hotkeys and hotstrings directly in `MyHotkeys.ahk`, or create a new ahk file in the `UserCommands` directory and `#Include` it's path in `MyHotkeys.ahk`, or a mix of the two approaches.
+
+This is an example of the code you would add to the `UserCommands\MyHotkeys.ahk` file to include the `UserCommands\WorkRelatedHotkeys.ahk` file:
+
+```AutoHotkey
+#Include %A_ScriptDir%\UserCommands\WorkRelatedHotkeys.ahk
+```
 
 **Any commands defined after a hotkey or hotstring will not show up in the AHK Command Picker**.
-This is why it is vital that hotkeys and hotstrings are defined or `#Include`d in the `MyHotkeys.ahk` file, since `MyCommands.ahk` is included before `MyHotkeys.ahk`.
+So if you add a hotkey or hotstring to the `MyCommands.ahk` file, then none of your custom commands will show up in the AHK Command Picker.
+This is why it is vital that hotkeys and hotstrings are defined or `#Include`d in the `UserCommands\MyHotkeys.ahk` file, since `MyCommands.ahk` is included before `MyHotkeys.ahk`.
 
 ## How To Convert An Existing Hotkey Into a Command
 
