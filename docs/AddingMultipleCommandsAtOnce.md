@@ -46,11 +46,11 @@ AddCommandsWithPrePostfix(functionName, descriptionOfWhatFunctionDoes = "", comm
 These both call the `AddNamedCommand()` function for each command in the commandList.
 Each command in the list will call the given functionName, supplying the command's specific value as a parameter to the function.
 
-* `commandList`: The commands to show up in the picker that will call the function, separated with a comma.
+- `commandList`: The commands to show up in the picker that will call the function, separated with a comma.
   Separate the command name that appears in the picker and the value to pass to the function with a pipe character (`|`).
   If no pipe character is provided, the given value will be both shown in the picker and passed to the function.
-* `prefix`: The prefix to add to the beginning of all the command names in the commandList.
-* `postfix`: The postfix to add to the end of all the command names in the commandList.
+- `prefix`: The prefix to add to the beginning of all the command names in the commandList.
+- `postfix`: The postfix to add to the end of all the command names in the commandList.
 
 So to use the `AddCommands()` function to get the same type of look that you would get from manually adding each command individually you could do:
 

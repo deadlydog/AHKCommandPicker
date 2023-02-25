@@ -17,7 +17,9 @@ To migrate your v1 commands to v2:
 1. Copy the contents of your `Commands\MyCommands.ahk` file to the new `UserCommands\MyCommands.ahk` file.
 1. Copy the contents of your `Commands\MyHotkeys.ahk` file to the new `UserCommands\MyHotkeys.ahk` file.
 1. Copy any additional scripts you had in the `Commands` directory to the `UserCommands` directory.
-1. If you had added `#Include` statements to the `CommandScriptsToInclude.ahk` file, you will need to move those include statements to the `UserCommands\MyCommands.ahk` file (for scripts containing Commands) and `UserCommands\MyHotkeys.ahk` file (for scripts containing hotkeys and hotstrings).
+1. If you had added `#Include` statements to the `CommandScriptsToInclude.ahk` file, you will need to move those include statement lines to:
+    - `UserCommands\MyCommands.ahk`: For including scripts containing Commands.
+    - `UserCommands\MyHotkeys.ahk`: For including scripts containing hotkeys and hotstrings.
 1. If you were using the `#Include` command to reference other scripts, you will need to update the path of the included script to use the `UserCommands` directory instead of the `Commands` directory.
    So for every ahk script that is now in the `UserCommands` directory, you will want to find `\Commands\` and replace it with `\UserCommands\`.
    e.g.
