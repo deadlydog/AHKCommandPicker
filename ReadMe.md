@@ -22,6 +22,10 @@ To add your own commands to AHK Command Picker, see [the documentation][Document
 
 You will likely want to [have AHKCommandPicker start automatically when you log into Windows][AutomaticallyStartAtLogin].
 
+### Upgrading Versions
+
+If you are upgrading from v1 to v2, see [the migration guide][MigrateFromV1ToV2Page].
+
 ## 🖼 Screen Shots
 
 All commands:
@@ -88,6 +92,7 @@ Buy me a pastry 🍰 for providing this script open source and for free 🙂
 [WhyUseAhkCommandPickerPage]: docs/WhyUseAhkCommandPicker.md
 [DocumentationPage]: docs/DocumentationHomePage.md
 [AutomaticallyStartAtLogin]: docs/TipsAndTricks.md#have-ahk-command-picker-automatically-start-when-you-log-into-windows
+[MigrateFromV1ToV2Page]: docs/MigrateFromV1ToV2.md
 
 [AllCommandsImage]: docs/Images/AHKCommandPicker-AllCommands.png
 [FilteredCommandsImage]: docs/Images/AHKCommandPicker-FilteredCommands.png
