@@ -17,3 +17,14 @@ So it is important that all hotkeys and hotstrings be declared **AFTER** all com
 
 Do not edit the `AhkCommandPicker.ahk` file or any files in the `DefaultCommands` directory, as they may be updated when new versions of AHK Command Picker are released, so you may run into conflicts (or lose your customizations) when updating these files.
 Only edit the `UserCommands\MyCommands.ahk` and `UserCommands\MyHotkeys.ahk` files, as well as any other files you create in the `UserCommands` directory.
+
+## Next Steps
+
+That's it.
+Congrats!
+You've read all of the documentation! 🎉👏
+
+Return to [the table of contents][DocumentationTableOfContents].
+
+<!-- Links -->
+[DocumentationTableOfContents]: DocumentationHomePage.md

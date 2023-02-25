@@ -77,12 +77,13 @@ Part of [my other blog post][BlogShowingHowToHaveAutoHotkeyInteractWithAdminWind
 
 ## Next Steps
 
-Proceed to the [Best Practices][BestPracticesPage] page.
+Proceed to the [Best Practices][BestPracticesPage] page, or return to [the table of contents][DocumentationTableOfContents].
 
 <!-- Links -->
 [BestPracticesPage]: BestPractices.md
 [BlogShowingHowToSignAutoHotkeyUrl]: http://blog.danskingdom.com/get-autohotkey-to-interact-with-admin-windows-without-running-ahk-script-as-admin/
 [BlogShowingHowToHaveAutoHotkeyStartAsAdminAtStartupUrl]: http://blog.danskingdom.com/get-autohotkey-script-to-run-as-admin-at-startup/
 [BlogShowingHowToHaveAutoHotkeyInteractWithAdminWindowsUrl]: http://blog.danskingdom.com/autohotkey-cannot-interact-with-windows-8-windowsor-can-it/
+[DocumentationTableOfContents]: DocumentationHomePage.md
 [RunWindowWithShellStartupImage]: Images/RunWindowWithShellStartup.png
 [UsersStartupDirectoryWithShortcutImage]: Images/UsersStartupDirectoryWithShortcut.png

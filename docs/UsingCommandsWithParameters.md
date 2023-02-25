@@ -84,8 +84,9 @@ So in the above example you might be able to simply type, "Ex, MyD, CD, C:\Some"
 
 ## Next Steps
 
-Proceed to the [Adding Multiple Commands At Once][AddingMultipleCommandsAtOncePage] page.
+Proceed to the [Adding Multiple Commands At Once][AddingMultipleCommandsAtOncePage] page, or return to [the table of contents][DocumentationTableOfContents].
 
 <!-- Links -->
 [AddingMultipleCommandsAtOncePage]: AddingMultipleCommandsAtOnce.md
+[DocumentationTableOfContents]: DocumentationHomePage.md
 [UsingPresetParametersImage]: Images/UsingPresetParameters.png

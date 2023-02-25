@@ -113,7 +113,8 @@ All of the out-of-the-box commands and hotkeys are provided in the `DefaultComma
 
 ## Next Steps
 
-Proceed to the [Using Commands With Parameters][UsingCommandsWithParametersPage] page.
+Proceed to the [Using Commands With Parameters][UsingCommandsWithParametersPage] page, or return to [the table of contents][DocumentationTableOfContents].
 
 <!-- Links -->
+[DocumentationTableOfContents]: DocumentationHomePage.md
 [UsingCommandsWithParametersPage]: UsingCommandsWithParameters.md

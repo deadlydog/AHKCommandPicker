@@ -102,9 +102,10 @@ Note the "e" at the beginning of our commands that call _ExploreDirectory()_.
 
 ## Next Steps
 
-Proceed to the [Tips and Tricks][TipsAndTricksPage] page.
+Proceed to the [Tips and Tricks][TipsAndTricksPage] page, or return to [the table of contents][DocumentationTableOfContents].
 
 <!-- Links -->
+[DocumentationTableOfContents]: DocumentationHomePage.md
 [TipsAndTricksPage]: TipsAndTricks.md
 [UsingCommandsWithParametersPage]: UsingCommandsWithParameters.md
 [UsingPresetParametersImage]: Images/UsingPresetParameters.png
