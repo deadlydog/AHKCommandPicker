@@ -50,6 +50,14 @@ Features:
 - Renamed General.ahk to DefaultCommands.ahk and GeneralHotKeys.ahk to DefaultHotkeys.ahk.
 - Added new MyCommands.ahk and MyHotkeys.ahk files, and associated EditMyCommands and EditMyHotkeys commands, to help new users get started faster.
 
+## v1.3.0 - November 24, 2013
+
+Features:
+
+- Added new setting to have Escape key kill all current Commands and reload script (i.e. panic kill).
+  Escape key only has an effect if a command is currently running.
+- Added Sleep timer to allow hotkeys and hotstrings to still be processed when in a long-running loop in a user's command.
+
 ## CodePlex to GitHub migration
 
 This project was originally created in January 2012 using TFVC (Team Foundation Version Control) and hosted on CodePlex, which is now defunct.
