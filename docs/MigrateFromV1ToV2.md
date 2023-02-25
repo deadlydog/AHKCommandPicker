@@ -1,7 +1,6 @@
 # Migrating from AHK Command Picker v1 to v2
 
 There were some breaking changes made in v2, so if you are upgrading from v1 to v2, you will need to make the following changes.
-The breaking changes and how to accommodate the are below.
 
 ## Script files location changed
 
