@@ -4,6 +4,7 @@ IDEAS:
 - Make it easy for users to install and update AHK Command Picker without losing their customization commands/hotkeys.
 	- This is the main factor to consider for v2.0.
 	- Have an installer perhaps, along with a checkbox to automatically run the script at startup.
+		- This could be done as it's own AHK script that prompts for the install location and to start at Startup or not.
 - Make the AddCommandsFromVariable a standard thing so it's easy for people to add apps, directories, and websites to launch.
 - Dark mode. Ideally use Windows system default.
 
@@ -18,6 +19,7 @@ IDEAS:
 ; Use the two following commands to debug a script.
 ;ListVars
 ;Pause
+;OutputDebug, % TEXT
 
 #SingleInstance force	; Make it so only one instance of this script can run at a time (and reload the script if another instance of it tries to run).
 #NoEnv					; Avoid checking empty variables to see if they are environment variables (better performance).
@@ -159,7 +161,7 @@ DummyCommand(parameters = "")
 AddCommand("EditMyCommands", "Opens the MyCommands.ahk script for editing in the default editor, or notepad.")
 EditMyCommands()
 {
-	filePath = %A_ScriptDir%\Commands\MyCommands.ahk
+	filePath = %A_ScriptDir%\UserCommands\MyCommands.ahk
 	Run, edit %filePath%,,UseErrorLevel
 	if (%ErrorLevel% = ERROR)
 		Run, "notepad" "%filePath%"
@@ -168,7 +170,7 @@ EditMyCommands()
 AddCommand("EditMyHotkeys", "Opens the MyHotkeys.ahk script for editing in the default editor, or notepad.")
 EditMyHotkeys()
 {
-	filePath = %A_ScriptDir%\Commands\MyHotkeys.ahk
+	filePath = %A_ScriptDir%\UserCommands\MyHotkeys.ahk
 	Run, edit %filePath%,,UseErrorLevel
 	if (%ErrorLevel% = ERROR)
 		Run, "notepad" "%filePath%"
