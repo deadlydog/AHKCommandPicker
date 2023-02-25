@@ -14,7 +14,7 @@ Fixes:
 
 - Fix issue where the wrong command is sometimes selected when typing quickly ([GitHub issue #3](https://github.com/deadlydog/AHKCommandPicker/issues/3)).
 
-Breaking changes:
+Breaking changes ([see the v1 to v2 migration guide](MigrateFromV1ToV2.md)):
 
 - Removed the `CommandScriptsToInclude.ahk` file.
   If you had added lines to that file to include other scripts, you will need to move those include statements to the `MyCommands.ahk` file.
