@@ -29,7 +29,7 @@ Features:
 
 - Added support for Outlook 2016.
 - Added commands for creating an Outlook appointment and opening the Outlook calendar.
-- Added `ExploreMyDocuments` Command.
+- Added `ExploreMyDocuments` and `ExploreDesktop` Commands.
 
 Fixes:
 

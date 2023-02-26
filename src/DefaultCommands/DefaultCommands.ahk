@@ -43,10 +43,16 @@ ExploreRecycleBin()
 	Run, ::{645ff040-5081-101b-9f08-00aa002f954e} ; Opens the Recycle Bin.
 }
 
-AddCommand("ExploreMyDocuments", "Explore the My Documents folder.")
+AddCommand("ExploreMyDocuments", "Explore the user's My Documents folder.")
 ExploreMyDocuments()
 {
 	Run, explore %A_MyDocuments%
+}
+
+AddCommand("ExploreDesktop", "Explore the user's Desktop folder.")
+OpenDesktop()
+{
+	Run, explore %A_Desktop%
 }
 
 AddCommand("ExploreCDrive", "Explore C:\")
