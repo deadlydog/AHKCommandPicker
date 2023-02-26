@@ -1,7 +1,7 @@
-# AHK Command Picker Description
+# AHK Command Picker description
 
 An [AutoHotkey][AutoHotkeyWebsiteUrl] (AHK) script that allows you to easily call AHK functions and run other AHK scripts.
-(Requires [AutoHotkey v1.1][AutoHotkeyDownloadPageUrl]).
+(Requires [AutoHotkey v1.1][AutoHotkeyDownloadPageUrl] to be installed).
 
 Instead of having to remember what hotkey maps to each of your AHK scripts (as you could have hundreds), this displays a list of Commands in a light-weight GUI that allows you to quickly and easily run your scripts.
 Simply type part of the command name and hit enter to run your script.
@@ -9,24 +9,37 @@ You can also provide parameters to your commands, allowing you to change the fun
 
 For more reasons to use this with your AHK scripts, see [Why Use AHK Command Picker][WhyUseAhkCommandPickerPage].
 
-## 🚀 How To Use AHK Command Picker
+## 🚀 How to use AHK Command Picker
 
 Start by [downloading the latest release][DownloadLatestReleaseUrl].
 To launch AHK Command Picker run the `AHKCommandPicker.ahk` script.
 
 Press the `Caps Lock` key to bring up the AHK Command Picker GUI.
-From there just type the name of the command that you want to run and hit enter to run it.
-You can still toggle Caps Lock on and off by pressing `Shift`+`Caps Lock`.
+From there, just type the name of the Command that you want to run and hit Enter to run it.
 
-To add your own commands to AHK Command Picker, see [the documentation][DocumentationPage].
+Note: You can still toggle Caps Lock on and off by pressing `Shift`+`Caps Lock`.
+
+### Adding your own Commands, hotkeys, and hotstrings
+
+AHK Command Picker comes with many Commands out of the box, but the real power comes from adding your own Commands, hotkeys, and hotstrings.
+
+- `UserCommands\MyCommands.ahk`: Add your own Commands here.
+- `UserCommands\MyHotkeys.ahk`: Add your own hotkeys and hotstrings here.
+
+You can use AHK Command Picker to open these files for editing by running the `EditMyCommands` and `EditMyHotkeys` Commands.
+After you have modified a file, run the `ReloadAHKScript` Command to apply your changes.
+
+For more information, see [the documentation][DocumentationPage].
+
+### Additional tidbits
 
 You will likely want to [have AHKCommandPicker start automatically when you log into Windows][AutomaticallyStartAtLogin].
 
-### Upgrading Versions
+### Upgrading versions
 
 If you are upgrading from v1 to v2, see [the migration guide][MigrateFromV1ToV2Page].
 
-## 🖼 Screen Shots
+## 🖼 Screenshots
 
 All commands:
 
