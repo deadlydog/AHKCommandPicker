@@ -9,6 +9,7 @@ This page is a list of _notable_ changes made in each version.
 Features:
 
 - Updated file structure to separate User Commands from the built-in Default Commands to make updating to new versions easier in the future (BREAKING CHANGE).
+- Add examples to the `MyCommands.ahk` and `MyHotkeys.ahk` files to help new users get started faster.
 
 Fixes:
 
