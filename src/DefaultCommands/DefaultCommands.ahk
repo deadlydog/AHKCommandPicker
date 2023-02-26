@@ -31,20 +31,26 @@ PCRestart()
 	Run, shutdown.exe -r -t 00
 }
 
-AddCommand("eMyComputer", "Explore My Computer")
-eMyComputer()
+AddCommand("ExploreMyComputer", "Explore My Computer")
+ExploreMyComputer()
 {
-	Run, ::{20d04fe0-3aea-1069-a2d8-08002b30309d}  ; Opens the "My Computer" folder.
+	Run, ::{20d04fe0-3aea-1069-a2d8-08002b30309d} ; Opens the "My Computer" folder.
 }
 
-AddCommand("eRecycleBin", "Explore the Recycle Bin")
-eRecycleBin()
+AddCommand("ExploreRecycleBin", "Explore the Recycle Bin")
+ExploreRecycleBin()
 {
-	Run, ::{645ff040-5081-101b-9f08-00aa002f954e}  ; Opens the Recycle Bin.
+	Run, ::{645ff040-5081-101b-9f08-00aa002f954e} ; Opens the Recycle Bin.
 }
 
-AddCommand("eC", "Explore C:\")
-eC()
+AddCommand("ExploreMyDocuments", "Explore the My Documents folder.")
+ExploreMyDocuments()
+{
+	Run, explore %A_MyDocuments%
+}
+
+AddCommand("ExploreCDrive", "Explore C:\")
+ExploreCDrive()
 {
 	Run, explore C:\
 }

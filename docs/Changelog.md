@@ -27,7 +27,8 @@ Breaking changes ([see the v1 to v2 migration guide](MigrateFromV1ToV2.md)):
 Features:
 
 - Added support for Outlook 2016.
-- Add commands for creating an Outlook appointment and opening the Outlook calendar.
+- Added commands for creating an Outlook appointment and opening the Outlook calendar.
+- Added `ExploreMyDocuments` Command.
 
 Fixes:
 
@@ -35,6 +36,7 @@ Fixes:
 
 Breaking changes:
 
+- Renamed Commands `eMyComputer` to `ExploreMyComputer`, `eRecycleBin` to `ExploreRecycleBin`, and `eC` to `ExploreCDrive`.
 - Changed the Default Hotkey for moving a window with your mouse by grabbing it anywhere (not just the title bar) from `Alt`+`MouseDrag` to `LeftWin`+`MouseDrag`.
 
 ## v1.3.2 - May 4, 2016
