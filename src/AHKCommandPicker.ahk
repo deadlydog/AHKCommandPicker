@@ -5,6 +5,7 @@ IDEAS:
 	- This is the main factor to consider for v2.0.
 	- Have an installer perhaps, along with a checkbox to automatically run the script at startup.
 		- This could be done as it's own AHK script that prompts for the install location and to start at Startup or not.
+- Allow DefaultCommands and DefaultHotkeys to be excluded using the Settings in the GUI.
 - Make the AddCommandsFromVariable a standard thing so it's easy for people to add apps, directories, and websites to launch.
 - Dark mode. Ideally use Windows system default.
 
