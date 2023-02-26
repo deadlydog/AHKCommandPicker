@@ -58,6 +58,16 @@ ExploreCDrive()
 }
 ```
 
+## Reload AHK Command Picker to apply changes
+
+Anytime you edit one of the script files to add or modify a Command, hotkey, or hotstring, the changes will not be applied in AHK Command Picker until you reload it.
+
+To reload AHK Command Picker, simply press `Caps Lock` to open the AHK Command Picker GUI, and run the `ReloadAHKScript` Command.
+
+Alternatively, you can reload the script like you would any other AHK script by right-clicking on the AHK Command Picker icon in the system tray and selecting `Reload This Script`.
+
+If you receive an error message when trying to reload the script, it is likely because you have a syntax error in one of your script files, such as having two functions with the same name.
+
 ## Where To Create Hotkeys and Hotstrings
 
 Both `hotkeys` (e.g. _^j::_) and `hotstrings` (e.g. _::btw::by the way_) should be added to (or referenced from) the `UserCommands\MyHotkeys.ahk` file.
