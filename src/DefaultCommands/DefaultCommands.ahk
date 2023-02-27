@@ -50,7 +50,7 @@ ExploreMyDocuments()
 }
 
 AddCommand("ExploreDesktop", "Explore the user's Desktop folder.")
-OpenDesktop()
+ExploreDesktop()
 {
 	Run, explore %A_Desktop%
 }
