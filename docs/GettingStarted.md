@@ -119,7 +119,8 @@ Typically your AHK scripts/hotkeys are probably more than one line long, but thi
 
 ## Additional Info
 
-All of the out-of-the-box commands and hotkeys are provided in the `DefaultCommands\DefaultCommands.ahk` and `DefaultCommands\DefualtHotkeys.ahk` files respectively; feel free to look at them for examples, but do not edit them as they may be updated in future versions.
+All of the out-of-the-box commands and hotkeys are provided in the `DefaultCommands\DefaultCommands.ahk` and `DefaultCommands\DefaultHotkeys.ahk` files respectively; feel free to look at them for examples.
+Editing them is not recommended, as any changes you make may be overwritten when they are updated in future versions.
 
 ## Next Steps
 

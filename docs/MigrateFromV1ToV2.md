@@ -6,7 +6,7 @@ There were some breaking changes made in v2, so if you are upgrading from v1 to 
 
 In v1 all command scripts were placed in a `Commands` directory.
 In v2 we have separated the built-in default commands from the user commands to make updating to new versions easier in the future.
-The built-in default commands are now located in the `DefaultCommands` directory, and these should never be modified.
+The built-in default commands are now located in the `DefaultCommands` directory, and these should not be modified.
 All user commands should now be placed in the `UserCommands` directory.
 
 The `CommandScriptsToInclude.ahk` file was also removed in v2; instead those include statements should be moved to the `MyCommands.ahk` and `MyHotkeys.ahk` files.
@@ -27,7 +27,7 @@ To migrate your customizations from v1 to v2:
    #Include %A_ScriptDir%\Commands\WorkRelatedCommands.ahk
    ```
 
-   Will become:
+   Should be changed to:
 
    ```AutoHotkey
    #Include %A_ScriptDir%\UserCommands\WorkRelatedCommands.ahk
