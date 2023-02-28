@@ -16,9 +16,12 @@ To migrate your customizations from v1 to v2:
 1. Copy the contents of your `Commands\MyCommands.ahk` file to the new `UserCommands\MyCommands.ahk` file.
 1. Copy the contents of your `Commands\MyHotkeys.ahk` file to the new `UserCommands\MyHotkeys.ahk` file.
 1. Copy any additional scripts you had in the `Commands` directory to the `UserCommands` directory.
+1. In `UserCommands\MyCommands.ahk` remove the `EditMyCommands` and `EditMyHotkeys` commands that were brought over from the old `MyCommands.ahk` file.
+   These commands are now defined directly in the application.
+   If you do not remove these commands from your `MyCommands.ahk` file, you will get a "duplicate function definition" error when the script is reloaded.
 1. If you had added `#Include` statements to the `CommandScriptsToInclude.ahk` file, you will need to move those include statement lines to:
-    - `UserCommands\MyCommands.ahk`: For including scripts containing Commands.
-    - `UserCommands\MyHotkeys.ahk`: For including scripts containing hotkeys and hotstrings.
+   - `UserCommands\MyCommands.ahk`: For including scripts containing Commands.
+   - `UserCommands\MyHotkeys.ahk`: For including scripts containing hotkeys and hotstrings.
 1. If you were using the `#Include` command to reference other scripts, you will need to update the path of the included script to use the `UserCommands` directory instead of the `Commands` directory.
    So for every ahk script that is now in the `UserCommands` directory, you will want to find `\Commands\` and replace it with `\UserCommands\`.
    e.g.
