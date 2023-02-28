@@ -2,24 +2,43 @@
 
 This page is a list of _notable_ changes made in each version.
 
-## vNext
+## v2.0.1 - February 28, 2023
+
+### App
 
 Features:
 
-- Updated file structure to make updating to new versions easier down the road.
-- Added support for Outlook 2016.
-- Add commands for creating an Outlook appointment and opening the Outlook calendar.
+- Updated file structure to separate User Commands from the built-in Default Commands to make updating to new versions easier in the future (BREAKING CHANGE).
+- Add examples to the `MyCommands.ahk` and `MyHotkeys.ahk` files to help new users get started faster.
 
 Fixes:
 
 - Fix issue where the wrong command is sometimes selected when typing quickly ([GitHub issue #3](https://github.com/deadlydog/AHKCommandPicker/issues/3)).
+
+Breaking changes ([see the v1 to v2 migration guide](MigrateFromV1ToV2.md)):
+
+- Removed the `CommandScriptsToInclude.ahk` file.
+  If you had added lines to that file to include other scripts, you will need to move those include statements to the `MyCommands.ahk` file.
+- Moved the `MyCommands.ahk` and `MyHotkeys.ahk` files to the `UserCommands` directory.
+  If you had customized the `MyCommands.ahk` or `MyHotkeys.ahk` files, you will need to copy their contents into the new equivalent files in the `UserCommands` directory.
+  If you had added lines to include other scripts, you will need to update the include statement's directory path from `Commands` to `UserCommands`.
+
+### Default Commands
+
+Features:
+
+- Added support for Outlook 2016.
+- Added commands for creating an Outlook appointment and opening the Outlook calendar.
+- Added `ExploreMyDocuments` and `ExploreDesktop` Commands.
+
+Fixes:
+
 - Make Outlook commands more resilient.
 
 Breaking changes:
 
-- Removed the `CommandScriptsToInclude.ahk` file.
-  If you had added lines to that file to include other scripts, you will need to move those include statements to the `MyCommands.ahk` file.
-- Changed Default Hotkey for moving a window from Alt+MouseDrag to LeftWin+MouseDrag.
+- Renamed Commands `eMyComputer` to `ExploreMyComputer`, `eRecycleBin` to `ExploreRecycleBin`, and `eC` to `ExploreCDrive`.
+- Changed the Default Hotkey for moving a window with your mouse by grabbing it anywhere (not just the title bar) from `Alt`+`MouseDrag` to `LeftWin`+`MouseDrag`.
 
 ## v1.3.2 - May 4, 2016
 
@@ -33,6 +52,14 @@ Features:
 
 - Renamed General.ahk to DefaultCommands.ahk and GeneralHotKeys.ahk to DefaultHotkeys.ahk.
 - Added new MyCommands.ahk and MyHotkeys.ahk files, and associated EditMyCommands and EditMyHotkeys commands, to help new users get started faster.
+
+## v1.3.0 - November 24, 2013
+
+Features:
+
+- Added new setting to have Escape key kill all current Commands and reload script (i.e. panic kill).
+  Escape key only has an effect if a command is currently running.
+- Added Sleep timer to allow hotkeys and hotstrings to still be processed when in a long-running loop in a user's command.
 
 ## CodePlex to GitHub migration
 

@@ -1,7 +1,7 @@
-# AHK Command Picker Description
+# AHK Command Picker description
 
-An AutoHotkey (AHK) script that allows you to easily call AHK functions and run other AHK scripts.
-(Requires [AutoHotkey_L][AutoHotkeyWebsiteUrl]).
+An [AutoHotkey][AutoHotkeyWebsiteUrl] (AHK) script that allows you to easily call AHK functions and run other AHK scripts.
+(Requires [AutoHotkey v1.1][AutoHotkeyDownloadPageUrl] to be installed).
 
 Instead of having to remember what hotkey maps to each of your AHK scripts (as you could have hundreds), this displays a list of Commands in a light-weight GUI that allows you to quickly and easily run your scripts.
 Simply type part of the command name and hit enter to run your script.
@@ -9,20 +9,37 @@ You can also provide parameters to your commands, allowing you to change the fun
 
 For more reasons to use this with your AHK scripts, see [Why Use AHK Command Picker][WhyUseAhkCommandPickerPage].
 
-## 🚀 How To Use AHK Command Picker
+## 🚀 How to use AHK Command Picker
 
 Start by [downloading the latest release][DownloadLatestReleaseUrl].
 To launch AHK Command Picker run the `AHKCommandPicker.ahk` script.
 
 Press the `Caps Lock` key to bring up the AHK Command Picker GUI.
-From there just type the name of the command that you want to run and hit enter to run it.
-You can still toggle Caps Lock on and off by pressing `Shift`+`Caps Lock`.
+From there, just type the name of the Command that you want to run and hit Enter to run it.
 
-To add your own commands to AHK Command Picker, see [the documentation][DocumentationPage].
+Note: You can still toggle Caps Lock on and off by pressing `Shift`+`Caps Lock`.
+
+### ✍ Adding your own Commands, hotkeys, and hotstrings
+
+AHK Command Picker comes with many Commands out of the box, but the real power comes from adding your own Commands, hotkeys, and hotstrings.
+
+- `UserCommands\MyCommands.ahk`: Add your own Commands here.
+- `UserCommands\MyHotkeys.ahk`: Add your own hotkeys and hotstrings here.
+
+You can use AHK Command Picker to open these files for editing by running the `EditMyCommands` and `EditMyHotkeys` Commands.
+After you have modified a file, run the `ReloadAHKScript` Command to apply your changes.
+
+For more information, see [the documentation][DocumentationPage].
+
+### Additional tidbits
 
 You will likely want to [have AHKCommandPicker start automatically when you log into Windows][AutomaticallyStartAtLogin].
 
-## 🖼 Screen Shots
+### Upgrading versions
+
+If you are upgrading from v1 to v2, see [the migration guide][MigrateFromV1ToV2Page].
+
+## 🖼 Screenshots
 
 All commands:
 
@@ -62,7 +79,7 @@ See [the Contributing page](docs/Contributing.md) for more details.
 
 ## 📃 Changelog
 
-See what's changed in the application over time by viewing [the changelog](docs/Changelog.md).
+See what's changed in the application over time by viewing [the Changelog](docs/Changelog.md).
 
 ## 💳 Donate
 
@@ -71,7 +88,8 @@ Buy me a pastry 🍰 for providing this script open source and for free 🙂
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=D7PW6YBWNDLXW)
 
 <!-- Links -->
-[AutoHotkeyWebsiteUrl]: http://www.autohotkey.com
+[AutoHotkeyWebsiteUrl]: https://www.autohotkey.com
+[AutoHotkeyDownloadPageUrl]: https://www.autohotkey.com/download/
 
 [AhkCommandPickerInUnder2MinutesYouTubeUrl]: https://www.youtube.com/watch?v=gevnQAwYLAg,type=youtube
 [AhkCommandPickerInUnder2MinutesYouTubeImageUrl]: https://img.youtube.com/vi/gevnQAwYLAg/0.jpg
@@ -87,6 +105,7 @@ Buy me a pastry 🍰 for providing this script open source and for free 🙂
 [WhyUseAhkCommandPickerPage]: docs/WhyUseAhkCommandPicker.md
 [DocumentationPage]: docs/DocumentationHomePage.md
 [AutomaticallyStartAtLogin]: docs/TipsAndTricks.md#have-ahk-command-picker-automatically-start-when-you-log-into-windows
+[MigrateFromV1ToV2Page]: docs/MigrateFromV1ToV2.md
 
 [AllCommandsImage]: docs/Images/AHKCommandPicker-AllCommands.png
 [FilteredCommandsImage]: docs/Images/AHKCommandPicker-FilteredCommands.png
