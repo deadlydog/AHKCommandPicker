@@ -19,7 +19,7 @@ From there, just type the name of the Command that you want to run and hit Enter
 
 Note: You can still toggle Caps Lock on and off by pressing `Shift`+`Caps Lock`.
 
-### Adding your own Commands, hotkeys, and hotstrings
+### ✍ Adding your own Commands, hotkeys, and hotstrings
 
 AHK Command Picker comes with many Commands out of the box, but the real power comes from adding your own Commands, hotkeys, and hotstrings.
 
