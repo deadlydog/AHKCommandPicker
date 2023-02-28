@@ -2,7 +2,7 @@
 
 This page is a list of _notable_ changes made in each version.
 
-## vNext
+## v2.0.1 - February 28, 2023
 
 ### App
 
