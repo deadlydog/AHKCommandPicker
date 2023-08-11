@@ -1,4 +1,4 @@
-# AHK Command Picker ![Number of GitHub downloads](https://img.shields.io/github/downloads/deadlydog/AHKCommandPicker/total)
+# AHK Command Picker [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/deadlydog/AHKCommandPicker/blob/main/License.md) [![Number of GitHub downloads](https://img.shields.io/github/downloads/deadlydog/AHKCommandPicker/total)](https://github.com/deadlydog/AHKCommandPicker/releases)
 
 An [AutoHotkey][AutoHotkeyWebsiteUrl] (AHK) script that allows you to easily call AHK functions and run other AHK scripts.
 (Requires [AutoHotkey v1.1][AutoHotkeyDownloadPageUrl] to be installed).
