@@ -19,18 +19,21 @@ PutWindowInFocus(windowName, applicationPath = "", titleMatchMode = "")
 	; Used to tell when we have succeeded and stop trying.
 	windowActivated := false
 
+	; Turn on searching for hidden windows, like apps running in the system tray.
+	DetectHiddenWindows, On
+
 	; If the user did not specify a specific match mode to use, try them all starting with the most specific ones.
 	if (titleMatchMode = "")
 	{
 		SetTitleMatchMode, 3	; Start by trying to match the window's title exactly.
 		gosub, PWIFTryActivateWindow
-	
+
 		if (!windowActivated)
 		{
 			SetTitleMatchMode, 1	; Next try to match the start of the window's title.
 			gosub, PWIFTryActivateWindow
 		}
-		
+
 		if (!windowActivated)
 		{
 			SetTitleMatchMode, 2	; Next try to match any part of the window's title.
@@ -55,7 +58,7 @@ PutWindowInFocus(windowName, applicationPath = "", titleMatchMode = "")
 
 	; If the window is not already open.
 	if (!windowActivated)
-	{	
+	{
 		; If we were given a program to launch as a backup in case the wanted window wasn't found, then try and launch it.
 		if (applicationPath != "")
 		{
@@ -79,34 +82,34 @@ PutWindowInFocus(windowName, applicationPath = "", titleMatchMode = "")
 			}
 		}
 	}
-	
+
 	; Restore the previous global modes that we might have changed.
 	SetTitleMatchMode, %previousTitleMatchMode%
 	DetectHiddenWindows, %previousDetectHiddenWindowsMode%
-	
+
 	; Return the handle of the window that was activated.
 	if (windowActivated)
 	{
 		return WinExist("A")
 	}
-	
+
 	; Else the window was not activated, so return 0 (i.e. false).
 	return 0
-	
+
 	; Tries to put the window in focus if it already exists.
 	PWIFTryActivateWindow:
 		; If the window is already open.
 		IfWinExist, %windowName%
-		{			
+		{
 			; Put the window in focus.
 			WinActivate
 			WinShow
-			
+
 			; Not all apps Restore properly when using WinShow and the app is Minimized (e.g. apps minimized using TrayIt!), so explicitly restore windows that are still minimized.
 			WinGet, isMinimized, MinMax
 			if (isMinimized = -1)
 				WinRestore
-			
+
 			; Record success.
 			windowActivated := true
 		}
@@ -125,14 +128,14 @@ PutWindowInFocus(windowName, applicationPath = "", titleMatchMode = "")
 StringListContains(ByRef itemList, targetItem, itemDelimiter = "", removeTargetItem = false)
 {
 	global _cpParameterDelimiter
-	
+
 	; If no delimiter was supplied, use the default parameter delimiter.
 	if (itemDelimiter = "")
 		itemDelimiter := _cpParameterDelimiter
-	
+
 	; Trim whitespace off of the target item
 	targetItem := Trim(targetItem)
-	
+
 	; Loop through each item in the list and return true if the target is found in it.
 	Loop, Parse, itemList, %itemDelimiter%
 	{
@@ -143,7 +146,7 @@ StringListContains(ByRef itemList, targetItem, itemDelimiter = "", removeTargetI
 			{
 				; We don't know if this item is first, last, or the only item in the list, so try and remove the itemDelimiter with the item.
 				; ErrorLevel will be set to 1 if the string to replace is not found.
-				StringReplace, itemList, itemList, %A_LoopField%%itemDelimiter%	
+				StringReplace, itemList, itemList, %A_LoopField%%itemDelimiter%
 				if (ErrorLevel = 1)
 					StringReplace, itemList, itemList, %itemDelimiter%%A_LoopField%
 				if (ErrorLevel = 1)
@@ -171,14 +174,14 @@ StringListContainsAndRemove(ByRef itemList, targetItem, itemDelimiter = "")
 ArrayContains(itemList, targetItem)
 {
 	global _cpParameterDelimiter
-	
+
 	; If no delimiter was supplied, use the default parameter delimiter.
 	if (itemDelimiter = "")
 		itemDelimiter := _cpParameterDelimiter
-	
+
 	; Trim whitespace off of the target item
 	targetItem := Trim(targetItem)
-	
+
 	; Loop through each item in the list and return true if the target is found in it.
 	For index, value in parameters
 	{
@@ -207,7 +210,7 @@ PasteText(textToPaste = "", pasteKeys = "^v")
 		pasteKeys = !{Space}ep
 	else if (pasteKeys = "cmdEnter")
 		pasteKeys = !{Space}ep{Enter}
-	
+
 	clipboardBackup := ClipboardAll	; Backup whatever is currently on the Clipboard, including pictures and anything else.
 	while (Clipboard != textToPaste)	; Make sure the Clipboard text has been updated before pasting it, as sometimes it does not get updated instantly.
 		Clipboard := textToPaste

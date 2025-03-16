@@ -13,7 +13,7 @@ IDEAS:
 - Maybe just hide the GUI instead of actually closing it every time; this would be good for tooltip mode too, since the tooltip could show the currently selected command from the window.
 - Allow user to create new simple commands easily from the GUI and save them in their own file (open file/program, path, website).
 
-- Use Ctrl+Space to copy the full command/parameter into the input textbox, and Ctrl+, to copy it with a trailing comma (easier for parameters).  Or maybe use Shift instead of Ctrl.
+- Use Ctrl+Space to copy the full command/parameter into the input textbox, and Ctrl+, to copy it with a trailing comma (easier for parameters). Or maybe use Shift instead of Ctrl.
 
 */
 
@@ -28,7 +28,7 @@ IDEAS:
 ;==========================================================
 ; Global Variables - prefix everything with "cp" for Command Picker, so that variable/function names are not likely to conflict with user variables/function names.
 ;==========================================================
-_cpWindowName := "AHK Command Picker v2.0.1"
+_cpWindowName := "AHK Command Picker v2.1.0"
 _cpWindowGroup := ""					; The group that will hold our Command Picker window so we can reference it from # directive statements (e.g. #IfWinExists).
 _cpCommandList := ""					; Will hold the list of all available commands.
 _cpCommandSelected := ""				; Will hold the command selected by the user.
