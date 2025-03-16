@@ -376,7 +376,10 @@ Outlook()
 	outlookExecutablePath := GetOutlookExecutablePath()
 
 	; Try finding the window using the process name first (rather than matching the window title).
+	; OUTLOOK.EXE is the "Outlook (classic)" executable name, olk.exe is the "Outlook (new)" executable name.
+	; You may need to adjust the exe name here depending on if you're using the new version or not.
 	windowID := PutWindowInFocus("ahk_exe OUTLOOK.EXE", outlookExecutablePath . " /recycle", 2)
+	; windowID := PutWindowInFocus("ahk_exe olk.exe", outlookExecutablePath . " /recycle", 2)
 
 	; If we found a window using the process name, make sure it's the main Outlook window and not the Reminders or other window.
 	if (windowID > 0)
