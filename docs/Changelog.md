@@ -2,6 +2,14 @@
 
 This page is a list of _notable_ changes made in each version.
 
+## v2.1.0 - March 16, 2025
+
+### Utility functions
+
+Features:
+
+- Allow `PutWindowInFocus` function to detect hidden windows, such as apps running in the system tray.
+
 ## v2.0.1 - February 28, 2023
 
 ### App
