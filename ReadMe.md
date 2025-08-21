@@ -9,6 +9,10 @@ You can also provide parameters to your commands, allowing you to change the fun
 
 For more reasons to use this with your AHK scripts, see [Why Use AHK Command Picker][WhyUseAhkCommandPickerPage].
 
+> [!IMPORTANT]
+> This project does not yet support AutoHotkey v2.
+> Ensure you have v1.1 installed
+
 ## 🚀 How to use AHK Command Picker
 
 Start by [downloading the latest release][DownloadLatestReleaseUrl].
