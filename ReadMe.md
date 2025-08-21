@@ -11,7 +11,7 @@ For more reasons to use this with your AHK scripts, see [Why Use AHK Command Pic
 
 > [!IMPORTANT]
 > This project does not yet support AutoHotkey v2.
-> Ensure you have v1.1 installed
+> Ensure you have v1.1 installed.
 
 ## 🚀 How to use AHK Command Picker
 
